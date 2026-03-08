@@ -1,18 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
-body.dark {
+.dark body {
     /* Base dark color from Tailwind config */
     background-color: #0f1623;
-    /* Diagonal racing stripes pattern: thick subtle lines and thin brighter lines */
-    background-image: repeating-linear-gradient(
-        -45deg,
-        rgba(255, 255, 255, 0.015) 0px,
-        rgba(255, 255, 255, 0.015) 40px,
-        transparent 40px,
-        transparent 80px,
-        rgba(255, 255, 255, 0.03) 80px,
-        rgba(255, 255, 255, 0.03) 82px,
-        transparent 82px,
-        transparent 85px
+    /* 3 diagonal racing stripes of varying widths and opacities */
+    background-image: linear-gradient(
+        110deg,
+        transparent 0%,
+        transparent 35%,
+        
+        rgba(255, 255, 255, 0.03) 35%,
+        rgba(255, 255, 255, 0.03) 48%, /* Stripe 1 (Wide) */
+        
+        transparent 48%,
+        transparent 51%,
+        
+        rgba(255, 255, 255, 0.06) 51%,
+        rgba(255, 255, 255, 0.06) 55%, /* Stripe 2 (Medium, Brighter) */
+        
+        transparent 55%,
+        transparent 57%,
+        
+        rgba(255, 255, 255, 0.02) 57%,
+        rgba(255, 255, 255, 0.02) 59%, /* Stripe 3 (Thin) */
+        
+        transparent 59%,
+        transparent 100%
     );
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
