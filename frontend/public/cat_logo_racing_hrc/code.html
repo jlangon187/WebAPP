@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#003399",
+                        "accent-red": "#e60000",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0f1623",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .premium-badge {
+            background: linear-gradient(90deg, #e60000 0%, #003399 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex flex-col min-h-screen">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 border-b border-primary/20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 lg:px-12 py-4">
+<div class="max-w-[1440px] mx-auto flex items-center justify-between gap-8">
+<!-- Logo and Search -->
+<div class="flex items-center gap-12 flex-1">
+<div class="flex items-center gap-3">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-2xl">speed</span>
+</div>
+<h1 class="text-xl font-extrabold tracking-tighter uppercase italic">
+                            MOD<span class="text-primary">CAT</span>
+</h1>
+</div>
+<div class="hidden md:flex flex-1 max-w-md relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">search</span>
+<input class="w-full bg-slate-200/50 dark:bg-primary/10 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 transition-all" placeholder="Search mods, tracks, or creators..." type="text"/>
+</div>
+</div>
+<!-- Center Links -->
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Explore</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Community</a>
+<a class="text-sm font-semibold hover:text-primary transition-colors" href="#">Support</a>
+</nav>
+<!-- Right Actions -->
+<div class="flex items-center gap-4">
+<button class="relative p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-accent-red rounded-full"></span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-lg transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<div class="h-8 w-px bg-slate-300 dark:bg-slate-700 mx-2"></div>
+<button class="bg-primary text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg hover:bg-primary/90 transition-all active:scale-95 shadow-lg shadow-primary/20">
+                        Join Pro
+                    </button>
+</div>
+</div>
+</header>
+<div class="flex flex-1 max-w-[1440px] mx-auto w-full">
+<!-- Sidebar -->
+<aside class="hidden xl:flex flex-col w-64 border-r border-primary/10 p-6 gap-8">
+<div class="flex flex-col gap-2">
+<p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Main Menu</p>
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary text-white rounded-lg shadow-md shadow-primary/30" href="#">
+<span class="material-symbols-outlined text-xl">home</span>
+<span class="text-sm font-bold">Home</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-xl">grid_view</span>
+<span class="text-sm font-semibold">Categories</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-xl">favorite</span>
+<span class="text-sm font-semibold">Wishlist</span>
+</a>
+</div>
+<div class="flex flex-col gap-2">
+<p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Library</p>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-xl">inventory_2</span>
+<span class="text-sm font-semibold">My Mods</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-xl">download</span>
+<span class="text-sm font-semibold">Downloads</span>
+</a>
+</div>
+<div class="mt-auto bg-primary/5 rounded-xl p-4 border border-primary/10">
+<p class="text-xs font-bold mb-1">PRO SUBSCRIPTION</p>
+<p class="text-[11px] text-slate-500 mb-4 leading-relaxed">Access 500+ premium mods and tracks.</p>
+<button class="w-full bg-primary py-2 rounded-lg text-white text-xs font-bold uppercase tracking-tight">Upgrade Now</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-10">
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
+<button class="px-5 py-2 bg-primary text-white rounded-full text-sm font-bold whitespace-nowrap">All Mods</button>
+<button class="px-5 py-2 bg-primary/10 hover:bg-primary/20 text-slate-300 rounded-full text-sm font-bold whitespace-nowrap transition-all">Bikes</button>
+<button class="px-5 py-2 bg-primary/10 hover:bg-primary/20 text-slate-300 rounded-full text-sm font-bold whitespace-nowrap transition-all">Tracks</button>
+<button class="px-5 py-2 bg-primary/10 hover:bg-primary/20 text-slate-300 rounded-full text-sm font-bold whitespace-nowrap transition-all">Riding Gear</button>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-primary/20 rounded-lg hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+<span class="text-sm font-bold">Sort By</span>
+</button>
+</div>
+<!-- Hero Section / Featured -->
+<div class="relative w-full h-[320px] rounded-2xl overflow-hidden mb-12 shadow-2xl group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Professional racing bike action shot on track" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8SDlKpjkgowXRJsLnCcJqQBM8bhl5uoVHgGCDVSqhc_zP9SoOpdMC7HmPjCcVWYa9SWRZjHTYW5kc5aNQzcS2nPC6XrzVPV64yefAGcmaMbjaVXqCyiLmVTaCrs-AUGQO1dAtPDSGZ6XHBEdq0NXEwvJt1tbYF3DlHxOlZVdj77KiW_qczaAE1VsWZJyYn9S3qqlFuosPXeM0J73did8Z7MHyWI6Mmlr_GAgJiO8yhxqibyvXucsJBqcdSLWQPxM89ogxBnjg_vB1');"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark via-background-dark/40 to-transparent"></div>
+<div class="absolute inset-0 p-10 flex flex-col justify-center max-w-lg">
+<span class="bg-accent-red text-white text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded w-fit mb-4">New Release</span>
+<h2 class="text-4xl lg:text-5xl font-black italic uppercase leading-none mb-4 tracking-tighter">Ducati Panigale <br/><span class="text-primary">V4 R 2024</span></h2>
+<p class="text-slate-300 text-sm mb-6 leading-relaxed">The pinnacle of performance. Meticulously recreated with official telemetry data for the ultimate simulation experience.</p>
+<div class="flex gap-4">
+<button class="bg-primary text-white px-8 py-3 rounded-lg font-bold uppercase text-xs tracking-wider shadow-lg shadow-primary/40 hover:-translate-y-0.5 transition-all">Download Now</button>
+<button class="bg-white/10 backdrop-blur-md text-white px-8 py-3 rounded-lg font-bold uppercase text-xs tracking-wider border border-white/20 hover:bg-white/20 transition-all">Learn More</button>
+</div>
+</div>
+</div>
+<!-- Grid Sections -->
+<div class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-black italic uppercase tracking-tighter flex items-center gap-3">
+<span class="w-1.5 h-6 bg-accent-red rounded-full"></span>
+                            Trending Mods
+                        </h3>
+<a class="text-primary text-xs font-bold uppercase tracking-widest flex items-center gap-1 hover:underline" href="#">View All <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="group bg-slate-900/40 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:shadow-xl hover:shadow-primary/5">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Modern sportbike rendering in digital garage" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoAWKsNv6tnAEINVhqJml_Fwt_KWAjR44bMVDdoQs3L4ddW8ggeH0WKLJ7KHQ87RVtZPk11DqWdZsXWA_gu8nH63odtX0qApQCKnTtPOO3P1wuDLzMAAKz2QLvHpRmlRI4pL4tGfv4TUntNuMSmgKbj6b7W89Dqby9UTltMyWnqLuUjQHOUnYpG5j7VIFRPiws4AGoExz067OKZJl732sUZrs4GotorplpHAxyRONsD5MukymLK_mgR7AWiQ8Nls9cUnQCxeZPskqz');"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="premium-badge text-[9px] font-black text-white px-2 py-0.5 rounded shadow-sm">HRC</span>
+</div>
+<div class="absolute bottom-3 right-3">
+<span class="bg-background-dark/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded border border-white/10">$12.99</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[10px] font-bold text-primary uppercase mb-1">Motorcycles</p>
+<h4 class="font-bold text-slate-100 group-hover:text-primary transition-colors mb-1 truncate">Yamaha YZF-R1M 2024</h4>
+<div class="flex items-center justify-between">
+<p class="text-xs text-slate-500">By FactoryMods</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-500 fill-current">star</span>
+<span class="text-[10px] font-bold">4.9</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-slate-900/40 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:shadow-xl hover:shadow-primary/5">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Racing track overview aerial photo" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBLx4FQzN13Xskoiyv9y6gpnxjQfcT8C6nicoGYoWCI0zibaUJ7J1ML2rX3_krvD-DtHtmLQ8sitBNIwic65g9dNOEuozyhLnsIyBDE0v6lPdO3zq9YG2MIM3WFrbzLsMVAwlbxpyamhI-lO72O-0ChxcoQuTxcjpeu_FSyUNERRozoY00w9MjaPdoQBRHbypbvIU28dfvHLOmyKZXxSvpIDBXQpOteADlX4TQ41CNktLN7qN7RYRgdFMnvDrPSzCnNYRm9ftLTn93l');"></div>
+<div class="absolute bottom-3 right-3">
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-primary/20">FREE</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[10px] font-bold text-primary uppercase mb-1">Tracks</p>
+<h4 class="font-bold text-slate-100 group-hover:text-primary transition-colors mb-1 truncate">Spa-Francorchamps</h4>
+<div class="flex items-center justify-between">
+<p class="text-xs text-slate-500">By TrackKings</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-500 fill-current">star</span>
+<span class="text-[10px] font-bold">4.8</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-slate-900/40 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:shadow-xl hover:shadow-primary/5">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Racing suit and helmet gear set display" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBi3yicD19DBAdJMVDZS3M427CcMtTaJdRLgax2fx-TrNs1-AJ_WctG_E9D5fC0HqtgSbdpCK8ydMcLeFC2ZMzfvYCEDw1MDOMIvs9goXwyRtahEXhwT6VF0ajWD5wGD0YnJi9CelVkGW6LAhQpE7bnBnBur80lqNHAP7OgkSHvaWYjeAdCZV4ScCXcPHBtwvXO7kHsRPIx06aqMSov-PYd2lJWXu3fMiPcYbANTKNpLjuDTopPN25ZpFNJXvBmeJZ3K35IfiomHD5v');"></div>
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="premium-badge text-[9px] font-black text-white px-2 py-0.5 rounded shadow-sm">HRC</span>
+</div>
+<div class="absolute bottom-3 right-3">
+<span class="bg-background-dark/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded border border-white/10">$8.49</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[10px] font-bold text-primary uppercase mb-1">Riding Gear</p>
+<h4 class="font-bold text-slate-100 group-hover:text-primary transition-colors mb-1 truncate">GP Tech Suit V3</h4>
+<div class="flex items-center justify-between">
+<p class="text-xs text-slate-500">By Alpinestars-Fan</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-500 fill-current">star</span>
+<span class="text-[10px] font-bold">5.0</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-slate-900/40 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:shadow-xl hover:shadow-primary/5">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Retro racing motorcycle in vintage style" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAY_GTP0fIkEg2oMkVEZ39uoDNjrRxI2kgF2x-mgFbsQGYyIrtAIXtb-O2hX6uA53QRJK9pgAy7usvGQWzk2NFkLnjCqyRixAXxvmQ84F6qET9TSlwI95D-VTs22VRcTHiUgQx4FS7WPjKpQm1z0-jEeyytPDu9LDoE26z8lDG87Dr70ZC2xzYVM1dtFTSq2OgXA43D7o1AXrt8BXSp1s81-MMi4IGelcQJhdCJpxrHcwtYmGsNkpHSl7CWCVtEojegSJx5AcXGLNfK');"></div>
+<div class="absolute bottom-3 right-3">
+<span class="bg-background-dark/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded border border-white/10">$15.00</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[10px] font-bold text-primary uppercase mb-1">Motorcycles</p>
+<h4 class="font-bold text-slate-100 group-hover:text-primary transition-colors mb-1 truncate">Honda NSR500 1997</h4>
+<div class="flex items-center justify-between">
+<p class="text-xs text-slate-500">By LegendSim</p>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-500 fill-current">star</span>
+<span class="text-[10px] font-bold">4.7</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Creators Section -->
+<div>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-black italic uppercase tracking-tighter flex items-center gap-3">
+<span class="w-1.5 h-6 bg-accent-red rounded-full"></span>
+                            Top Creators
+                        </h3>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+<!-- Creator 1 -->
+<div class="flex-shrink-0 flex items-center gap-4 bg-primary/5 border border-primary/10 rounded-xl p-3 w-60 hover:bg-primary/10 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-full border-2 border-primary overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="Creator profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDu5ga0GzRBflTC7c-SqDey91uOIRPQWUEjlmm5tF3zOsZ7pHdlO9jOHtLLf9lTRQOjcM-gTNHgcwqT_2kk7iOGB__dP4yhIycFDcvLCOyS0f1pQcdfInJnNorbmK4VBrUcB4cZYrsu97e6CxF0haHTc4pA9ff-BYE73ig8bayifS7acmh_vuY6E0EUlEesXacIAWLTEj0JeW8wjyrYRrL85A9d8AJgbM6w8gUdZru0WoM7k0pdO6KQL1GKheC7BULFrjL2tDzgfUHq');"></div>
+</div>
+<div>
+<p class="text-sm font-bold truncate">FactoryMods</p>
+<p class="text-[10px] text-slate-500">1.2k Downloads</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+</div>
+<!-- Creator 2 -->
+<div class="flex-shrink-0 flex items-center gap-4 bg-primary/5 border border-primary/10 rounded-xl p-3 w-60 hover:bg-primary/10 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-full border-2 border-slate-700 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="Creator profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA6CbPIm1wY-XXlNjdKN1ADp9xuZizninFAYn-FJIpsCyajaddyAmhBClqNlRrva6ZnOC8s63D7_edf-DFYs7B_LDnah0nwu2vIa8hi1V55p9O8wSuzMX10prAt1fiVh2xm7wrJ3NT3ffficYpjVLCP1PHz71j35Ksl0BRtX8JFMCIqzAJGsJjgN8JL2Yjs-xIHKGu1Be9nWkr5x3oFTV_vbp-X61iSeM2SOi3uoCNN7WvA9uA1iXwOxbjXLxk6CtS0Y29K6Gu9zJR3');"></div>
+</div>
+<div>
+<p class="text-sm font-bold truncate">TrackKings</p>
+<p class="text-[10px] text-slate-500">850 Downloads</p>
+</div>
+</div>
+<!-- Creator 3 -->
+<div class="flex-shrink-0 flex items-center gap-4 bg-primary/5 border border-primary/10 rounded-xl p-3 w-60 hover:bg-primary/10 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-full border-2 border-slate-700 overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="Creator profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEGxZIMf4TrhHwgGEInKqhEhSy_PXvVsVcvDOzG0nQvOh5SrbdFQergUELl1s1Boqv8AwTN5Oh68i-nOb537iOhVaPuiRiJ-wwigmUS2cCp61LZ9Y-4yvORA6F-gXYFDqTXxeIVrXGukx2K2TsiF6_azaNoujf0xXNxvViFdWXB00BR0VVf2le5Nn65zuzSHAPG4Pi5hmcWP6ORii7U9Q0HPpqzqxgJLWXG8m2JNrSC8J5cVRR8bMypWcx67K1BTpvk28yFHZ8VjJl');"></div>
+</div>
+<div>
+<p class="text-sm font-bold truncate">SimPro-Graphics</p>
+<p class="text-[10px] text-slate-500">2.4k Downloads</p>
+</div>
+</div>
+<!-- Creator 4 -->
+<div class="flex-shrink-0 flex items-center gap-4 bg-primary/5 border border-primary/10 rounded-xl p-3 w-60 hover:bg-primary/10 transition-all cursor-pointer">
+<div class="w-12 h-12 rounded-full border-2 border-primary overflow-hidden">
+<div class="w-full h-full bg-cover bg-center" data-alt="Creator profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD-HPhPzgdySlKDz2MenSFB4-mT9GlaS1dSEFTg26lEyE0mgR1ZZzIk1PK63xYqKRoX0ru8wWayVd4x_J82UGWfM3DquMYFvWnVjeJ7Is-nM6gYrHanmiQAcC3Rr0w0i6DycjJ5ixnWEeUpzgVrlVqWRKukSFY9BtYFeiETAbK6iiufnNlSjzMAGlJlJIJQP4X4GY1V0NHf5k92Bqe_NCCbkESQoyH-BRh8mQfaGlUAeQNtS0krAAVC-rQem63JKEM9BxjTRBKhdNIW');"></div>
+</div>
+<div>
+<p class="text-sm font-bold truncate">MotoLife</p>
+<p class="text-[10px] text-slate-500">5.1k Downloads</p>
+</div>
+<div class="ml-auto">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="border-t border-primary/10 bg-slate-900/50 p-8 lg:p-12">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-primary p-1.5 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">speed</span>
+</div>
+<h1 class="text-lg font-extrabold tracking-tighter uppercase italic">
+                            MOD<span class="text-primary">CAT</span>
+</h1>
+</div>
+<p class="text-xs text-slate-500 leading-relaxed">The world's leading community for racing simulation mods. Built by enthusiasts, for enthusiasts.</p>
+</div>
+<div>
+<h5 class="font-bold text-xs uppercase tracking-widest mb-4">Catalog</h5>
+<ul class="flex flex-col gap-2 text-xs text-slate-400">
+<li><a class="hover:text-primary" href="#">Bikes</a></li>
+<li><a class="hover:text-primary" href="#">Tracks</a></li>
+<li><a class="hover:text-primary" href="#">Equipment</a></li>
+<li><a class="hover:text-primary" href="#">Sound Packs</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-xs uppercase tracking-widest mb-4">Support</h5>
+<ul class="flex flex-col gap-2 text-xs text-slate-400">
+<li><a class="hover:text-primary" href="#">Installation Guide</a></li>
+<li><a class="hover:text-primary" href="#">Compatibility</a></li>
+<li><a class="hover:text-primary" href="#">Troubleshooting</a></li>
+<li><a class="hover:text-primary" href="#">Creator Portal</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-bold text-xs uppercase tracking-widest mb-4">Newsletter</h5>
+<p class="text-xs text-slate-400 mb-4">Get notified about new releases.</p>
+<div class="flex gap-2">
+<input class="bg-primary/10 border-none rounded-lg text-xs flex-1 px-4 py-2" placeholder="Email address" type="email"/>
+<button class="bg-primary text-white p-2 rounded-lg"><span class="material-symbols-outlined text-sm">send</span></button>
+</div>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-primary/5 flex flex-col md:flex-row items-center justify-between gap-4">
+<p class="text-[10px] text-slate-600 uppercase font-bold tracking-widest">© 2024 Mod Catalog Pro. All Rights Reserved.</p>
+<div class="flex items-center gap-6">
+<a class="text-slate-600 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">share</span></a>
+<a class="text-slate-600 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">groups</span></a>
+<a class="text-slate-600 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">rss_feed</span></a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

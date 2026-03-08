@@ -1,0 +1,161 @@
+<div class="flex flex-col min-h-screen">
+    <!-- Top Navigation -->
+    <header
+        class="sticky top-0 z-50 border-b border-primary/20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 lg:px-12 py-4">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between gap-8">
+
+            <!-- Logo -->
+            <div class="flex items-center gap-12 flex-1">
+                <a href="/" class="flex flex-row items-center cursor-pointer group pb-2">
+                    <img src="/logo.png" alt="GPBikes Mods Logo"
+                        class="w-48 sm:w-64 h-auto object-contain transition-all duration-300 hover:scale-105 group-hover:drop-shadow-[0_0_20px_rgba(230,0,0,0.9)] rounded-md">
+                </a>
+
+                <!-- Search (Hidden on Mobile) -->
+                <div class="hidden md:flex flex-1 max-w-md relative group">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">search</span>
+                    <input
+                        class="w-full bg-slate-200/50 dark:bg-primary/10 border-none rounded-lg pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary/50 transition-all"
+                        placeholder="Buscar mods, circuitos o creadores..." type="text">
+                </div>
+            </div>
+
+            <nav class="hidden lg:flex items-center gap-8">
+                <a routerLink="/home" class="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">home</span>
+                    Inicio
+                </a>
+                <a routerLink="/catalog" class="text-sm font-semibold hover:text-primary transition-colors">Catálogo</a>
+                <a routerLink="/discord" class="text-sm font-semibold hover:text-primary transition-colors">Comunidad</a>
+            </nav>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Cart -->
+                <button routerLink="/cart" class="relative p-2 hover:bg-primary/10 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                    <span *ngIf="cartCount > 0"
+                        class="absolute top-1 right-1 w-3 h-3 text-[9px] flex items-center justify-center text-white bg-accent-red rounded-full">{{
+                        cartCount }}</span>
+                </button>
+
+                <ng-container *ngIf="!isLoggedIn(); else userMenu">
+                    <button routerLink="/login"
+                        class="bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg hover:bg-primary/20 transition-all">Iniciar
+                        Sesión</button>
+                    <button routerLink="/register"
+                        class="bg-primary text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-lg hover:bg-primary/90 transition-all active:scale-95 shadow-lg shadow-primary/20">Registrarse</button>
+                </ng-container>
+
+                <ng-template #userMenu>
+                    <div class="relative group">
+                        <button
+                            class="flex items-center gap-2 p-2 py-1.5 hover:bg-primary/10 rounded-lg transition-colors cursor-pointer text-slate-300 hover:text-white">
+                            <span class="material-symbols-outlined text-xl">account_circle</span>
+                            <span class="text-sm font-bold">{{ userName }}</span>
+                            <span
+                                class="material-symbols-outlined text-sm transition-transform duration-200 group-hover:rotate-180">expand_more</span>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div
+                            class="absolute right-0 top-[110%] w-48 bg-slate-900 border border-primary/20 rounded-xl shadow-2xl shadow-black/50 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60] origin-top-right scale-95 group-hover:scale-100">
+                            <a routerLink="/dashboard"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-lg text-primary">dashboard</span>
+                                Mi Panel
+                            </a>
+
+                            <a *ngIf="isAdmin" routerLink="/admin"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-accent-red hover:bg-slate-800 hover:text-red-400 transition-colors">
+                                <span class="material-symbols-outlined text-lg">admin_panel_settings</span>
+                                Administración
+                            </a>
+
+                            <div class="h-px bg-slate-800 my-1"></div>
+
+                            <button (click)="logout()"
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-accent-red hover:bg-accent-red/10 transition-colors text-left">
+                                <span class="material-symbols-outlined text-lg">logout</span>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                </ng-template>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Router Outlet -->
+    <main class="flex-1 max-w-[1440px] mx-auto w-full pt-6">
+        <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-primary/10 bg-slate-900/50 p-8 lg:p-12 text-slate-100 mt-16">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="col-span-1 md:col-span-1">
+                <a routerLink="/" class="flex items-center mb-6 group cursor-pointer inline-block">
+                    <img src="/logo.png" alt="GPBikes Mods Logo"
+                        class="w-40 sm:w-48 h-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(230,0,0,0.9)] rounded-md">
+                </a>
+                <p class="text-xs text-slate-500 leading-relaxed">La comunidad líder en simulación de motos. Creado por
+                    entusiastas, para entusiastas.</p>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-widest mb-4">Comunidad</h5>
+                <div class="flex gap-4">
+                    <a routerLink="/discord" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#5865F2] hover:text-white transition-all flex items-center justify-center group" title="Discord">
+                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors" viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77.7,77.7,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-19.32-72.1M42.63,65.22C36.75,65.22,32,59.84,32,53.21S36.63,41.2,42.63,41.2s10.74,5.46,10.61,12S48.63,65.22,42.63,65.22Zm41.88,0c-5.87,0-10.62-5.38-10.62-12s4.62-12.01,10.62-12.01,10.73,5.46,10.6,12S90.5,65.22,84.51,65.22Z"/>
+                        </svg>
+                    </a>
+                    <a href="https://youtube.com" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#FF0000] hover:text-white transition-all flex items-center justify-center group" title="YouTube">
+                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M23.498 6.186a3.016 3.016 0,0,0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0,0,0,.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0,0,0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0,0,0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-widest mb-4">Enlaces útiles</h5>
+                <ul class="flex flex-col gap-2 text-xs text-slate-400">
+                    <li><a routerLink="/support" class="hover:text-primary">Soporte</a></li>
+                    <li><a routerLink="/faq" class="hover:text-primary">FAQ</a></li>
+                    <li><a routerLink="/politica-devoluciones" class="hover:text-primary">Política de devoluciones</a></li>
+                    <li><a routerLink="/terminos-condiciones" class="hover:text-primary">Términos y condiciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-bold text-xs uppercase tracking-widest mb-4">Formas de pago</h5>
+                <p class="text-[10px] text-slate-500 mb-3">Tus transacciones son 100% seguras y cifradas.</p>
+                <div class="flex flex-wrap gap-2 items-center">
+                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center gap-1 border border-slate-700">
+                        <span class="text-[#00457C] italic">Pay</span><span class="text-[#0079C1] italic">Pal</span>
+                    </div>
+                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center border border-slate-700">
+                        <span class="text-blue-500 italic">VISA</span>
+                    </div>
+                    <div class="bg-slate-800 px-3 py-1.5 rounded flex items-center border border-slate-700">
+                        <div class="w-3 h-3 rounded-full bg-red-500 opacity-80 -mr-1"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>
+                    </div>
+                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-[#635BFF] flex items-center border border-slate-700">
+                        Stripe
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            class="max-w-[1440px] mx-auto mt-12 pt-8 border-t border-primary/5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-[10px] text-slate-600 uppercase font-bold tracking-widest">© 2026 GPBikes Mods. Todos los
+                derechos reservados.</p>
+            <div class="flex items-center gap-6">
+                <a class="text-slate-600 hover:text-white transition-colors" href="#"><span
+                        class="material-symbols-outlined">groups</span></a>
+            </div>
+        </div>
+    </footer>
+</div>

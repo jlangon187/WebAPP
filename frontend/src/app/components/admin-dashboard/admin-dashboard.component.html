@@ -1,0 +1,141 @@
+<div class="p-6 lg:p-10 w-full">
+    <div class="flex items-center justify-between mb-8 pb-4 border-b border-primary/20">
+        <div>
+            <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">
+                Consola de <span class="text-primary">Administración</span>
+            </h2>
+            <p class="text-slate-400 mt-1">Gestión de plataforma y estadísticas</p>
+        </div>
+    </div>
+
+    <!-- Error/Loading -->
+    <div *ngIf="loading" class="text-center py-10">
+        <p class="text-slate-400">Cargando datos del administrador...</p>
+    </div>
+    <div *ngIf="error" class="text-center py-10 bg-accent-red/10 border border-accent-red/20 rounded-xl mb-8">
+        <p class="text-accent-red font-bold">{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && !error">
+
+    <!-- Stats Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-slate-500 text-sm font-medium uppercase tracking-wider">Ventas Totales</span>
+                <div class="p-2 bg-emerald-500/10 text-emerald-500 rounded-lg">
+                    <span class="material-symbols-outlined">payments</span>
+                </div>
+            </div>
+            <div class="flex items-end gap-2">
+                <h3 class="text-3xl font-bold text-white">{{ stats.totalSales | number }} €</h3>
+                <span class="text-emerald-500 text-sm font-semibold mb-1 flex items-center">
+                    <span class="material-symbols-outlined text-xs">arrow_upward</span> 12%
+                </span>
+            </div>
+        </div>
+        <div class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-slate-500 text-sm font-medium uppercase tracking-wider">Nuevos Usuarios</span>
+                <div class="p-2 bg-primary/10 text-primary rounded-lg">
+                    <span class="material-symbols-outlined">person_add</span>
+                </div>
+            </div>
+            <div class="flex items-end gap-2">
+                <h3 class="text-3xl font-bold text-white">{{ stats.newUsers | number }}</h3>
+                <span class="text-emerald-500 text-sm font-semibold mb-1 flex items-center">
+                    <span class="material-symbols-outlined text-xs">arrow_upward</span> 5%
+                </span>
+            </div>
+        </div>
+        <div class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <span class="text-slate-500 text-sm font-medium uppercase tracking-wider">Tickets Activos</span>
+                <div class="p-2 bg-orange-500/10 text-orange-500 rounded-lg">
+                    <span class="material-symbols-outlined">confirmation_number</span>
+                </div>
+            </div>
+            <div class="flex items-end gap-2">
+                <h3 class="text-3xl font-bold text-white">{{ stats.activeTickets }}</h3>
+                <span class="text-red-500 text-sm font-semibold mb-1 flex items-center">
+                    <span class="material-symbols-outlined text-xs">arrow_downward</span> 8%
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Workspace -->
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Recent Mods Management -->
+        <section class="flex-1 bg-slate-900/40 rounded-xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-primary/10 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-white">Validación de Mods Recientes</h2>
+                <button class="text-sm font-semibold text-primary hover:underline">Ver Todos</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-800/50 border-b border-primary/10">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Creador</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre del Mod</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Estado</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-primary/5">
+                        <tr class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 text-sm text-white">Alex River</td>
+                            <td class="px-6 py-4 text-sm text-slate-400">Yamaha R1 2024</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-500/10 text-orange-500">Pendiente de Revisión</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="p-1 hover:text-emerald-500 transition-colors" title="Aprobar"><span class="material-symbols-outlined text-xl">check_circle</span></button>
+                                    <button class="p-1 hover:text-red-500 transition-colors" title="Rechazar"><span class="material-symbols-outlined text-xl">cancel</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 text-sm text-white">Sam Smith</td>
+                            <td class="px-6 py-4 text-sm text-slate-400">Jerez Circuit HD</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-500">Aprobado</span>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button class="p-1 hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-xl">edit</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- System Status Card -->
+        <aside class="w-full lg:w-80 flex-shrink-0 space-y-6">
+            <div class="bg-primary/10 p-6 rounded-xl border border-primary/20 shadow-sm">
+                <h3 class="font-bold text-primary mb-2">Estado del NAS</h3>
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-sm font-medium text-emerald-500">En línea (192.168.1.100)</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between text-xs font-medium">
+                        <span class="text-slate-400">Almacenamiento Usado</span>
+                        <span class="text-white">1.2 TB / 4 TB</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[30%]"></div>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-medium mt-4">
+                        <span class="text-slate-400">Conexión MariaDB</span>
+                        <span class="text-emerald-500">Estable</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+    </div>
+</div>

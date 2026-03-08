@@ -1,0 +1,19 @@
+# Base de datos MariaDB
+spring.datasource.url=jdbc:mariadb://localhost:3306/gpbikes_mods
+spring.datasource.username=TU_USUARIO_DB
+spring.datasource.password=TU_PASSWORD_DB
+
+# Hibernate Configuration
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
+
+# Puerto del servidor
+server.port=8080
+
+# Discord OAuth2
+discord.client-id=TU_DISCORD_CLIENT_ID
+discord.client-secret=TU_DISCORD_CLIENT_SECRET
+discord.redirect-uri=http://localhost:8080/api/auth/discord/callback
+
+# Frontend URL
+frontend.url=http://localhost:4200

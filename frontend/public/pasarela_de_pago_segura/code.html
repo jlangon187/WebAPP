@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Checkout | Secure Payment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#003399",
+                        "accent-red": "#dc2626",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0f1623",
+                        "card-dark": "#1a2234",
+                        "border-dark": "#2d3a54"
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between border-b border-border-dark px-6 md:px-20 py-4 bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center">
+<span class="material-symbols-outlined text-3xl">shield_with_heart</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight">Secure Checkout</h2>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-lg">shopping_cart</span>
+                        Cart
+                    </a>
+</nav>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/20 text-primary hover:bg-primary/30 transition-all">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</header>
+<main class="max-w-6xl mx-auto w-full px-6 py-8">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 mb-8 text-sm font-medium text-slate-500 dark:text-slate-400">
+<a class="hover:text-primary transition-colors" href="#">Cart</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Shipping</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-slate-900 dark:text-slate-100">Payment</span>
+</nav>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Left Column: Payment Form -->
+<div class="lg:col-span-7">
+<section>
+<div class="mb-6">
+<h1 class="text-3xl font-bold mb-2">Payment Method</h1>
+<p class="text-slate-500 dark:text-slate-400">Choose how you'd like to pay for your order</p>
+</div>
+<!-- Payment Toggle -->
+<div class="bg-card-dark rounded-xl p-1 flex mb-8 border border-border-dark">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="payment_method" type="radio" value="card"/>
+<div class="flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold peer-checked:bg-primary peer-checked:text-white text-slate-400 transition-all">
+<span class="material-symbols-outlined">credit_card</span>
+                                    Credit Card
+                                </div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="payment_method" type="radio" value="paypal"/>
+<div class="flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold peer-checked:bg-primary peer-checked:text-white text-slate-400 transition-all">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                                    PayPal
+                                </div>
+</label>
+</div>
+<!-- Card Form (Stripe Style) -->
+<div class="space-y-6">
+<h3 class="text-lg font-semibold border-b border-border-dark pb-4">Card Details</h3>
+<div class="space-y-4">
+<div class="relative">
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Cardholder Name</label>
+<input class="w-full bg-card-dark border border-border-dark rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-600" placeholder="John Doe" type="text"/>
+</div>
+<div class="relative">
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Card Number</label>
+<div class="relative">
+<input class="w-full bg-card-dark border border-border-dark rounded-lg pl-4 pr-12 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-600" placeholder="0000 0000 0000 0000" type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-1">
+<span class="material-symbols-outlined text-slate-600">credit_card</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="relative">
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Expiry Date</label>
+<input class="w-full bg-card-dark border border-border-dark rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-600" placeholder="MM / YY" type="text"/>
+</div>
+<div class="relative">
+<label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">CVC</label>
+<input class="w-full bg-card-dark border border-border-dark rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all placeholder:text-slate-600" placeholder="123" type="text"/>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 py-4">
+<input class="rounded border-border-dark bg-card-dark text-primary focus:ring-primary w-4 h-4" id="save-card" type="checkbox"/>
+<label class="text-sm text-slate-400" for="save-card">Save this card for future purchases</label>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Order Summary -->
+<div class="lg:col-span-5">
+<div class="bg-card-dark border border-border-dark rounded-xl p-6 sticky top-24">
+<h3 class="text-xl font-bold mb-6">Order Summary</h3>
+<!-- Order Items -->
+<div class="space-y-4 mb-6">
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-slate-800 flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Red sleek athletic sneaker shoe" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa483STeFLnugvtv2fC7CPNLI0nbZmPKhMLvv9ifdU3gB3srjMHOKezS28vgL_bt-gvsh-P1jlZVrSx4JcTdZaXhF1cBedMRbAwGvciONvXLXcUs6juYuheudeysa-nx2WCQSpmJFY66oKSDlnSin9BVYaR4NoSIXQhbiX0YHYO0L4RtqBMAXmXF_13OeTg-wSBvgQpJuUxMJsNFn3yni_5W_T8FeZB8JJdMdVVJpoXQRzGX_yjgSNeWjpxOGeA_4e2CJTBXz69_Sm"/>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Ultra Boost 5.0 Edition</p>
+<p class="text-slate-500 text-xs">Quantity: 1 • Size: 42</p>
+</div>
+<p class="font-semibold text-sm">$180.00</p>
+</div>
+<div class="flex gap-4">
+<div class="w-16 h-16 rounded-lg bg-slate-800 flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Minimalist white professional watch" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDe32iMTIsP06XNex3Lt5Ysw_ItEmzYYOMGVAftFgquVaR85tBQo2RWG3XaMHnu8f74p5OTHoDR0ZoKMrFHIxdV-dnD9ubfiybZAfi-uGFG9fBUvVenQYc7Bwe0T9GUM2EuIFbvYweoFK1_TCc__0FJr4Mvj6nqpX6-_RcsBJuOhJvqstNPrWDMTx_B3Zxj1t-eTAXjiB0hikTna8KgAa4NSrqOhM6Yo6eYJxido6gFG5hYnh-xEjob8FOZkuXBe8u9bHzskCkr1bll"/>
+</div>
+<div class="flex-1">
+<p class="font-semibold text-sm">Minimalist Pro Watch</p>
+<p class="text-slate-500 text-xs">Quantity: 1</p>
+</div>
+<p class="font-semibold text-sm">$240.00</p>
+</div>
+</div>
+<!-- Costs -->
+<div class="space-y-3 border-t border-border-dark pt-6 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-slate-400">Subtotal</span>
+<span>$420.00</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-slate-400">Shipping</span>
+<span class="text-green-500">Free</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-slate-400">Taxes (Estimated)</span>
+<span>$33.60</span>
+</div>
+</div>
+<div class="flex justify-between items-center mb-8">
+<span class="text-lg font-bold">Total</span>
+<span class="text-2xl font-bold text-primary">$453.60</span>
+</div>
+<button class="w-full bg-accent-red hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-accent-red/20 transition-all flex items-center justify-center gap-3">
+                            Complete Purchase
+                            <span class="material-symbols-outlined">lock</span>
+</button>
+<p class="text-center text-xs text-slate-500 mt-6 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+                            SSL Encrypted &amp; Secure Checkout
+                        </p>
+</div>
+<!-- Discount Code -->
+<div class="mt-6 flex gap-2">
+<input class="flex-1 bg-card-dark border border-border-dark rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-primary outline-none placeholder:text-slate-600" placeholder="Discount code" type="text"/>
+<button class="px-6 py-2 bg-primary/20 text-primary font-bold rounded-lg text-sm hover:bg-primary/30 transition-all">Apply</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Info -->
+<footer class="mt-auto border-t border-border-dark py-8">
+<div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
+<p>© 2024 SecurePay Commerce. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary" href="#">Privacy Policy</a>
+<a class="hover:text-primary" href="#">Terms of Service</a>
+<a class="hover:text-primary" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

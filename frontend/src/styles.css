@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+body.dark {
+    /* Base dark color from Tailwind config */
+    background-color: #0f1623;
+    /* Diagonal racing stripes pattern: thick subtle lines and thin brighter lines */
+    background-image: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.015) 0px,
+        rgba(255, 255, 255, 0.015) 40px,
+        transparent 40px,
+        transparent 80px,
+        rgba(255, 255, 255, 0.03) 80px,
+        rgba(255, 255, 255, 0.03) 82px,
+        transparent 82px,
+        transparent 85px
+    );
+    background-attachment: fixed;
+}

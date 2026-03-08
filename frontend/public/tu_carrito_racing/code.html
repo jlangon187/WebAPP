@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#003399",
+                        "accent-red": "#E11D48",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#0f1623",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-6 py-4 md:px-20 lg:px-40">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">shopping_bag</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight uppercase">HRC Store</h2>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex gap-6 text-sm font-medium">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Shop</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Men</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Women</a>
+</nav>
+<button class="flex items-center justify-center rounded-full p-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-300">search</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-6 py-8 md:px-20 lg:px-40 max-w-[1440px] mx-auto w-full">
+<div class="flex flex-col lg:flex-row gap-12">
+<!-- Items Section -->
+<div class="flex-1 flex flex-col gap-8">
+<div class="flex items-baseline justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+<h1 class="text-3xl font-black uppercase tracking-tighter">Your Cart</h1>
+<span class="text-slate-500 dark:text-slate-400 font-medium">3 Items</span>
+</div>
+<!-- Cart Items List -->
+<div class="flex flex-col divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Item 1 -->
+<div class="flex gap-6 py-8 items-center bg-white dark:bg-transparent rounded-xl lg:px-0">
+<div class="relative group shrink-0">
+<div class="bg-slate-100 dark:bg-slate-800 aspect-square rounded-xl size-32 md:size-40 overflow-hidden">
+<img alt="Premium White Cotton T-Shirt" class="w-full h-full object-cover" data-alt="Minimalist white cotton t-shirt on a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoFp_B8ZWXCfo2fvVP9qpi1E6lqvkMwOtwNTq-6hqTuMKchcZnB2ad2qG1Y1hQK7MIYDz_OU1YEuEBheG0W9FWyrEn7tyN9MAaPDEPBAnLdreVZbLAQuedtzEUMXdgqgtTOLWLEt1gLjnwBbH0cfyua8YzvjT_wiDvXc0SGv009iwg6ihIvB0lNierN0TA0-ZobcINPCo9ijEykj_S1SCu8eoVO5X9djr76nHURQFvisEOqhAwU2MyK8K6wZ5z8F6Uae8pvA4i_AyS"/>
+</div>
+</div>
+<div class="flex flex-1 flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Premium Cotton Tee</h3>
+<p class="text-slate-500 text-sm mt-1">Size: M | Color: White</p>
+<button class="mt-4 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-accent-red uppercase transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                                    Remove
+                                </button>
+</div>
+<div class="flex items-center gap-8 md:gap-12">
+<div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden h-10">
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">-</button>
+<span class="w-8 text-center font-bold">1</span>
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">+</button>
+</div>
+<p class="text-lg font-black text-slate-900 dark:text-white">$45.00</p>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-6 py-8 items-center bg-white dark:bg-transparent rounded-xl lg:px-0">
+<div class="relative group shrink-0">
+<div class="bg-slate-100 dark:bg-slate-800 aspect-square rounded-xl size-32 md:size-40 overflow-hidden">
+<img alt="Slim Fit Indigo Denim Jeans" class="w-full h-full object-cover" data-alt="Modern indigo slim fit denim jeans folded neatly" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrjhySvWcx6roGT1gx1LJ0yEai5CS4HefyyCcXJ2vCjQ1iVRTFwy_CwN0MXoRrAEJT8ihQIsVsHUvcxA5bW3URldXNmCVDtckyHZSVZ-jICTbBvOI7Yww6-a3mJIjOQBQyqijFsnBb60R1_ar2ifyQDlhnXRfkgquK5RczgPQMUwvfjRWlNmqbIAbMmTkR6vhvuBJ5rL0NWsUGr40ZrPw8ndwqK4Wb-oxZ0VRFYB7WWTb-KajsFxnvvkmJ4Y5tAAP_mn9tNTk-nJPm"/>
+</div>
+</div>
+<div class="flex flex-1 flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Slim Fit Denim</h3>
+<p class="text-slate-500 text-sm mt-1">Size: 32 | Color: Indigo</p>
+<button class="mt-4 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-accent-red uppercase transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                                    Remove
+                                </button>
+</div>
+<div class="flex items-center gap-8 md:gap-12">
+<div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden h-10">
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">-</button>
+<span class="w-8 text-center font-bold">1</span>
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">+</button>
+</div>
+<p class="text-lg font-black text-slate-900 dark:text-white">$89.00</p>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="flex gap-6 py-8 items-center bg-white dark:bg-transparent rounded-xl lg:px-0">
+<div class="relative group shrink-0">
+<div class="bg-slate-100 dark:bg-slate-800 aspect-square rounded-xl size-32 md:size-40 overflow-hidden">
+<img alt="Leather Chelsea Boots in Tan" class="w-full h-full object-cover" data-alt="Luxury tan leather chelsea boots on a white surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWzGNKvQGDFJzoU8FtwNNiV6nN2PkxEktaXejyeRrMao7e75l8shskeCUJ_gkQjPNoF_E0KNsmapsl4EiZr-XIpeWvWkcNGcQqERtv5Y6SEE_GAbmEe7a86m1ZTlcDrPuiUUsCGzfjyiDtX3fTdyxi0BY2cIvEfJTz1UcAUOXhPl6zLiF0wb9UmUq8URZDoEL7ni4NANPWNuYmJl2ULXuhl9X0CAcBrXmdNtG4wE5o1ln2YhZ6ylVdx4Dw7CibMFNJ3fQBbM_0gl8G"/>
+</div>
+</div>
+<div class="flex flex-1 flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex flex-col">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white uppercase tracking-tight">Leather Chelsea Boots</h3>
+<p class="text-slate-500 text-sm mt-1">Size: 10 | Color: Tan</p>
+<button class="mt-4 flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-accent-red uppercase transition-colors">
+<span class="material-symbols-outlined text-sm">delete</span>
+                                    Remove
+                                </button>
+</div>
+<div class="flex items-center gap-8 md:gap-12">
+<div class="flex items-center border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden h-10">
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">-</button>
+<span class="w-8 text-center font-bold">1</span>
+<button class="px-3 hover:bg-slate-100 dark:hover:bg-slate-800">+</button>
+</div>
+<p class="text-lg font-black text-slate-900 dark:text-white">$120.00</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Summary Section -->
+<aside class="w-full lg:w-96 shrink-0">
+<div class="bg-white dark:bg-slate-900/50 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 sticky top-8">
+<h2 class="text-xl font-black uppercase tracking-tighter mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">Order Summary</h2>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between text-slate-500">
+<span>Subtotal</span>
+<span class="text-slate-900 dark:text-white font-semibold">$254.00</span>
+</div>
+<div class="flex justify-between text-slate-500">
+<span>Shipping</span>
+<span class="text-primary font-bold uppercase text-xs tracking-widest">Calculated at next step</span>
+</div>
+<div class="flex justify-between text-slate-500 pb-4">
+<span>Estimated Tax</span>
+<span class="text-slate-900 dark:text-white font-semibold">$21.50</span>
+</div>
+<div class="flex justify-between text-2xl font-black border-t border-slate-100 dark:border-slate-800 pt-6">
+<span class="uppercase tracking-tighter">Total</span>
+<span class="text-slate-900 dark:text-white">$275.50</span>
+</div>
+</div>
+<div class="space-y-3">
+<button class="w-full bg-accent-red hover:bg-red-700 text-white font-black uppercase py-4 rounded-lg tracking-widest transition-all shadow-lg shadow-accent-red/20 flex items-center justify-center gap-2">
+                            Checkout 
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center text-[10px] text-slate-400 uppercase tracking-widest mt-4">
+                            Secure Payment Powered by HRC
+                        </p>
+</div>
+<div class="mt-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary">local_shipping</span>
+<div>
+<p class="text-xs font-bold uppercase tracking-tight">Free Express Shipping</p>
+<p class="text-[10px] text-slate-500 mt-0.5">Orders over $200 qualify for free express shipping.</p>
+</div>
+</div>
+</div>
+<div class="mt-6 flex flex-col gap-4">
+<div class="flex items-center gap-4 text-slate-500 px-2">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span class="text-[11px] uppercase tracking-widest font-medium">30-Day Easy Returns</span>
+</div>
+<div class="flex items-center gap-4 text-slate-500 px-2">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="text-[11px] uppercase tracking-widest font-medium">SSL Encrypted Checkout</span>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<footer class="mt-20 border-t border-slate-200 dark:border-slate-800 py-10 px-6 md:px-20 lg:px-40">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="text-xs text-slate-500 uppercase tracking-widest">© 2024 HRC Design Lab. All Rights Reserved.</p>
+<div class="flex gap-8">
+<a class="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors" href="#">Terms</a>
+<a class="text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>
