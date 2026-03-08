@@ -25,8 +25,10 @@ services:
       - SPRING_DATASOURCE_PASSWORD=rootpassword
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       # NOTE: In production, store secrets securely or pass them as ENV vars from Portainer
-      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID:-your_client_id_here}
-      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET:-your_client_secret_here}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI:-http://localhost/api/auth/discord/callback}
+      - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
       - JWT_SECRET=${JWT_SECRET:-my_super_secure_secret_for_jwt_which_must_be_long_enough_for_hs256_for_gpbikes_mods_2026}
     ports:
       - "8080:8080"

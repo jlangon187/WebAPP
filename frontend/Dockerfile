@@ -10,7 +10,7 @@ RUN sed -i 's/http:\/\/localhost:8080\/api/\/api/g' src/app/services/mod/mod.ser
     sed -i 's/http:\/\/localhost:8080\/api\/auth\/discord\/login/\/api\/auth\/discord\/login/g' src/app/components/login/login.component.html && \
     sed -i 's/http:\/\/localhost:8080\/api\/auth\/discord\/login/\/api\/auth\/discord\/login/g' src/app/components/register/register.component.html
 
-RUN npm run build --configuration production
+RUN npx ng build --configuration production
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
