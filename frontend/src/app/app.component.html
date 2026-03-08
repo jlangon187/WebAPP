@@ -6,7 +6,7 @@
 
             <!-- Logo -->
             <div class="flex items-center gap-12 flex-1">
-                <a href="/" class="flex flex-row items-center cursor-pointer group pb-2">
+                <a href="/home" class="flex flex-row items-center cursor-pointer group pb-2">
                     <img src="/logo.png" alt="GPBikes Mods Logo"
                         class="w-48 sm:w-64 h-auto object-contain transition-all duration-300 hover:scale-105 group-hover:drop-shadow-[0_0_20px_rgba(230,0,0,0.9)] rounded-md">
                 </a>
@@ -22,12 +22,14 @@
             </div>
 
             <nav class="hidden lg:flex items-center gap-8">
-                <a routerLink="/home" class="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-2">
+                <a routerLink="/home"
+                    class="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">home</span>
                     Inicio
                 </a>
                 <a routerLink="/catalog" class="text-sm font-semibold hover:text-primary transition-colors">Catálogo</a>
-                <a routerLink="/discord" class="text-sm font-semibold hover:text-primary transition-colors">Comunidad</a>
+                <a routerLink="/discord"
+                    class="text-sm font-semibold hover:text-primary transition-colors">Comunidad</a>
             </nav>
 
             <!-- Right Actions -->
@@ -97,7 +99,7 @@
     <footer class="border-t border-primary/10 bg-slate-900/50 p-8 lg:p-12 text-slate-100 mt-16">
         <div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
             <div class="col-span-1 md:col-span-1">
-                <a routerLink="/" class="flex items-center mb-6 group cursor-pointer inline-block">
+                <a routerLink="/home" class="flex items-center mb-6 group cursor-pointer inline-block">
                     <img src="/logo.png" alt="GPBikes Mods Logo"
                         class="w-40 sm:w-48 h-auto object-contain transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(230,0,0,0.9)] rounded-md">
                 </a>
@@ -107,14 +109,22 @@
             <div>
                 <h5 class="font-bold text-xs uppercase tracking-widest mb-4">Comunidad</h5>
                 <div class="flex gap-4">
-                    <a routerLink="/discord" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#5865F2] hover:text-white transition-all flex items-center justify-center group" title="Discord">
-                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors" viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77.7,77.7,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-19.32-72.1M42.63,65.22C36.75,65.22,32,59.84,32,53.21S36.63,41.2,42.63,41.2s10.74,5.46,10.61,12S48.63,65.22,42.63,65.22Zm41.88,0c-5.87,0-10.62-5.38-10.62-12s4.62-12.01,10.62-12.01,10.73,5.46,10.6,12S90.5,65.22,84.51,65.22Z"/>
+                    <a routerLink="/discord"
+                        class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#5865F2] hover:text-white transition-all flex items-center justify-center group"
+                        title="Discord">
+                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors"
+                            viewBox="0 0 127.14 96.36" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77.7,77.7,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-19.32-72.1M42.63,65.22C36.75,65.22,32,59.84,32,53.21S36.63,41.2,42.63,41.2s10.74,5.46,10.61,12S48.63,65.22,42.63,65.22Zm41.88,0c-5.87,0-10.62-5.38-10.62-12s4.62-12.01,10.62-12.01,10.73,5.46,10.6,12S90.5,65.22,84.51,65.22Z" />
                         </svg>
                     </a>
-                    <a href="https://youtube.com" target="_blank" class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#FF0000] hover:text-white transition-all flex items-center justify-center group" title="YouTube">
-                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M23.498 6.186a3.016 3.016 0,0,0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0,0,0,.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0,0,0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0,0,0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    <a href="https://youtube.com" target="_blank"
+                        class="w-10 h-10 rounded-full bg-slate-800 hover:bg-[#FF0000] hover:text-white transition-all flex items-center justify-center group"
+                        title="YouTube">
+                        <svg class="w-5 h-5 fill-slate-400 group-hover:fill-white transition-colors" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M23.498 6.186a3.016 3.016 0,0,0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0,0,0,.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0,0,0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0,0,0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                         </svg>
                     </a>
                 </div>
@@ -124,7 +134,8 @@
                 <ul class="flex flex-col gap-2 text-xs text-slate-400">
                     <li><a routerLink="/support" class="hover:text-primary">Soporte</a></li>
                     <li><a routerLink="/faq" class="hover:text-primary">FAQ</a></li>
-                    <li><a routerLink="/politica-devoluciones" class="hover:text-primary">Política de devoluciones</a></li>
+                    <li><a routerLink="/politica-devoluciones" class="hover:text-primary">Política de devoluciones</a>
+                    </li>
                     <li><a routerLink="/terminos-condiciones" class="hover:text-primary">Términos y condiciones</a></li>
                 </ul>
             </div>
@@ -132,17 +143,20 @@
                 <h5 class="font-bold text-xs uppercase tracking-widest mb-4">Formas de pago</h5>
                 <p class="text-[10px] text-slate-500 mb-3">Tus transacciones son 100% seguras y cifradas.</p>
                 <div class="flex flex-wrap gap-2 items-center">
-                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center gap-1 border border-slate-700">
+                    <div
+                        class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center gap-1 border border-slate-700">
                         <span class="text-[#00457C] italic">Pay</span><span class="text-[#0079C1] italic">Pal</span>
                     </div>
-                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center border border-slate-700">
+                    <div
+                        class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-white flex items-center border border-slate-700">
                         <span class="text-blue-500 italic">VISA</span>
                     </div>
                     <div class="bg-slate-800 px-3 py-1.5 rounded flex items-center border border-slate-700">
                         <div class="w-3 h-3 rounded-full bg-red-500 opacity-80 -mr-1"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>
                     </div>
-                    <div class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-[#635BFF] flex items-center border border-slate-700">
+                    <div
+                        class="bg-slate-800 px-3 py-1.5 rounded text-xs font-bold text-[#635BFF] flex items-center border border-slate-700">
                         Stripe
                     </div>
                 </div>
