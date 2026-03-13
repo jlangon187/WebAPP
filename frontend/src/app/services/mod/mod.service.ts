@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Mod {
@@ -39,5 +39,26 @@ export class ModService {
 
   getMyPurchases(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/compras/mis-compras`);
+  }
+
+  private getHeaders(): HttpHeaders {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
+  }
+
+  createMod(mod: Partial<Mod>): Observable<Mod> {
+    return this.http.post<Mod>(`${this.apiUrl}/mods`, mod, { headers: this.getHeaders() });
+  }
+
+  updateMod(id: number, mod: Partial<Mod>): Observable<Mod> {
+    return this.http.put<Mod>(`${this.apiUrl}/mods/${id}`, mod, { headers: this.getHeaders() });
+  }
+
+  deleteMod(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/mods/${id}`, { headers: this.getHeaders() });
   }
 }

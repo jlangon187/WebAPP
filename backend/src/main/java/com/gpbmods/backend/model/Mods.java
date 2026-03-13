@@ -10,6 +10,7 @@ public class Mods {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Column(nullable = false, length = 150)
@@ -28,6 +29,7 @@ public class Mods {
     private String archivoOriginal; // Relates to NAS path or reference
 
     @Column(name = "creado_en", updatable = false)
+    @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)
     private LocalDateTime creadoEn = LocalDateTime.now();
 
     // Getters and Setters

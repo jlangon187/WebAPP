@@ -69,42 +69,43 @@
         <!-- Recent Mods Management -->
         <section class="flex-1 bg-slate-900/40 rounded-xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
             <div class="p-6 border-b border-primary/10 flex items-center justify-between">
-                <h2 class="text-lg font-bold text-white">Validación de Mods Recientes</h2>
-                <button class="text-sm font-semibold text-primary hover:underline">Ver Todos</button>
+                <h2 class="text-lg font-bold text-white">Gestión de Catálogo (Mods)</h2>
+                <button (click)="openCreateMod()" class="flex items-center gap-2 text-sm font-bold text-white bg-primary px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    <span class="material-symbols-outlined text-sm">add</span> Nuevo Mod
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead class="bg-slate-800/50 border-b border-primary/10">
                         <tr>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Creador</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre del Mod</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Estado</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Precio</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Versión</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-primary/5">
-                        <tr class="hover:bg-slate-800/30 transition-colors">
-                            <td class="px-6 py-4 text-sm text-white">Alex River</td>
-                            <td class="px-6 py-4 text-sm text-slate-400">Yamaha R1 2024</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-500/10 text-orange-500">Pendiente de Revisión</span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="p-1 hover:text-emerald-500 transition-colors" title="Aprobar"><span class="material-symbols-outlined text-xl">check_circle</span></button>
-                                    <button class="p-1 hover:text-red-500 transition-colors" title="Rechazar"><span class="material-symbols-outlined text-xl">cancel</span></button>
-                                </div>
+                        <tr *ngIf="mods.length === 0">
+                            <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                                No hay mods en la base de datos.
                             </td>
                         </tr>
-                        <tr class="hover:bg-slate-800/30 transition-colors">
-                            <td class="px-6 py-4 text-sm text-white">Sam Smith</td>
-                            <td class="px-6 py-4 text-sm text-slate-400">Jerez Circuit HD</td>
+                        <tr *ngFor="let mod of mods" class="hover:bg-slate-800/30 transition-colors">
+                            <td class="px-6 py-4 text-sm text-slate-400">#{{ mod.id }}</td>
+                            <td class="px-6 py-4 text-sm font-bold text-white">{{ mod.nombre }}</td>
+                            <td class="px-6 py-4 text-sm text-emerald-400">{{ mod.precio | currency:'EUR' }}</td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-emerald-500/10 text-emerald-500">Aprobado</span>
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300">{{ mod.version }}</span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="p-1 hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-xl">edit</span></button>
+                                <div class="flex items-center justify-end gap-3">
+                                    <button (click)="openEditMod(mod)" class="p-1 text-slate-400 hover:text-primary transition-colors" title="Editar Mod">
+                                        <span class="material-symbols-outlined text-xl">edit</span>
+                                    </button>
+                                    <button (click)="deleteMod(mod.id)" class="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Eliminar Mod">
+                                        <span class="material-symbols-outlined text-xl">delete</span>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -139,3 +140,11 @@
     </div>
     </div>
 </div>
+
+<!-- Modal Dialog -->
+<app-admin-mod-editor *ngIf="showEditor && editingMod"
+    [mod]="editingMod"
+    [isEdit]="isEditing"
+    (save)="saveMod($event)"
+    (cancel)="closeEditor()">
+</app-admin-mod-editor>

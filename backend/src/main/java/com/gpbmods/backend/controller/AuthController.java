@@ -42,6 +42,12 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
+    private com.gpbmods.backend.repository.PasswordResetTokenRepository tokenRepository;
+
+    @Autowired
+    private com.gpbmods.backend.service.EmailService emailService;
+
     @Value("${discord.client.id}")
     private String discordClientId;
 
@@ -153,6 +159,59 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody com.gpbmods.backend.dto.ForgotPasswordRequest request) {
+        Optional<Usuario> userOpt = usuarioRepository.findByEmail(request.getEmail());
+        if (!userOpt.isPresent()) {
+            return ResponseEntity.badRequest().body("Error: Usuario no encontrado con este email.");
+        }
+
+        Usuario user = userOpt.get();
+
+        // Borrar tokens previos para evitar duplicados
+        tokenRepository.deleteByUsuario(user);
+
+        // Generar nuevo token seguro
+        String tokenString = UUID.randomUUID().toString();
+        com.gpbmods.backend.model.PasswordResetToken resetToken = new com.gpbmods.backend.model.PasswordResetToken();
+        resetToken.setToken(tokenString);
+        resetToken.setUsuario(user);
+        resetToken.setExpiryDate(java.time.LocalDateTime.now().plusMinutes(15));
+        
+        tokenRepository.save(resetToken);
+
+        // Mandar el correo electrónico
+        emailService.sendPasswordResetEmail(user.getEmail(), tokenString);
+
+        return ResponseEntity.ok("Se han enviado las instrucciones de recuperación a tu correo electrónico.");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody com.gpbmods.backend.dto.ResetPasswordRequest request) {
+        if (request.getToken() == null || request.getToken().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Error: Token inválido.");
+        }
+
+        Optional<com.gpbmods.backend.model.PasswordResetToken> tokenOpt = tokenRepository.findByToken(request.getToken().trim());
+        if (!tokenOpt.isPresent()) {
+            return ResponseEntity.badRequest().body("Error: El enlace de recuperación es inválido o no existe.");
+        }
+
+        com.gpbmods.backend.model.PasswordResetToken resetToken = tokenOpt.get();
+        if (resetToken.isExpired()) {
+            tokenRepository.delete(resetToken);
+            return ResponseEntity.badRequest().body("Error: El enlace de recuperación ha caducado (15 minutos). Por favor, solicita uno nuevo.");
+        }
+
+        Usuario user = resetToken.getUsuario();
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword().trim()));
+        usuarioRepository.save(user);
+
+        tokenRepository.delete(resetToken);
+
+        return ResponseEntity.ok("Contraseña restablecida exitosamente. Ya puedes iniciar sesión de nuevo.");
     }
 
     @GetMapping("/discord/login")

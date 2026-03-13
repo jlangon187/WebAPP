@@ -14,6 +14,8 @@ import { PoliticaDevoluciones } from './components/politica-devoluciones/politic
 import { TerminosCondiciones } from './components/terminos-condiciones/terminos-condiciones';
 import { Home } from './components/home/home';
 import { Support } from './components/support/support';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
+import { ResetPasswordComponent } from './components/reset-password/reset-password';
 import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -32,5 +34,7 @@ export const routes: Routes = [
   { path: 'politica-devoluciones', component: PoliticaDevoluciones },
   { path: 'terminos-condiciones', component: TerminosCondiciones },
   { path: 'support', component: Support },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '/home' }
 ];

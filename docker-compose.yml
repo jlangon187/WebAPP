@@ -30,6 +30,13 @@ services:
       - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI:-http://localhost/api/auth/discord/callback}
       - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
       - JWT_SECRET=${JWT_SECRET:-my_super_secure_secret_for_jwt_which_must_be_long_enough_for_hs256_for_gpbikes_mods_2026}
+      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST:-smtp.gmail.com}
+      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT:-587}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME:-jlangon187@iesfuengirola1.es}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD:-xpzf pooz alhx mfnz}
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+
     ports:
       - "8080:8080"
     depends_on:
