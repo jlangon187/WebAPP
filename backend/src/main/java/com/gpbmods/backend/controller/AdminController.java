@@ -1,5 +1,9 @@
 package com.gpbmods.backend.controller;
 
+import com.gpbmods.backend.model.Ticket;
+import com.gpbmods.backend.repository.CompraRepository;
+import com.gpbmods.backend.repository.TicketRepository;
+import com.gpbmods.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -20,6 +26,16 @@ import java.util.stream.Stream;
 @RequestMapping("/api/admin")
 @PreAuthorize("hasAuthority('admin')")
 public class AdminController {
+
+    private final CompraRepository compraRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final TicketRepository ticketRepository;
+
+    public AdminController(CompraRepository compraRepository, UsuarioRepository usuarioRepository, TicketRepository ticketRepository) {
+        this.compraRepository = compraRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.ticketRepository = ticketRepository;
+    }
 
     @Value("${mods.images.directory:/data/home-images}")
     private String homeImagesDirectory;
@@ -30,9 +46,13 @@ public class AdminController {
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
         Map<String, Object> stats = new HashMap<>();
-        stats.put("totalSales", 12840);
-        stats.put("newUsers", 1240);
-        stats.put("activeTickets", 42);
+        BigDecimal totalSales = compraRepository.sumTotalSales();
+        long newUsers = usuarioRepository.countByCreadoEnAfter(LocalDateTime.now().minusDays(30));
+        long activeTickets = ticketRepository.countByEstadoNot(Ticket.Estado.cerrado);
+
+        stats.put("totalSales", totalSales == null ? BigDecimal.ZERO : totalSales);
+        stats.put("newUsers", newUsers);
+        stats.put("activeTickets", activeTickets);
         stats.put("nas", getNasStats());
         return ResponseEntity.ok(stats);
     }
