@@ -23,7 +23,8 @@ discord.redirect.uri=${DISCORD_REDIRECT_URI:http://localhost:8080/api/auth/disco
 frontend.url=${FRONTEND_URL:http://localhost:4200}
 
 # Carpeta de imagenes disponibles para el admin
-mods.images.directory=../frontend/public/home
+mods.images.directory=${MODS_IMAGES_DIRECTORY:../frontend/public/home}
+mods.files.directory=${MODS_FILES_DIRECTORY:/data/mods-files}
 
 # JWT
 jwt.secret=${JWT_SECRET:}

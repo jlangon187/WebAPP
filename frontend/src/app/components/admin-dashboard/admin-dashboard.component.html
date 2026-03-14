@@ -126,20 +126,34 @@
             <div class="bg-primary/10 p-6 rounded-xl border border-primary/20 shadow-sm">
                 <h3 class="font-bold text-primary mb-2">Estado del NAS</h3>
                 <div class="flex items-center gap-2 mb-4">
-                    <span class="h-2 w-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    <span class="text-sm font-medium text-emerald-500">En línea (192.168.1.100)</span>
+                    <span class="h-2 w-2 rounded-full" [ngClass]="stats.nas.online ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'"></span>
+                    <span class="text-sm font-medium" [ngClass]="stats.nas.online ? 'text-emerald-500' : 'text-red-400'">
+                        {{ stats.nas.online ? 'En línea' : 'Sin acceso al NAS' }}
+                    </span>
                 </div>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between text-xs font-medium">
                         <span class="text-slate-400">Almacenamiento Usado</span>
-                        <span class="text-white">1.2 TB / 4 TB</span>
+                        <span class="text-white">{{ formatBytes(stats.nas.usedBytes) }} / {{ formatBytes(stats.nas.totalBytes) }}</span>
                     </div>
                     <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
-                        <div class="bg-primary h-full w-[30%]"></div>
+                        <div class="bg-primary h-full" [style.width]="nasUsageWidth()"></div>
                     </div>
                     <div class="flex items-center justify-between text-xs font-medium mt-4">
-                        <span class="text-slate-400">Conexión MariaDB</span>
-                        <span class="text-emerald-500">Estable</span>
+                        <span class="text-slate-400">Imágenes detectadas</span>
+                        <span class="text-white">{{ stats.nas.homeImagesCount }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-medium mt-2">
+                        <span class="text-slate-400">Ficheros de mods</span>
+                        <span class="text-white">{{ stats.nas.modsFilesCount }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-medium mt-4">
+                        <span class="text-slate-400">Ruta imágenes</span>
+                        <span class="text-slate-300 text-right max-w-[60%] truncate" [title]="stats.nas.homeImagesPath">{{ stats.nas.homeImagesPath }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs font-medium mt-2">
+                        <span class="text-slate-400">Ruta ficheros mods</span>
+                        <span class="text-slate-300 text-right max-w-[60%] truncate" [title]="stats.nas.modsFilesPath">{{ stats.nas.modsFilesPath }}</span>
                     </div>
                 </div>
             </div>

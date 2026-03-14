@@ -15,7 +15,21 @@ import { AdminModEditorComponent } from '../admin-mod-editor/admin-mod-editor';
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
-  stats: any = { totalSales: 0, newUsers: 0, activeTickets: 0 };
+  stats: any = {
+    totalSales: 0,
+    newUsers: 0,
+    activeTickets: 0,
+    nas: {
+      online: false,
+      usedBytes: 0,
+      totalBytes: 0,
+      usagePercent: 0,
+      homeImagesCount: 0,
+      modsFilesCount: 0,
+      homeImagesPath: '-',
+      modsFilesPath: '-'
+    }
+  };
   loading = true;
   error = '';
   
@@ -39,7 +53,7 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    this.http.get('http://localhost:8080/api/admin/stats', { headers }).subscribe({
+    this.http.get('/api/admin/stats', { headers }).subscribe({
         next: (res: any) => {
             this.stats = res;
             this.loading = false;
@@ -116,5 +130,29 @@ export class AdminDashboardComponent implements OnInit {
               error: (err) => alert('Error al eliminar el mod')
           });
       }
+  }
+
+  formatBytes(value: number): string {
+    if (!value || value <= 0) {
+      return '0 B';
+    }
+
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    let size = value;
+    let unitIndex = 0;
+
+    while (size >= 1024 && unitIndex < units.length - 1) {
+      size /= 1024;
+      unitIndex++;
+    }
+
+    const decimals = size >= 10 ? 1 : 2;
+    return `${size.toFixed(decimals)} ${units[unitIndex]}`;
+  }
+
+  nasUsageWidth(): string {
+    const percent = this.stats?.nas?.usagePercent ?? 0;
+    const safe = Math.max(0, Math.min(100, percent));
+    return `${safe}%`;
   }
 }
