@@ -15,7 +15,9 @@ export class AuthService {
   constructor(private http: HttpClient) {
     const user = localStorage.getItem('user');
     if (user) {
-      this.currentUserSubject.next(JSON.parse(user));
+      const normalized = this.normalizeUser(JSON.parse(user));
+      localStorage.setItem('user', JSON.stringify(normalized));
+      this.currentUserSubject.next(normalized);
     }
   }
 
@@ -27,8 +29,9 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, data).pipe(
       tap((res: any) => {
         if (res && res.token) {
-          localStorage.setItem('user', JSON.stringify(res));
-          this.currentUserSubject.next(res);
+          const normalized = this.normalizeUser(res);
+          localStorage.setItem('user', JSON.stringify(normalized));
+          this.currentUserSubject.next(normalized);
         }
       })
     );
@@ -47,8 +50,9 @@ export class AuthService {
 
   setExternalLogin(res: any) {
     if (res && res.token) {
-      localStorage.setItem('user', JSON.stringify(res));
-      this.currentUserSubject.next(res);
+      const normalized = this.normalizeUser(res);
+      localStorage.setItem('user', JSON.stringify(normalized));
+      this.currentUserSubject.next(normalized);
     }
   }
 
@@ -63,5 +67,28 @@ export class AuthService {
 
   getCurrentUser(): any {
     return this.currentUserSubject.value;
+  }
+
+  private normalizeUser(user: any): any {
+    if (!user || !user.token) {
+      return user;
+    }
+
+    const email = user.email || user.sub || this.getEmailFromJwt(user.token) || '';
+    return { ...user, email };
+  }
+
+  private getEmailFromJwt(token: string): string {
+    try {
+      const payload = token.split('.')[1];
+      if (!payload) {
+        return '';
+      }
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const decoded = JSON.parse(atob(base64));
+      return decoded?.sub || '';
+    } catch {
+      return '';
+    }
   }
 }
