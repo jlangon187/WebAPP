@@ -93,7 +93,7 @@
             <!-- Purchase Cards -->
             <div *ngFor="let p of purchases" class="bg-slate-900 border border-primary/20 rounded-xl overflow-hidden hover:border-primary/50 transition-colors flex flex-col group">
                 <div class="aspect-video relative overflow-hidden bg-slate-800">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj35FfTln157-AOSD-NDtzwtQqZBHAOmHidpMB0jMNc_3GVyMrMfctqRRHtrurbhWarvsju1d7_HBlptfeMUDpTi3lHdqOkBLtwioO-rsOrPB5ycIRrSEeNF415LeHkJzFjiaEnZH7gjK5xyCjXUhZ8iQbNnTCVzMs5VyGtK26EbDcmT7QypTLA-QW5Rn5YfHkW8r7odeBULDFxSj6KtBRQfs9jMKsEegml0Ib2mej6iciOE1CD6iQtoB6G7ftdKY0w4g3YhwR6tkD" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <img [src]="getPurchaseImage(p.mod.archivoOriginal)" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     <div class="absolute top-3 right-3 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm border border-green-600 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[12px]">verified</span> Adquirido
                     </div>

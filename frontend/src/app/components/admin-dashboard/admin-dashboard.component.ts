@@ -69,7 +69,11 @@ export class AdminDashboardComponent implements OnInit {
           descripcion: '',
           precio: 0,
           version: '1.0',
-          archivoOriginal: ''
+          archivoOriginal: '',
+          categoria: null,
+          destacadoHome: false,
+          ordenShowroom: null,
+          youtubeUrl: ''
       };
       this.showEditor = true;
   }
@@ -92,7 +96,7 @@ export class AdminDashboardComponent implements OnInit {
                   this.loadCatalog();
                   this.closeEditor();
               },
-              error: (err) => alert('Error al actualizar el mod')
+              error: (err) => alert(err.error || 'Error al actualizar el mod')
           });
       } else {
           this.modService.createMod(mod).subscribe({
@@ -100,7 +104,7 @@ export class AdminDashboardComponent implements OnInit {
                   this.loadCatalog();
                   this.closeEditor();
               },
-              error: (err) => alert('Error al crear el mod')
+              error: (err) => alert(err.error || 'Error al crear el mod')
           });
       }
   }

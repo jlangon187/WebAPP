@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/mods/catalog").permitAll()
+                .requestMatchers("/api/mods/showroom").permitAll()
+                .requestMatchers("/api/categorias").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()

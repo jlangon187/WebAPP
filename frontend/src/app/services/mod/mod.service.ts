@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface Categoria {
+  id: number;
+  nombre: string;
+}
+
 export interface Mod {
   id: number;
   nombre: string;
@@ -9,6 +14,10 @@ export interface Mod {
   precio: number;
   version: string;
   archivoOriginal?: string;
+  categoria?: Categoria | null;
+  destacadoHome?: boolean;
+  ordenShowroom?: number | null;
+  youtubeUrl?: string | null;
 }
 
 @Injectable({
@@ -22,6 +31,18 @@ export class ModService {
 
   getCatalog(): Observable<Mod[]> {
     return this.http.get<Mod[]>(`${this.apiUrl}/mods/catalog`);
+  }
+
+  getShowroomMods(): Observable<Mod[]> {
+    return this.http.get<Mod[]>(`${this.apiUrl}/mods/showroom`);
+  }
+
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.apiUrl}/categorias`);
+  }
+
+  getHomeImages(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/mods/home-images`, { headers: this.getHeaders() });
   }
 
   getModDetails(id: number): Observable<Mod> {

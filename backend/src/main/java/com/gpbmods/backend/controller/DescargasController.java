@@ -33,7 +33,7 @@ public class DescargasController {
     private UsuarioRepository usuarioRepository;
 
     @GetMapping("/{modId}")
-    @PreAuthorize("hasAnyRole('REGISTRADO', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
     public ResponseEntity<?> requestDownloadUrl(@PathVariable Long modId, Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);

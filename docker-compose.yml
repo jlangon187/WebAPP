@@ -5,10 +5,10 @@ services:
     image: mariadb:10.11
     container_name: gpbikes-db
     environment:
-      MARIADB_DATABASE: gpbikes_db
-      MARIADB_USER: root
-      MARIADB_PASSWORD: password
-      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -20,20 +20,19 @@ services:
       context: ./backend
     container_name: gpbikes-backend
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/gpbikes_db
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=rootpassword
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/${MARIADB_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${MARIADB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MARIADB_PASSWORD}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      # NOTE: In production, store secrets securely or pass them as ENV vars from Portainer
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
       - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
-      - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI:-http://localhost/api/auth/discord/callback}
-      - FRONTEND_URL=${FRONTEND_URL:-http://localhost}
-      - JWT_SECRET=${JWT_SECRET:-my_super_secure_secret_for_jwt_which_must_be_long_enough_for_hs256_for_gpbikes_mods_2026}
-      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST:-smtp.gmail.com}
-      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT:-587}
-      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME:-jlangon187@iesfuengirola1.es}
-      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD:-xpzf pooz alhx mfnz}
+      - DISCORD_REDIRECT_URI=${DISCORD_REDIRECT_URI}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
+      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
 

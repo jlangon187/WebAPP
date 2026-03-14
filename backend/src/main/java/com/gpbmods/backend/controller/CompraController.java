@@ -30,7 +30,7 @@ public class CompraController {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('REGISTRADO')")
+    @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
     public ResponseEntity<?> simulatePurchase(@RequestBody CompraRequest request, Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
@@ -69,7 +69,7 @@ public class CompraController {
     }
 
     @GetMapping("/mis-compras")
-    @PreAuthorize("hasRole('REGISTRADO')")
+    @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
     public ResponseEntity<?> getMisCompras(Authentication authentication) {
         String email = authentication.getName();
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);

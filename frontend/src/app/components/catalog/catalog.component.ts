@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ModService, Mod } from '../../services/mod/mod.service';
+import { ModService, Mod, Categoria } from '../../services/mod/mod.service';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
@@ -13,6 +13,9 @@ import { CartService } from '../../services/cart/cart.service';
 })
 export class CatalogComponent implements OnInit {
   mods: Mod[] = [];
+  filteredMods: Mod[] = [];
+  categorias: Categoria[] = [];
+  categoriaActiva = 'Todos';
   loading = true;
   error = '';
 
@@ -23,9 +26,16 @@ export class CatalogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.modService.getCategorias().subscribe({
+      next: (data) => {
+        this.categorias = data;
+      }
+    });
+
     this.modService.getCatalog().subscribe({
       next: (data) => {
         this.mods = data;
+        this.applyFilter();
         this.loading = false;
       },
       error: (err) => {
@@ -37,6 +47,24 @@ export class CatalogComponent implements OnInit {
 
   viewDetails(id: number) {
     this.router.navigate(['/mod', id]);
+  }
+
+  setCategoria(categoriaNombre: string) {
+    this.categoriaActiva = categoriaNombre;
+    this.applyFilter();
+  }
+
+  private applyFilter() {
+    if (this.categoriaActiva === 'Todos') {
+      this.filteredMods = this.mods;
+      return;
+    }
+
+    this.filteredMods = this.mods.filter((mod) => mod.categoria?.nombre === this.categoriaActiva);
+  }
+
+  getModImage(mod: Mod): string {
+    return mod.archivoOriginal?.trim() ? mod.archivoOriginal : '/logo.png';
   }
 
   addToCart(mod: Mod, event: Event) {

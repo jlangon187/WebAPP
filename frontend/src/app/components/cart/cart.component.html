@@ -24,7 +24,7 @@
 
             <div *ngFor="let item of cartItems" class="bg-slate-900/40 border border-primary/10 rounded-xl p-4 flex gap-4 items-center">
                 <div class="w-32 aspect-video bg-slate-800 rounded-lg overflow-hidden shrink-0">
-                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj35FfTln157-AOSD-NDtzwtQqZBHAOmHidpMB0jMNc_3GVyMrMfctqRRHtrurbhWarvsju1d7_HBlptfeMUDpTi3lHdqOkBLtwioO-rsOrPB5ycIRrSEeNF415LeHkJzFjiaEnZH7gjK5xyCjXUhZ8iQbNnTCVzMs5VyGtK26EbDcmT7QypTLA-QW5Rn5YfHkW8r7odeBULDFxSj6KtBRQfs9jMKsEegml0Ib2mej6iciOE1CD6iQtoB6G7ftdKY0w4g3YhwR6tkD" class="w-full h-full object-cover">
+                     <img [src]="getModImage(item.archivoOriginal)" class="w-full h-full object-cover">
                 </div>
                 <div class="flex-1">
                     <span class="text-[10px] uppercase font-bold text-primary">Versión {{ item.version }}</span>

@@ -2,23 +2,30 @@ package com.gpbmods.backend.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    private final String jwtSecret = "GPBikesModsSuperSecretKeyForJWTAuth2026!@#";
-    private final int jwtExpirationMs = 86400000; // 24 hours
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    private final int jwtExpirationMs = 86400000;
 
     private Key key;
 
     @PostConstruct
     public void init() {
-        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        if (jwtSecret == null || jwtSecret.trim().length() < 32) {
+            throw new IllegalStateException("jwt.secret must be configured and be at least 32 characters long");
+        }
+        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String email, String rol) {

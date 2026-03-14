@@ -42,4 +42,8 @@ export class CartComponent implements OnInit {
   continueShopping() {
     this.router.navigate(['/catalog']);
   }
+
+  getModImage(path?: string): string {
+    return path?.trim() ? path : '/logo.png';
+  }
 }

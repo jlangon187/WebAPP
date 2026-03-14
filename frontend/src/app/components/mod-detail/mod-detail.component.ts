@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModService, Mod } from '../../services/mod/mod.service';
 import { CartService } from '../../services/cart/cart.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-mod-detail',
@@ -13,6 +14,7 @@ import { CartService } from '../../services/cart/cart.service';
 })
 export class ModDetailComponent implements OnInit {
   mod: Mod | null = null;
+  youtubeEmbedUrl: SafeResourceUrl | null = null;
   loading = true;
   error = '';
 
@@ -20,7 +22,8 @@ export class ModDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private modService: ModService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -29,6 +32,7 @@ export class ModDetailComponent implements OnInit {
       this.modService.getModDetails(+idParam).subscribe({
         next: (data) => {
           this.mod = data;
+          this.youtubeEmbedUrl = this.buildYoutubeEmbedUrl(this.mod.youtubeUrl);
           this.loading = false;
         },
         error: (err) => {
@@ -51,5 +55,40 @@ export class ModDetailComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/catalog']);
+  }
+
+  getModImage(): string {
+    if (!this.mod?.archivoOriginal?.trim()) {
+      return '/logo.png';
+    }
+    return this.mod.archivoOriginal;
+  }
+
+  private buildYoutubeEmbedUrl(youtubeUrl?: string | null): SafeResourceUrl | null {
+    if (!youtubeUrl) {
+      return null;
+    }
+
+    try {
+      const url = new URL(youtubeUrl);
+      let videoId = '';
+
+      if (url.hostname.includes('youtu.be')) {
+        videoId = url.pathname.replace('/', '');
+      }
+
+      if (url.hostname.includes('youtube.com')) {
+        videoId = url.searchParams.get('v') || '';
+      }
+
+      if (!videoId) {
+        return null;
+      }
+
+      const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+      return this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
+    } catch {
+      return null;
+    }
   }
 }

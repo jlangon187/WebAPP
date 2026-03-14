@@ -81,13 +81,15 @@
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Precio</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Categoría</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Versión</th>
+                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Showroom</th>
                             <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Acciones</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-primary/5">
                         <tr *ngIf="mods.length === 0">
-                            <td colspan="5" class="px-6 py-8 text-center text-slate-500">
+                            <td colspan="7" class="px-6 py-8 text-center text-slate-500">
                                 No hay mods en la base de datos.
                             </td>
                         </tr>
@@ -95,8 +97,13 @@
                             <td class="px-6 py-4 text-sm text-slate-400">#{{ mod.id }}</td>
                             <td class="px-6 py-4 text-sm font-bold text-white">{{ mod.nombre }}</td>
                             <td class="px-6 py-4 text-sm text-emerald-400">{{ mod.precio | currency:'EUR' }}</td>
+                            <td class="px-6 py-4 text-sm text-slate-300">{{ mod.categoria?.nombre || '-' }}</td>
                             <td class="px-6 py-4">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300">{{ mod.version }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-slate-300">
+                                <span *ngIf="mod.destacadoHome">#{{ mod.ordenShowroom }}</span>
+                                <span *ngIf="!mod.destacadoHome">-</span>
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-3">

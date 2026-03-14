@@ -35,6 +35,46 @@
                             placeholder="Ej. v1.2">
                     </div>
 
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Categoría</label>
+                        <select
+                            name="categoria"
+                            [ngModel]="getCategoriaActual()"
+                            (ngModelChange)="onCategoriaChange($event)"
+                            required
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            <option [ngValue]="''">Selecciona categoría</option>
+                            <option *ngFor="let categoria of categoriasFijas" [ngValue]="categoria">{{ categoria }}</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center justify-between rounded-lg border border-slate-700 bg-slate-950 px-4 py-3">
+                        <div>
+                            <p class="text-sm font-medium text-slate-200">Mostrar en showroom</p>
+                            <p class="text-xs text-slate-500">Solo se permiten 3 mods (orden 1, 2 y 3).</p>
+                        </div>
+                        <input
+                            type="checkbox"
+                            name="destacadoHome"
+                            [(ngModel)]="mod.destacadoHome"
+                            (change)="onFeaturedChange()"
+                            class="h-5 w-5 rounded border-slate-600 bg-slate-900 text-primary focus:ring-primary">
+                    </div>
+
+                    <div *ngIf="mod.destacadoHome">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Posición en showroom</label>
+                        <select
+                            name="ordenShowroom"
+                            [(ngModel)]="mod.ordenShowroom"
+                            required
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all">
+                            <option [ngValue]="null">Selecciona posición</option>
+                            <option [ngValue]="1">1</option>
+                            <option [ngValue]="2">2</option>
+                            <option [ngValue]="3">3</option>
+                        </select>
+                    </div>
+
                     <div class="col-span-1 md:col-span-2">
                         <label class="block text-sm font-medium text-slate-300 mb-2">Descripción</label>
                         <textarea name="descripcion" [(ngModel)]="mod.descripcion" required rows="4"
@@ -43,12 +83,34 @@
                     </div>
 
                     <div class="col-span-1 md:col-span-2">
-                        <label class="block text-sm font-medium text-slate-300 mb-2">Ruta de Imagen / Archivo</label>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Imagen del mod</label>
+
+                        <input type="file" accept=".png,.jpg,.jpeg,.webp,.gif,.avif" (change)="onFilePicked($event)"
+                            class="w-full mb-3 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-slate-300 file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-white file:cursor-pointer">
+
                         <input type="text" name="archivoOriginal" [(ngModel)]="mod.archivoOriginal" required
                             class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-slate-600"
-                            placeholder="Ej. /home/images/mod1.png">
-                        <p class="text-xs text-slate-500 mt-2">La ruta que se usará para mostrar el banner del mod en la tienda.</p>
+                            placeholder="Ej. /home/kawasaki.png">
+                        <p class="text-xs text-slate-500 mt-2">Usa examinar y se completará automáticamente como /home/nombre-del-archivo.</p>
                     </div>
+
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">URL de YouTube (opcional)</label>
+                        <input type="url" name="youtubeUrl" [(ngModel)]="mod.youtubeUrl"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-slate-600"
+                            placeholder="https://www.youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="col-span-1 md:col-span-2" *ngIf="mod.archivoOriginal">
+                        <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Previsualización de imagen</p>
+                        <div class="aspect-video rounded-lg overflow-hidden border border-slate-700 bg-slate-950">
+                            <img [src]="mod.archivoOriginal" [alt]="mod.nombre || 'Preview del mod'" class="h-full w-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="validationError" class="rounded-lg border border-accent-red/20 bg-accent-red/10 px-4 py-3 text-sm font-bold text-accent-red">
+                    {{ validationError }}
                 </div>
 
                 <div class="flex items-center justify-end gap-4 pt-6 mt-6 border-t border-slate-800">

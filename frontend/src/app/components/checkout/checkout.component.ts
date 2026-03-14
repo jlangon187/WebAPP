@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart/cart.service';
 import { ModService, Mod } from '../../services/mod/mod.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-checkout',
@@ -36,18 +37,19 @@ export class CheckoutComponent implements OnInit {
   }
 
   processPayment() {
+    if (this.cartItems.length === 0) {
+      this.router.navigate(['/catalog']);
+      return;
+    }
+
     this.isProcessing = true;
     this.errorMessage = '';
-    
-    // Attempting to buy the first item for now (expandable to cart array)
-    // To properly support cart we would loop through items or adjust backend to accept list
-    const modToBuy = this.cartItems[0];
-    
-    if(!modToBuy) return;
 
-    this.modService.purchaseMod(modToBuy.id, this.metodoPago).subscribe({
-      next: (res) => {
-        this.successMessage = res;
+    const requests = this.cartItems.map((item) => this.modService.purchaseMod(item.id, this.metodoPago));
+
+    forkJoin(requests).subscribe({
+      next: () => {
+        this.successMessage = `Compra completada. Se han procesado ${this.cartItems.length} mods correctamente.`;
         this.cartService.clearCart();
         this.isProcessing = false;
         setTimeout(() => this.router.navigate(['/dashboard']), 3000);

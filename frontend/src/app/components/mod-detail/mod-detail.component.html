@@ -1,12 +1,13 @@
 <main class="mx-auto flex w-full max-w-7xl grow flex-col px-6 py-8 lg:px-20">
-    
+
     <!-- Loading / Error -->
     <div *ngIf="loading" class="text-center py-20 text-slate-400">Cargando detalles del mod...</div>
     <div *ngIf="error" class="text-center py-20 text-accent-red font-bold">{{ error }}</div>
 
     <ng-container *ngIf="!loading && !error && mod">
         <!-- Breadcrumbs -->
-        <nav class="mb-6 flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-widest cursor-pointer" (click)="goBack()">
+        <nav class="mb-6 flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-widest cursor-pointer"
+            (click)="goBack()">
             <a class="hover:text-primary transition-colors flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
                 Volver al Catálogo
@@ -19,16 +20,28 @@
             <!-- Main Content (Left) -->
             <div class="lg:col-span-8 flex flex-col gap-8">
                 <!-- Hero Image -->
-                <div class="group relative aspect-video w-full overflow-hidden rounded-xl bg-slate-800 border border-primary/10 shadow-2xl">
-                    <!-- Placeholder using random image for presentation -->
-                    <img alt="{{ mod.nombre }}" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuAj35FfTln157-AOSD-NDtzwtQqZBHAOmHidpMB0jMNc_3GVyMrMfctqRRHtrurbhWarvsju1d7_HBlptfeMUDpTi3lHdqOkBLtwioO-rsOrPB5ycIRrSEeNF415LeHkJzFjiaEnZH7gjK5xyCjXUhZ8iQbNnTCVzMs5VyGtK26EbDcmT7QypTLA-QW5Rn5YfHkW8r7odeBULDFxSj6KtBRQfs9jMKsEegml0Ib2mej6iciOE1CD6iQtoB6G7ftdKY0w4g3YhwR6tkD" />
+                <div
+                    class="group relative aspect-video w-full overflow-hidden rounded-xl bg-slate-800 border border-primary/10 shadow-2xl">
+                    <img alt="{{ mod.nombre }}"
+                        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        [src]="getModImage()" />
+                </div>
+
+                <div *ngIf="youtubeEmbedUrl" class="rounded-xl border border-primary/20 bg-slate-900/60 p-4">
+                    <h4 class="mb-3 text-sm font-bold uppercase tracking-widest text-white">Video del Mod</h4>
+                    <div class="aspect-video overflow-hidden rounded-lg border border-primary/10">
+                        <iframe [src]="youtubeEmbedUrl" class="h-full w-full" title="YouTube preview"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
 
                 <!-- Details Tabs -->
                 <div class="flex flex-col gap-6">
                     <div class="flex border-b border-primary/20">
-                        <button class="border-b-2 border-primary px-6 py-3 text-sm font-bold text-primary">Descripción</button>
+                        <button
+                            class="border-b-2 border-primary px-6 py-3 text-sm font-bold text-primary">Descripción</button>
                     </div>
 
                     <div class="flex flex-col gap-4 text-slate-300 leading-relaxed">
@@ -57,18 +70,23 @@
                     <div class="rounded-xl bg-slate-900 p-6 border border-primary/20 shadow-xl">
                         <div class="flex items-end gap-2 mb-6 md:mb-0">
                             <span class="text-4xl font-black text-white">{{ mod.precio }}€</span>
-                            <span class="text-sm font-bold text-slate-500 mb-1 line-through">{{ (mod.precio * 1.2) | number:'1.2-2' }}€</span>
+                            <span class="text-sm font-bold text-slate-500 mb-1 line-through">{{ (mod.precio * 1.2) |
+                                number:'1.2-2' }}€</span>
                         </div>
-                        <button (click)="addToCart()" class="w-full rounded-lg bg-red-600 py-4 text-center text-base font-bold text-white transition-all hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20 active:scale-[0.98] flex items-center justify-center gap-2">
+                        <br>
+                        <button (click)="addToCart()"
+                            class="w-full rounded-lg bg-red-600 py-4 text-center text-base font-bold text-white transition-all hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20 active:scale-[0.98] flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined">shopping_cart</span>
                             Añadir al Carrito
                         </button>
-                        <p class="mt-4 text-center text-[10px] uppercase tracking-widest text-slate-500">Pago seguro con cifrado SSL</p>
+                        <p class="mt-4 text-center text-[10px] uppercase tracking-widest text-slate-500">Pago seguro con
+                            cifrado SSL</p>
                     </div>
 
                     <!-- Tech Specs Card -->
                     <div class="rounded-xl border border-primary/10 bg-primary/5 p-6">
-                        <h4 class="mb-4 text-sm font-bold uppercase tracking-widest text-white">Especificaciones Técnicas</h4>
+                        <h4 class="mb-4 text-sm font-bold uppercase tracking-widest text-white">Especificaciones
+                            Técnicas</h4>
                         <div class="flex flex-col gap-3">
                             <div class="flex justify-between border-b border-primary/10 pb-2">
                                 <span class="text-sm text-slate-400">Versión</span>
@@ -76,7 +94,8 @@
                             </div>
                             <div class="flex justify-between border-b border-primary/10 pb-2">
                                 <span class="text-sm text-slate-400">Categoría</span>
-                                <span class="text-sm font-medium text-white">Simulación</span>
+                                <span class="text-sm font-medium text-white">{{ mod.categoria?.nombre || 'Sin categoría'
+                                    }}</span>
                             </div>
                         </div>
                     </div>

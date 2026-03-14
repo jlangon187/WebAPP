@@ -4,14 +4,19 @@
         <h1 class="text-3xl font-black italic uppercase tracking-tighter text-white mb-6">Explorar Catálogo</h1>
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide w-full md:w-auto">
-                <button class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold whitespace-nowrap shadow-lg shadow-primary/20 hover:scale-105 transition-transform">Todos</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Motos</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Bikesets</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Liveries</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Sonidos</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Circuitos</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">Equipamiento</button>
-                <button class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold whitespace-nowrap border border-primary/10 transition-all">UI</button>
+                <button
+                    (click)="setCategoria('Todos')"
+                    [ngClass]="categoriaActiva === 'Todos' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-primary/10'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all">
+                    Todos
+                </button>
+                <button
+                    *ngFor="let categoria of categorias"
+                    (click)="setCategoria(categoria.nombre)"
+                    [ngClass]="categoriaActiva === categoria.nombre ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-primary/10'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-bold whitespace-nowrap transition-all">
+                    {{ categoria.nombre }}
+                </button>
             </div>
             
             <button class="flex items-center gap-2 px-6 py-2.5 bg-slate-900 border border-primary/30 rounded-xl hover:bg-primary/10 text-white transition-all w-full md:w-auto shrink-0 group">
@@ -35,18 +40,14 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             <!-- Dynamic Cards -->
-            <div *ngFor="let mod of mods" (click)="viewDetails(mod.id)"
+            <div *ngFor="let mod of filteredMods" (click)="viewDetails(mod.id)"
                  class="group cursor-pointer bg-slate-900/40 border border-primary/10 rounded-xl overflow-hidden hover:border-primary/40 transition-all hover:shadow-xl hover:shadow-primary/5 flex flex-col h-full">
                 
                 <div class="relative aspect-video overflow-hidden bg-slate-800">
-                    <!-- Fake placeholder image for visual appeal -->
                     <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" 
-                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCoAWKsNv6tnAEINVhqJml_Fwt_KWAjR44bMVDdoQs3L4ddW8ggeH0WKLJ7KHQ87RVtZPk11DqWdZsXWA_gu8nH63odtX0qApQCKnTtPOO3P1wuDLzMAAKz2QLvHpRmlRI4pL4tGfv4TUntNuMSmgKbj6b7W89Dqby9UTltMyWnqLuUjQHOUnYpG5j7VIFRPiws4AGoExz067OKZJl732sUZrs4GotorplpHAxyRONsD5MukymLK_mgR7AWiQ8Nls9cUnQCxeZPskqz');"></div>
-                    
-                    <div class="absolute top-3 left-3 flex gap-2">
-                        <span class="premium-badge text-[9px] font-black text-white px-2 py-0.5 rounded shadow-sm">Calidad HRC</span>
+                         [style.background-image]="'url(' + getModImage(mod) + ')'">
                     </div>
-
+                    
                     <div class="absolute bottom-3 right-3">
                         <span class="bg-background-dark/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded border border-white/10">
                             {{ mod.precio }}€
@@ -73,7 +74,7 @@
             </div>
 
             <!-- Empty State -->
-             <div *ngIf="mods.length === 0" class="col-span-full py-10 text-center text-slate-500">
+             <div *ngIf="filteredMods.length === 0" class="col-span-full py-10 text-center text-slate-500">
                 Aún no hay mods disponibles en el catálogo.
              </div>
         </div>

@@ -106,4 +106,8 @@ export class UserDashboardComponent implements OnInit {
       }
     });
   }
+
+  getPurchaseImage(path?: string) {
+    return path?.trim() ? path : '/logo.png';
+  }
 }
