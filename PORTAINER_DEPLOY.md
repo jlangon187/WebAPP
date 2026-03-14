@@ -26,6 +26,8 @@ En la seccion `Environment variables` define estas claves (todas obligatorias):
 - `SPRING_MAIL_PORT`
 - `SPRING_MAIL_USERNAME`
 - `SPRING_MAIL_PASSWORD`
+- `NAS_HOME_IMAGES_PATH` (ruta del host montada al SMB para imagenes)
+- `NAS_MODS_FILES_PATH` (ruta del host montada al SMB para ficheros mods)
 
 Referencia: puedes usar `./.env.example` como plantilla de valores.
 
@@ -43,6 +45,17 @@ Ejemplo comun en produccion:
 
 1. Pulsa `Deploy the stack`.
 2. Espera a que los servicios `db`, `backend` y `frontend` queden en estado `running`.
+
+## 4.1) Integracion NAS (SMB en Proxmox)
+
+1. Monta el recurso SMB de Synology en Proxmox, por ejemplo:
+   - `/mnt/synology/gpbikes/home-images`
+   - `/mnt/synology/gpbikes/mods-files`
+2. En Portainer, asigna:
+   - `NAS_HOME_IMAGES_PATH=/mnt/synology/gpbikes/home-images`
+   - `NAS_MODS_FILES_PATH=/mnt/synology/gpbikes/mods-files`
+3. El `frontend` servira imagenes desde `/home/*` leyendo el NAS montado.
+4. El `backend` listara imagenes desde `MODS_IMAGES_DIRECTORY=/data/home-images`.
 
 ## 5) Verificacion minima
 
