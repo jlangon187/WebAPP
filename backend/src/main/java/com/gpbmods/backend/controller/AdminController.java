@@ -46,15 +46,46 @@ public class AdminController {
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
         Map<String, Object> stats = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime last30From = now.minusDays(30);
+        LocalDateTime prev30From = now.minusDays(60);
+
         BigDecimal totalSales = compraRepository.sumTotalSales();
-        long newUsers = usuarioRepository.countByCreadoEnAfter(LocalDateTime.now().minusDays(30));
+        BigDecimal salesLast30 = safeDecimal(compraRepository.sumSalesBetween(last30From, now));
+        BigDecimal salesPrev30 = safeDecimal(compraRepository.sumSalesBetween(prev30From, last30From));
+
+        long newUsers = usuarioRepository.countByCreadoEnAfter(last30From);
+        long usersLast30 = usuarioRepository.countByCreadoEnBetween(last30From, now);
+        long usersPrev30 = usuarioRepository.countByCreadoEnBetween(prev30From, last30From);
+
         long activeTickets = ticketRepository.countByEstadoNot(Ticket.Estado.cerrado);
+        long ticketsLast30 = ticketRepository.countByEstadoNotAndCreadoEnBetween(Ticket.Estado.cerrado, last30From, now);
+        long ticketsPrev30 = ticketRepository.countByEstadoNotAndCreadoEnBetween(Ticket.Estado.cerrado, prev30From, last30From);
 
         stats.put("totalSales", totalSales == null ? BigDecimal.ZERO : totalSales);
         stats.put("newUsers", newUsers);
         stats.put("activeTickets", activeTickets);
+        stats.put("salesTrendPercent", calculateTrendPercent(salesLast30.doubleValue(), salesPrev30.doubleValue()));
+        stats.put("usersTrendPercent", calculateTrendPercent((double) usersLast30, (double) usersPrev30));
+        stats.put("ticketsTrendPercent", calculateTrendPercent((double) ticketsLast30, (double) ticketsPrev30));
         stats.put("nas", getNasStats());
         return ResponseEntity.ok(stats);
+    }
+
+    private BigDecimal safeDecimal(BigDecimal value) {
+        return value == null ? BigDecimal.ZERO : value;
+    }
+
+    private int calculateTrendPercent(double current, double previous) {
+        if (current == 0 && previous == 0) {
+            return 0;
+        }
+        if (previous == 0) {
+            return 100;
+        }
+
+        double delta = ((current - previous) / previous) * 100.0;
+        return (int) Math.round(delta);
     }
 
     private Map<String, Object> getNasStats() {

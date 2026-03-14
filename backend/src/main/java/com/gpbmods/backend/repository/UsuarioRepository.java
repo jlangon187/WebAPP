@@ -12,4 +12,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByEmail(String email);
     Optional<Usuario> findByGuid(String guid);
     long countByCreadoEnAfter(LocalDateTime date);
+    long countByCreadoEnBetween(LocalDateTime fromDate, LocalDateTime toDate);
 }

@@ -19,6 +19,9 @@ export class AdminDashboardComponent implements OnInit {
     totalSales: 0,
     newUsers: 0,
     activeTickets: 0,
+    salesTrendPercent: 0,
+    usersTrendPercent: 0,
+    ticketsTrendPercent: 0,
     nas: {
       online: false,
       usedBytes: 0,
@@ -154,5 +157,30 @@ export class AdminDashboardComponent implements OnInit {
     const percent = this.stats?.nas?.usagePercent ?? 0;
     const safe = Math.max(0, Math.min(100, percent));
     return `${safe}%`;
+  }
+
+  trendClass(value: number, inverse = false): string {
+    if (value === 0) {
+      return 'text-slate-400';
+    }
+
+    const isPositive = value > 0;
+    if (inverse) {
+      return isPositive ? 'text-red-500' : 'text-emerald-500';
+    }
+
+    return isPositive ? 'text-emerald-500' : 'text-red-500';
+  }
+
+  trendIcon(value: number): string {
+    if (value === 0) {
+      return 'remove';
+    }
+    return value > 0 ? 'arrow_upward' : 'arrow_downward';
+  }
+
+  trendLabel(value: number): string {
+    const abs = Math.abs(value || 0);
+    return `${abs}%`;
   }
 }

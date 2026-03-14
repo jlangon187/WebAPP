@@ -29,8 +29,8 @@
             </div>
             <div class="flex items-end gap-2">
                 <h3 class="text-3xl font-bold text-white">{{ stats.totalSales | number }} €</h3>
-                <span class="text-emerald-500 text-sm font-semibold mb-1 flex items-center">
-                    <span class="material-symbols-outlined text-xs">arrow_upward</span> 12%
+                <span class="text-sm font-semibold mb-1 flex items-center" [ngClass]="trendClass(stats.salesTrendPercent)">
+                    <span class="material-symbols-outlined text-xs">{{ trendIcon(stats.salesTrendPercent) }}</span> {{ trendLabel(stats.salesTrendPercent) }}
                 </span>
             </div>
         </div>
@@ -43,8 +43,8 @@
             </div>
             <div class="flex items-end gap-2">
                 <h3 class="text-3xl font-bold text-white">{{ stats.newUsers | number }}</h3>
-                <span class="text-emerald-500 text-sm font-semibold mb-1 flex items-center">
-                    <span class="material-symbols-outlined text-xs">arrow_upward</span> 5%
+                <span class="text-sm font-semibold mb-1 flex items-center" [ngClass]="trendClass(stats.usersTrendPercent)">
+                    <span class="material-symbols-outlined text-xs">{{ trendIcon(stats.usersTrendPercent) }}</span> {{ trendLabel(stats.usersTrendPercent) }}
                 </span>
             </div>
         </div>
@@ -57,8 +57,8 @@
             </div>
             <div class="flex items-end gap-2">
                 <h3 class="text-3xl font-bold text-white">{{ stats.activeTickets }}</h3>
-                <span class="text-red-500 text-sm font-semibold mb-1 flex items-center">
-                    <span class="material-symbols-outlined text-xs">arrow_downward</span> 8%
+                <span class="text-sm font-semibold mb-1 flex items-center" [ngClass]="trendClass(stats.ticketsTrendPercent, true)">
+                    <span class="material-symbols-outlined text-xs">{{ trendIcon(stats.ticketsTrendPercent) }}</span> {{ trendLabel(stats.ticketsTrendPercent) }}
                 </span>
             </div>
         </div>
