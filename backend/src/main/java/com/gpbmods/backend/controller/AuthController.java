@@ -262,16 +262,16 @@ public class AuthController {
                 user.setNombre(username);
                 user.setEmail(email);
                 user.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
-                // Generate random 8-char hex string
-                String randomGuid = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-                user.setGuid(randomGuid);
+                user.setGuid(null);
                 user.setRol(Usuario.Rol.registrado);
                 usuarioRepository.save(user);
             }
 
             String jwt = jwtUtil.generateToken(user.getEmail(), user.getRol().name());
+            boolean completeProfile = user.getGuid() == null || user.getGuid().trim().isEmpty();
             String redirectUrl = frontendUrl + "/auth/callback?token=" + jwt + "&rol=" + user.getRol().name() + "&guid="
-                    + user.getGuid() + "&nombre=" + URLEncoder.encode(user.getNombre(), StandardCharsets.UTF_8);
+                    + (user.getGuid() == null ? "" : user.getGuid()) + "&nombre=" + URLEncoder.encode(user.getNombre(), StandardCharsets.UTF_8)
+                    + "&completeProfile=" + completeProfile;
 
             response.sendRedirect(redirectUrl);
         } catch (Exception e) {

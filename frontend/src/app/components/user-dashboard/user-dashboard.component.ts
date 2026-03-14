@@ -23,6 +23,7 @@ export class UserDashboardComponent implements OnInit {
   editData = { nombre: '', password: '', email: '', guid: '' };
   updateMessage = '';
   updateError = '';
+  originalGuid = '';
 
   constructor(
     private modService: ModService,
@@ -38,6 +39,7 @@ export class UserDashboardComponent implements OnInit {
         this.editData.nombre = u.nombre;
         this.editData.email = u.sub || u.email || '';
         this.editData.guid = u.guid || '';
+        this.originalGuid = (u.guid || '').toUpperCase();
 
         if (!this.isAdmin) {
           this.loadPurchases();
@@ -85,9 +87,23 @@ export class UserDashboardComponent implements OnInit {
   saveProfile() {
     this.updateMessage = '';
     this.updateError = '';
+
+    if (this.isGuidChangingWithPurchases()) {
+      const confirmed = window.confirm(
+        'ATENCION: Ya tienes compras realizadas. Si cambias tu GUID, los mods comprados seguiran vinculados al GUID original usado en cada compra. Si cambias de GUID en el juego, deberas contactar con el administrador.\n\n¿Deseas continuar?'
+      );
+      if (!confirmed) {
+        return;
+      }
+    }
+
     this.authService.updateProfile(this.editData).subscribe({
       next: (res) => {
-        this.updateMessage = 'Perfil actualizado con éxito. Si cambiaste la contraseña, usa la nueva en el próximo inicio de sesión.';
+        if (this.isGuidChangingWithPurchases()) {
+          this.updateMessage = 'Perfil actualizado. Aviso: tus compras anteriores siguen vinculadas al GUID original de cada compra. Si cambias de GUID en el juego, contacta con el administrador.';
+        } else {
+          this.updateMessage = 'Perfil actualizado con éxito. Si cambiaste la contraseña, usa la nueva en el próximo inicio de sesión.';
+        }
         
         // The API now returns an AuthResponse with the updated token, rol, guid, and nombre.
         if (res && res.token) {
@@ -96,6 +112,7 @@ export class UserDashboardComponent implements OnInit {
             // Also update editData so next time we open edit it's correct
             this.editData.nombre = res.nombre;
             this.editData.guid = res.guid;
+            this.originalGuid = (res.guid || '').toUpperCase();
             // The new token uses the new email as subject
         }
 
@@ -109,5 +126,10 @@ export class UserDashboardComponent implements OnInit {
 
   getPurchaseImage(path?: string) {
     return path?.trim() ? path : '/logo.png';
+  }
+
+  isGuidChangingWithPurchases(): boolean {
+    const current = (this.editData.guid || '').trim().toUpperCase();
+    return this.purchases.length > 0 && !!this.originalGuid && current !== this.originalGuid;
   }
 }

@@ -26,6 +26,9 @@ public class Compra {
     @Column(name = "metodo_pago", nullable = false, length = 50)
     private String metodoPago;
 
+    @Column(name = "guid_compra", nullable = false, length = 8)
+    private String guidCompra;
+
     @Column(updatable = false)
     private LocalDateTime fecha = LocalDateTime.now();
 
@@ -45,6 +48,9 @@ public class Compra {
 
     public String getMetodoPago() { return metodoPago; }
     public void setMetodoPago(String metodoPago) { this.metodoPago = metodoPago; }
+
+    public String getGuidCompra() { return guidCompra; }
+    public void setGuidCompra(String guidCompra) { this.guidCompra = guidCompra; }
 
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }

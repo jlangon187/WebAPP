@@ -16,6 +16,7 @@ import { Home } from './components/home/home';
 import { Support } from './components/support/support';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password';
 import { ResetPasswordComponent } from './components/reset-password/reset-password';
+import { CompleteProfileComponent } from './components/complete-profile/complete-profile';
 import { authGuard } from './guards/auth.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
+  { path: 'complete-profile', component: CompleteProfileComponent, canActivate: [authGuard] },
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard] },

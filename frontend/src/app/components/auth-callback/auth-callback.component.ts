@@ -13,14 +13,17 @@ export class AuthCallbackComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['token']) {
+        const decodedNombre = params['nombre'] ? decodeURIComponent(params['nombre']) : 'User';
         const user = {
           token: params['token'],
           rol: params['rol'] || 'registrado',
           guid: params['guid'] || '',
-          nombre: params['nombre'] || 'User'
+          nombre: decodedNombre
         };
         this.authService.setExternalLogin(user);
-        this.router.navigate(['/catalog']);
+
+        const needsCompleteProfile = params['completeProfile'] === 'true' || !user.guid;
+        this.router.navigate([needsCompleteProfile ? '/complete-profile' : '/catalog']);
       } else {
         this.router.navigate(['/login']);
       }

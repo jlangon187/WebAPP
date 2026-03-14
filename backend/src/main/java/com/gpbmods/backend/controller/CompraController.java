@@ -50,6 +50,11 @@ public class CompraController {
             return ResponseEntity.badRequest().body("You already own this Mod.");
         }
 
+        String guidUsuario = usuario.getGuid();
+        if (guidUsuario == null || !guidUsuario.matches("^[A-F0-9]{8}$")) {
+            return ResponseEntity.badRequest().body("Debes completar tu GUID de juego (8 hex) antes de comprar mods.");
+        }
+
         // Handle simulation
         if (!"Simulacion".equalsIgnoreCase(request.getMetodoPago()) &&
             !"Stripe".equalsIgnoreCase(request.getMetodoPago()) &&
@@ -63,6 +68,7 @@ public class CompraController {
         compra.setMod(mod);
         compra.setPrecioPagado(mod.getPrecio());
         compra.setMetodoPago(request.getMetodoPago());
+        compra.setGuidCompra(guidUsuario.toUpperCase());
         compraRepository.save(compra);
 
         return ResponseEntity.ok("Purchase successful via " + request.getMetodoPago() + "!");
