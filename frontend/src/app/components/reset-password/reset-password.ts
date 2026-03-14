@@ -57,7 +57,7 @@ export class ResetPasswordComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.http.post('http://localhost:8080/api/auth/reset-password', { 
+    this.http.post('/api/auth/reset-password', { 
         token: this.token,
         newPassword: this.newPassword 
     }, { responseType: 'text' })

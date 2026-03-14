@@ -25,7 +25,7 @@ export class ForgotPasswordComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    this.http.post('http://localhost:8080/api/auth/forgot-password', { email: this.email }, { responseType: 'text' })
+    this.http.post('/api/auth/forgot-password', { email: this.email }, { responseType: 'text' })
       .subscribe({
         next: (response: any) => {
           this.loading = false;
