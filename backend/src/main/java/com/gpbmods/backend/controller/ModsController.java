@@ -67,8 +67,7 @@ public class ModsController {
         }
     }
 
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
+    @GetMapping("/detail/{id}")
     public ResponseEntity<?> getModById(@PathVariable Long id) {
         Optional<Mods> mod = modsRepository.findById(id);
         if (mod.isPresent()) {

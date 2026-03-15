@@ -46,7 +46,7 @@ export class ModService {
   }
 
   getModDetails(id: number): Observable<Mod> {
-    return this.http.get<Mod>(`${this.apiUrl}/mods/${id}`);
+    return this.http.get<Mod>(`${this.apiUrl}/mods/detail/${id}`);
   }
 
   purchaseMod(modId: number, metodoPago: string): Observable<any> {
