@@ -14,6 +14,8 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class UserDashboardComponent implements OnInit {
   purchases: any[] = [];
+  tickets: any[] = [];
+  ratings: any[] = [];
   loading = true;
   error = '';
   userName = '';
@@ -43,6 +45,8 @@ export class UserDashboardComponent implements OnInit {
 
         if (!this.isAdmin) {
           this.loadPurchases();
+          this.loadTickets();
+          this.loadRatings();
         } else {
           this.loading = false;
         }
@@ -59,6 +63,28 @@ export class UserDashboardComponent implements OnInit {
       error: (err) => {
         this.error = 'Failed to load your purchases.';
         this.loading = false;
+      }
+    });
+  }
+
+  loadTickets() {
+    this.modService.getMyTickets().subscribe({
+      next: (data) => {
+        this.tickets = data || [];
+      },
+      error: () => {
+        this.tickets = [];
+      }
+    });
+  }
+
+  loadRatings() {
+    this.modService.getMyComentarios().subscribe({
+      next: (data) => {
+        this.ratings = data || [];
+      },
+      error: () => {
+        this.ratings = [];
       }
     });
   }
@@ -131,5 +157,13 @@ export class UserDashboardComponent implements OnInit {
   isGuidChangingWithPurchases(): boolean {
     const current = (this.editData.guid || '').trim().toUpperCase();
     return this.purchases.length > 0 && !!this.originalGuid && current !== this.originalGuid;
+  }
+
+  getTicketSummary(message?: string): string {
+    const text = (message || '').trim();
+    if (!text) {
+      return '';
+    }
+    return text.length > 140 ? `${text.substring(0, 140)}...` : text;
   }
 }

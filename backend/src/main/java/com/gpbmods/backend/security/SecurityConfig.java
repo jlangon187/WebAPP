@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/mods/catalog").permitAll()
                 .requestMatchers("/api/mods/showroom").permitAll()
                 .requestMatchers("/api/mods/detail/*").permitAll()
+                .requestMatchers("/api/mods/*/comentarios").permitAll()
+                .requestMatchers("/api/mods/ratings").permitAll()
                 .requestMatchers("/api/categorias").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/error").permitAll()

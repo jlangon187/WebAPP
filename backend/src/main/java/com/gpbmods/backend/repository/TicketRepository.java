@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByUsuarioId(Long usuarioId);
+    List<Ticket> findByUsuarioIdOrderByCreadoEnDesc(Long usuarioId);
+    List<Ticket> findAllByOrderByCreadoEnDesc();
     long countByEstadoNot(Ticket.Estado estado);
     long countByEstadoNotAndCreadoEnBetween(Ticket.Estado estado, LocalDateTime fromDate, LocalDateTime toDate);
 }

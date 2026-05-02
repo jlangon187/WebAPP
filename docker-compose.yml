@@ -10,7 +10,7 @@ services:
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     restart: unless-stopped
@@ -20,9 +20,9 @@ services:
       context: ./backend
     container_name: gpbikes-backend
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/${MARIADB_DATABASE}
-      - SPRING_DATASOURCE_USERNAME=${MARIADB_USER}
-      - SPRING_DATASOURCE_PASSWORD=${MARIADB_PASSWORD}
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:mariadb://db:3306/${MARIADB_DATABASE}}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-${MARIADB_USER}}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-${MARIADB_PASSWORD}}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
       - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
       - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
@@ -38,8 +38,8 @@ services:
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
     volumes:
-      - ${NAS_HOME_IMAGES_PATH}:/data/home-images
-      - ${NAS_MODS_FILES_PATH}:/data/mods-files
+      - ${NAS_HOME_IMAGES_PATH:-./frontend/public/home}:/data/home-images
+      - ${NAS_MODS_FILES_PATH:-./tmp/mods-files}:/data/mods-files
 
     ports:
       - "8080:8080"
@@ -54,7 +54,7 @@ services:
     ports:
       - "4200:80"
     volumes:
-      - ${NAS_HOME_IMAGES_PATH}:/usr/share/nginx/html/home:ro
+      - ${NAS_HOME_IMAGES_PATH:-./frontend/public/home}:/usr/share/nginx/html/home:ro
     depends_on:
       - backend
     restart: unless-stopped

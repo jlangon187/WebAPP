@@ -61,67 +61,45 @@
                     <span class="material-symbols-outlined text-xs">{{ trendIcon(stats.ticketsTrendPercent) }}</span> {{ trendLabel(stats.ticketsTrendPercent) }}
                 </span>
             </div>
+            <div class="mt-4 pt-3 border-t border-primary/10 flex items-center justify-between">
+                <span class="text-xs text-slate-400">Gestión de soporte</span>
+                <button (click)="goToTicketsManager()" class="inline-flex items-center gap-2 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 px-3 py-1.5 text-xs font-bold transition-colors">
+                    <span class="material-symbols-outlined text-sm">notifications</span>
+                    Ver tickets
+                    <span *ngIf="stats.activeTickets > 0" class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] text-white">{{ stats.activeTickets }}</span>
+                </button>
+            </div>
         </div>
     </section>
 
-    <!-- Main Workspace -->
-    <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Recent Mods Management -->
-        <section class="flex-1 bg-slate-900/40 rounded-xl border border-primary/10 shadow-sm overflow-hidden flex flex-col">
-            <div class="p-6 border-b border-primary/10 flex items-center justify-between">
-                <h2 class="text-lg font-bold text-white">Gestión de Catálogo (Mods)</h2>
-                <button (click)="openCreateMod()" class="flex items-center gap-2 text-sm font-bold text-white bg-primary px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
-                    <span class="material-symbols-outlined text-sm">add</span> Nuevo Mod
-                </button>
+    <!-- Management Quick Access -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Gestor de Mods</h3>
+                <span class="material-symbols-outlined text-primary">inventory_2</span>
             </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-800/50 border-b border-primary/10">
-                        <tr>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Precio</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Categoría</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Versión</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Showroom</th>
-                            <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-primary/5">
-                        <tr *ngIf="mods.length === 0">
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-500">
-                                No hay mods en la base de datos.
-                            </td>
-                        </tr>
-                        <tr *ngFor="let mod of mods" class="hover:bg-slate-800/30 transition-colors">
-                            <td class="px-6 py-4 text-sm text-slate-400">#{{ mod.id }}</td>
-                            <td class="px-6 py-4 text-sm font-bold text-white">{{ mod.nombre }}</td>
-                            <td class="px-6 py-4 text-sm text-emerald-400">{{ mod.precio | currency:'EUR' }}</td>
-                            <td class="px-6 py-4 text-sm text-slate-300">{{ mod.categoria?.nombre || '-' }}</td>
-                            <td class="px-6 py-4">
-                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-slate-800 text-slate-300">{{ mod.version }}</span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-slate-300">
-                                <span *ngIf="mod.destacadoHome">#{{ mod.ordenShowroom }}</span>
-                                <span *ngIf="!mod.destacadoHome">-</span>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-3">
-                                    <button (click)="openEditMod(mod)" class="p-1 text-slate-400 hover:text-primary transition-colors" title="Editar Mod">
-                                        <span class="material-symbols-outlined text-xl">edit</span>
-                                    </button>
-                                    <button (click)="deleteMod(mod.id)" class="p-1 text-slate-400 hover:text-red-500 transition-colors" title="Eliminar Mod">
-                                        <span class="material-symbols-outlined text-xl">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            <p class="text-sm text-slate-400 mb-5">Accede a la sección dedicada para crear, editar y organizar mods del catálogo.</p>
+            <button (click)="goToModsManager()" class="px-4 py-2 text-sm font-bold rounded-lg bg-primary hover:bg-primary/90 text-white transition-colors">
+                Abrir gestor de mods
+            </button>
+        </article>
 
-        <!-- System Status Card -->
+        <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Gestor de Tickets</h3>
+                <span class="material-symbols-outlined text-orange-400">support_agent</span>
+            </div>
+            <p class="text-sm text-slate-400 mb-5">Revisa incidencias, responde a usuarios y cierra tickets desde un módulo exclusivo.</p>
+            <button (click)="goToTicketsManager()" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 transition-colors">
+                Abrir gestor de tickets
+                <span *ngIf="stats.activeTickets > 0" class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] text-white">{{ stats.activeTickets }}</span>
+            </button>
+        </article>
+    </section>
+
+    <!-- System Status Card -->
+    <div class="flex flex-col lg:flex-row gap-8">
         <aside class="w-full lg:w-80 flex-shrink-0 space-y-6">
             <div class="bg-primary/10 p-6 rounded-xl border border-primary/20 shadow-sm">
                 <h3 class="font-bold text-primary mb-2">Estado del NAS</h3>
@@ -161,11 +139,3 @@
     </div>
     </div>
 </div>
-
-<!-- Modal Dialog -->
-<app-admin-mod-editor *ngIf="showEditor && editingMod"
-    [mod]="editingMod"
-    [isEdit]="isEditing"
-    (save)="saveMod($event)"
-    (cancel)="closeEditor()">
-</app-admin-mod-editor>

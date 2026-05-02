@@ -20,6 +20,21 @@ export interface Mod {
   youtubeUrl?: string | null;
 }
 
+export interface Comentario {
+  id: number;
+  puntuacion: number;
+  mensaje: string;
+  creadoEn: string;
+  usuarioNombre: string;
+  usuarioId: number;
+}
+
+export interface ModRatingSummary {
+  modId: number;
+  avgPuntuacion: number;
+  totalComentarios: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -81,5 +96,29 @@ export class ModService {
 
   deleteMod(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/mods/${id}`, { headers: this.getHeaders() });
+  }
+
+  getComentarios(modId: number): Observable<Comentario[]> {
+    return this.http.get<Comentario[]>(`${this.apiUrl}/mods/${modId}/comentarios`);
+  }
+
+  getRatingsSummary(): Observable<ModRatingSummary[]> {
+    return this.http.get<ModRatingSummary[]>(`${this.apiUrl}/mods/ratings`);
+  }
+
+  createComentario(modId: number, puntuacion: number, mensaje: string): Observable<Comentario> {
+    return this.http.post<Comentario>(`${this.apiUrl}/mods/${modId}/comentarios`, { puntuacion, mensaje }, { headers: this.getHeaders() });
+  }
+
+  deleteComentario(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/admin/comentarios/${id}`, { headers: this.getHeaders() });
+  }
+
+  getMyTickets(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/tickets/mis-tickets`, { headers: this.getHeaders() });
+  }
+
+  getMyComentarios(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/comentarios/mis`, { headers: this.getHeaders() });
   }
 }

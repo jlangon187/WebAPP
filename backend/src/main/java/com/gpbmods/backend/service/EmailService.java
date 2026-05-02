@@ -48,4 +48,29 @@ public class EmailService {
             throw new RuntimeException("Error al enviar el correo de recuperación", e);
         }
     }
+
+    public void sendTicketResponseEmail(String toEmail, Long ticketId, String respuesta, String estado) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("soporte@gpbikes-mods.com", "Soporte GPBikes-Mods");
+            helper.setTo(toEmail);
+            helper.setSubject("GPBikes Mods - Respuesta a Ticket #" + ticketId);
+
+            String htmlMessage = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0f1623; color: #ffffff; border-radius: 10px;'>" +
+                    "<h2 style='color: #e60000; text-align: center;'>Respuesta de Soporte</h2>" +
+                    "<p style='color: #e2e8f0;'>Tu ticket <strong>#" + ticketId + "</strong> ha sido actualizado.</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Estado:</strong> " + estado + "</p>" +
+                    "<div style='margin: 20px 0; padding: 12px; border-radius: 6px; background-color: #1e293b; color: #e2e8f0; white-space: pre-wrap;'>" + respuesta + "</div>" +
+                    "<p style='color: #94a3b8;'>Puedes revisar el ticket iniciando sesión en la plataforma.</p>" +
+                    "<p style='color: #94a3b8;'>Nota: si el ticket se cierra, no podrá reabrirse automáticamente.</p>" +
+                    "</div>";
+
+            helper.setText(htmlMessage, true);
+            mailSender.send(message);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al enviar correo de respuesta de ticket", e);
+        }
+    }
 }

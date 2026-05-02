@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ModService, Mod } from '../../services/mod/mod.service';
+import { ModService, Mod, ModRatingSummary } from '../../services/mod/mod.service';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
@@ -18,6 +18,7 @@ export class Home implements OnInit, OnDestroy {
   slideInterval: any;
   loading = false;
   error = '';
+  ratingsByMod: Record<number, ModRatingSummary> = {};
 
   constructor(
     private modService: ModService,
@@ -52,6 +53,15 @@ export class Home implements OnInit, OnDestroy {
       error: () => {
         this.error = 'Failed to load trending mods.';
         this.loading = false;
+      }
+    });
+
+    this.modService.getRatingsSummary().subscribe({
+      next: (rows) => {
+        this.ratingsByMod = (rows || []).reduce((acc, row) => {
+          acc[row.modId] = row;
+          return acc;
+        }, {} as Record<number, ModRatingSummary>);
       }
     });
   }
@@ -105,5 +115,15 @@ export class Home implements OnInit, OnDestroy {
   addToCart(mod: Mod, event: Event) {
     event.stopPropagation();
     this.cartService.addToCart(mod);
+  }
+
+  getModRating(modId: number): number {
+    const row = this.ratingsByMod[modId];
+    return row ? row.avgPuntuacion : 0;
+  }
+
+  getModRatingCount(modId: number): number {
+    const row = this.ratingsByMod[modId];
+    return row ? row.totalComentarios : 0;
   }
 }

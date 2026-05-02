@@ -7,6 +7,8 @@ import { UserDashboardComponent } from './components/user-dashboard/user-dashboa
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { AdminDashboardComponent } from './components/admin-dashboard/admin-dashboard.component';
+import { AdminModsManagerComponent } from './components/admin-mods-manager/admin-mods-manager.component';
+import { AdminTicketsManagerComponent } from './components/admin-tickets-manager/admin-tickets-manager.component';
 import { DiscordCommunityComponent } from './components/discord-community/discord-community.component';
 import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 import { Faq } from './components/faq/faq';
@@ -31,11 +33,13 @@ export const routes: Routes = [
   { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
   { path: 'dashboard', component: UserDashboardComponent, canActivate: [authGuard] },
   { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard] },
+  { path: 'admin/mods', component: AdminModsManagerComponent, canActivate: [authGuard] },
+  { path: 'admin/tickets', component: AdminTicketsManagerComponent, canActivate: [authGuard] },
   { path: 'discord', component: DiscordCommunityComponent },
   { path: 'faq', component: Faq },
   { path: 'politica-devoluciones', component: PoliticaDevoluciones },
   { path: 'terminos-condiciones', component: TerminosCondiciones },
-  { path: 'support', component: Support },
+  { path: 'support', component: Support, canActivate: [authGuard] },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: '**', redirectTo: '/home' }

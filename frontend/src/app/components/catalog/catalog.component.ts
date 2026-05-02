@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ModService, Mod, Categoria } from '../../services/mod/mod.service';
+import { ModService, Mod, Categoria, ModRatingSummary } from '../../services/mod/mod.service';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
@@ -16,6 +16,7 @@ export class CatalogComponent implements OnInit {
   filteredMods: Mod[] = [];
   categorias: Categoria[] = [];
   categoriaActiva = 'Todos';
+  ratingsByMod: Record<number, ModRatingSummary> = {};
   loading = true;
   error = '';
 
@@ -41,6 +42,15 @@ export class CatalogComponent implements OnInit {
       error: (err) => {
         this.error = 'Failed to load catalog.';
         this.loading = false;
+      }
+    });
+
+    this.modService.getRatingsSummary().subscribe({
+      next: (rows) => {
+        this.ratingsByMod = (rows || []).reduce((acc, row) => {
+          acc[row.modId] = row;
+          return acc;
+        }, {} as Record<number, ModRatingSummary>);
       }
     });
   }
@@ -70,5 +80,15 @@ export class CatalogComponent implements OnInit {
   addToCart(mod: Mod, event: Event) {
     event.stopPropagation();
     this.cartService.addToCart(mod);
+  }
+
+  getModRating(modId: number): number {
+    const row = this.ratingsByMod[modId];
+    return row ? row.avgPuntuacion : 0;
+  }
+
+  getModRatingCount(modId: number): number {
+    const row = this.ratingsByMod[modId];
+    return row ? row.totalComentarios : 0;
   }
 }

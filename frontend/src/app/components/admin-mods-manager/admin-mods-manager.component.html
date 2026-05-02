@@ -1,0 +1,59 @@
+<div class="p-6 lg:p-10 w-full">
+  <div class="flex items-center justify-between mb-8 pb-4 border-b border-primary/20">
+    <div>
+      <h2 class="text-3xl font-black italic uppercase tracking-tighter text-white">Gestor de <span class="text-primary">Mods</span></h2>
+      <p class="text-slate-400 mt-1">Catálogo completo y control de showroom</p>
+    </div>
+    <div class="flex gap-3">
+      <button (click)="goBack()" class="px-4 py-2 text-sm font-bold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200">Volver</button>
+      <button (click)="openCreateMod()" class="px-4 py-2 text-sm font-bold rounded-lg bg-primary hover:bg-primary/90 text-white">Nuevo Mod</button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-10 text-slate-400">Cargando mods...</div>
+  <div *ngIf="error" class="text-center py-10 text-accent-red font-bold">{{ error }}</div>
+
+  <div *ngIf="!loading && !error" class="bg-slate-900/40 rounded-xl border border-primary/10 overflow-x-auto">
+    <table class="w-full text-left">
+      <thead class="bg-slate-800/50 border-b border-primary/10">
+        <tr>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">ID</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Nombre</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Precio</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Categoría</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Showroom</th>
+          <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-primary/5">
+        <tr *ngIf="mods.length === 0">
+          <td colspan="6" class="px-6 py-8 text-center text-slate-500">No hay mods en catálogo.</td>
+        </tr>
+        <tr *ngFor="let mod of mods" class="hover:bg-slate-800/30 transition-colors">
+          <td class="px-6 py-4 text-sm text-slate-400">#{{ mod.id }}</td>
+          <td class="px-6 py-4 text-sm font-bold text-white">{{ mod.nombre }}</td>
+          <td class="px-6 py-4 text-sm text-emerald-400">{{ mod.precio | currency:'EUR' }}</td>
+          <td class="px-6 py-4 text-sm text-slate-300">{{ mod.categoria?.nombre || '-' }}</td>
+          <td class="px-6 py-4 text-sm text-slate-300">{{ mod.destacadoHome ? ('#' + mod.ordenShowroom) : '-' }}</td>
+          <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end gap-3">
+              <button (click)="openEditMod(mod)" class="p-1 text-slate-400 hover:text-primary transition-colors">
+                <span class="material-symbols-outlined text-xl">edit</span>
+              </button>
+              <button (click)="deleteMod(mod.id)" class="p-1 text-slate-400 hover:text-red-500 transition-colors">
+                <span class="material-symbols-outlined text-xl">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<app-admin-mod-editor *ngIf="showEditor && editingMod"
+  [mod]="editingMod"
+  [isEdit]="isEditing"
+  (save)="saveMod($event)"
+  (cancel)="closeEditor()">
+</app-admin-mod-editor>
