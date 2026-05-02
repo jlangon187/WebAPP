@@ -99,6 +99,9 @@ public class AuthController {
 
         if (userOpt.isPresent()) {
             Usuario user = userOpt.get();
+            if (!user.isActivo()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Error: Esta cuenta está desactivada. Contacta con un administrador.");
+            }
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
                 String jwt = jwtUtil.generateToken(user.getEmail(), user.getRol().name());
                 return ResponseEntity.ok(new AuthResponse(jwt, user.getRol().name(), user.getGuid(), user.getNombre()));
@@ -257,6 +260,10 @@ public class AuthController {
             Usuario user;
             if (userOpt.isPresent()) {
                 user = userOpt.get();
+                if (!user.isActivo()) {
+                    response.sendRedirect(frontendUrl + "/login?error=account-disabled");
+                    return;
+                }
             } else {
                 user = new Usuario();
                 user.setNombre(username);
@@ -264,6 +271,7 @@ public class AuthController {
                 user.setPasswordHash(passwordEncoder.encode(UUID.randomUUID().toString()));
                 user.setGuid(null);
                 user.setRol(Usuario.Rol.registrado);
+                user.setActivo(true);
                 usuarioRepository.save(user);
             }
 

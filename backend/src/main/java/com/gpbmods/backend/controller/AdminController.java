@@ -148,6 +148,10 @@ public class AdminController {
             user.setPasswordHash(passwordEncoder.encode(password));
         }
 
+        if (request.getActivo() != null) {
+            user.setActivo(request.getActivo());
+        }
+
         usuarioRepository.save(user);
         List<Compra> compras = compraRepository.findByUsuarioId(user.getId());
         return ResponseEntity.ok(buildAdminUserResponse(user, compras));
@@ -160,6 +164,7 @@ public class AdminController {
         payload.put("email", user.getEmail());
         payload.put("guid", user.getGuid());
         payload.put("rol", user.getRol().name());
+        payload.put("activo", user.isActivo());
         payload.put("creadoEn", user.getCreadoEn());
 
         double totalSpent = compras.stream()

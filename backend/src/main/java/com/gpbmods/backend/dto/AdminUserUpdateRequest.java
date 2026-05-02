@@ -6,6 +6,7 @@ public class AdminUserUpdateRequest {
     private String guid;
     private String rol;
     private String password;
+    private Boolean activo;
 
     public String getNombre() {
         return nombre;
@@ -45,5 +46,13 @@ public class AdminUserUpdateRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 }

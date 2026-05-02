@@ -30,6 +30,9 @@ public class Usuario {
     @Column(name = "creado_en", updatable = false)
     private LocalDateTime creadoEn = LocalDateTime.now();
 
+    @Column(nullable = false)
+    private boolean activo = true;
+
     public enum Rol {
         invitado, registrado, admin
     }
@@ -55,4 +58,7 @@ public class Usuario {
 
     public LocalDateTime getCreadoEn() { return creadoEn; }
     public void setCreadoEn(LocalDateTime creadoEn) { this.creadoEn = creadoEn; }
+
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 }

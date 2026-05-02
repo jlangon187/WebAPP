@@ -55,6 +55,7 @@ export interface AdminUser {
   email: string;
   guid: string;
   rol: 'invitado' | 'registrado' | 'admin' | string;
+  activo: boolean;
   creadoEn: string;
   purchasesCount: number;
   totalSpent: number;
@@ -153,7 +154,7 @@ export class ModService {
     return this.http.get<AdminUser[]>(`${this.apiUrl}/admin/users`, { headers: this.getHeaders() });
   }
 
-  updateAdminUser(userId: number, payload: Partial<AdminUser> & { password?: string }): Observable<AdminUser> {
+  updateAdminUser(userId: number, payload: Partial<AdminUser> & { password?: string; activo?: boolean }): Observable<AdminUser> {
     return this.http.put<AdminUser>(`${this.apiUrl}/admin/users/${userId}`, payload, { headers: this.getHeaders() });
   }
 }

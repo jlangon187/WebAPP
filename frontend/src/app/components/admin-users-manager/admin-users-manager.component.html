@@ -33,6 +33,9 @@
           <div class="mt-2 flex flex-wrap gap-2 text-xs">
             <span class="px-2 py-1 rounded bg-slate-800 text-slate-200">GUID: {{ user.guid || 'N/D' }}</span>
             <span class="px-2 py-1 rounded bg-primary/20 text-primary">Rol: {{ user.rol }}</span>
+            <span class="px-2 py-1 rounded" [ngClass]="user.activo ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'">
+              Estado: {{ user.activo ? 'Activo' : 'Desactivado' }}
+            </span>
             <span class="px-2 py-1 rounded bg-slate-800 text-slate-200">Registro: {{ user.creadoEn | date:'short' }}</span>
           </div>
           <div class="mt-2 flex flex-wrap gap-2 text-xs">
@@ -63,6 +66,10 @@
             <option value="registrado">registrado</option>
             <option value="admin">admin</option>
           </select>
+          <label class="flex items-center gap-2 text-sm text-slate-200 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2">
+            <input [(ngModel)]="editForm.activo" type="checkbox" class="accent-primary" />
+            Cuenta activa
+          </label>
           <input [(ngModel)]="editForm.password" type="password" placeholder="Nueva contrasena (opcional)" class="md:col-span-2 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" />
         </div>
         <div class="mt-4 flex gap-2">

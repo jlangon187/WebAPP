@@ -1,5 +1,7 @@
 package com.gpbmods.backend.security;
 
+import com.gpbmods.backend.model.Usuario;
+import com.gpbmods.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,12 +16,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -29,6 +35,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (jwt != null && jwtUtil.validateToken(jwt)) {
                 String email = jwtUtil.getEmailFromToken(jwt);
                 String rol = jwtUtil.getRoleFromToken(jwt);
+
+                Optional<Usuario> userOpt = usuarioRepository.findByEmail(email);
+                if (userOpt.isEmpty() || !userOpt.get().isActivo()) {
+                    SecurityContextHolder.clearContext();
+                    filterChain.doFilter(request, response);
+                    return;
+                }
 
                 SimpleGrantedAuthority authority = new SimpleGrantedAuthority(rol);
 

@@ -24,12 +24,14 @@ export class AdminUsersManagerComponent implements OnInit {
     email: string;
     guid: string;
     rol: string;
+    activo: boolean;
     password: string;
   } = {
     nombre: '',
     email: '',
     guid: '',
     rol: 'registrado',
+    activo: true,
     password: ''
   };
 
@@ -81,6 +83,7 @@ export class AdminUsersManagerComponent implements OnInit {
       email: user.email || '',
       guid: user.guid || '',
       rol: user.rol || 'registrado',
+      activo: user.activo !== false,
       password: ''
     };
   }
@@ -99,7 +102,8 @@ export class AdminUsersManagerComponent implements OnInit {
       nombre: this.editForm.nombre?.trim(),
       email: this.editForm.email?.trim(),
       guid: this.editForm.guid?.trim().toUpperCase(),
-      rol: this.editForm.rol
+      rol: this.editForm.rol,
+      activo: this.editForm.activo
     };
 
     if ((this.editForm.password || '').trim()) {
