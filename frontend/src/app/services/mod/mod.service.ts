@@ -35,6 +35,33 @@ export interface ModRatingSummary {
   totalComentarios: number;
 }
 
+export interface AdminPurchase {
+  id: number;
+  fecha: string;
+  precioPagado: number;
+  metodoPago: string;
+  guidCompra: string;
+  mod: {
+    id: number;
+    nombre: string;
+    version: string;
+    archivoOriginal?: string;
+  };
+}
+
+export interface AdminUser {
+  id: number;
+  nombre: string;
+  email: string;
+  guid: string;
+  rol: 'invitado' | 'registrado' | 'admin' | string;
+  creadoEn: string;
+  purchasesCount: number;
+  totalSpent: number;
+  lastPurchaseAt?: string | null;
+  purchases: AdminPurchase[];
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -120,5 +147,13 @@ export class ModService {
 
   getMyComentarios(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/comentarios/mis`, { headers: this.getHeaders() });
+  }
+
+  getAdminUsers(): Observable<AdminUser[]> {
+    return this.http.get<AdminUser[]>(`${this.apiUrl}/admin/users`, { headers: this.getHeaders() });
+  }
+
+  updateAdminUser(userId: number, payload: Partial<AdminUser> & { password?: string }): Observable<AdminUser> {
+    return this.http.put<AdminUser>(`${this.apiUrl}/admin/users/${userId}`, payload, { headers: this.getHeaders() });
   }
 }

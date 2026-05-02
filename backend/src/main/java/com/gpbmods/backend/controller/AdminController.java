@@ -1,5 +1,8 @@
 package com.gpbmods.backend.controller;
 
+import com.gpbmods.backend.dto.AdminUserUpdateRequest;
+import com.gpbmods.backend.model.Compra;
+import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.model.Ticket;
 import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.TicketRepository;
@@ -7,7 +10,11 @@ import com.gpbmods.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,8 +25,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
@@ -30,11 +40,16 @@ public class AdminController {
     private final CompraRepository compraRepository;
     private final UsuarioRepository usuarioRepository;
     private final TicketRepository ticketRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminController(CompraRepository compraRepository, UsuarioRepository usuarioRepository, TicketRepository ticketRepository) {
+    public AdminController(CompraRepository compraRepository,
+                           UsuarioRepository usuarioRepository,
+                           TicketRepository ticketRepository,
+                           PasswordEncoder passwordEncoder) {
         this.compraRepository = compraRepository;
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Value("${mods.images.directory:/data/home-images}")
@@ -70,6 +85,120 @@ public class AdminController {
         stats.put("ticketsTrendPercent", calculateTrendPercent((double) ticketsLast30, (double) ticketsPrev30));
         stats.put("nas", getNasStats());
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsersWithPurchases() {
+        List<Usuario> users = usuarioRepository.findAllByOrderByCreadoEnDesc();
+        List<Map<String, Object>> payload = new ArrayList<>();
+
+        for (Usuario user : users) {
+            List<Compra> compras = compraRepository.findByUsuarioId(user.getId());
+            payload.add(buildAdminUserResponse(user, compras));
+        }
+
+        return ResponseEntity.ok(payload);
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<?> updateUserByAdmin(@PathVariable Long id, @RequestBody AdminUserUpdateRequest request) {
+        Optional<Usuario> userOpt = usuarioRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+
+        Usuario user = userOpt.get();
+
+        if (request.getNombre() != null && !request.getNombre().trim().isEmpty()) {
+            user.setNombre(request.getNombre().trim());
+        }
+
+        if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+            String newEmail = request.getEmail().trim();
+            if (!newEmail.equalsIgnoreCase(user.getEmail()) && usuarioRepository.existsByEmail(newEmail)) {
+                return ResponseEntity.badRequest().body("Ese email ya está en uso por otro usuario.");
+            }
+            user.setEmail(newEmail);
+        }
+
+        if (request.getGuid() != null && !request.getGuid().trim().isEmpty()) {
+            String guid = request.getGuid().trim().toUpperCase();
+            if (!guid.matches("^[A-F0-9]{8}$")) {
+                return ResponseEntity.badRequest().body("El GUID debe ser de 8 caracteres hexadecimales.");
+            }
+            if (!guid.equals(user.getGuid()) && usuarioRepository.existsByGuid(guid)) {
+                return ResponseEntity.badRequest().body("Ese GUID ya está en uso por otro usuario.");
+            }
+            user.setGuid(guid);
+        }
+
+        if (request.getRol() != null && !request.getRol().trim().isEmpty()) {
+            try {
+                user.setRol(Usuario.Rol.valueOf(request.getRol().trim().toLowerCase()));
+            } catch (IllegalArgumentException ex) {
+                return ResponseEntity.badRequest().body("Rol inválido. Usa: invitado, registrado o admin.");
+            }
+        }
+
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            String password = request.getPassword().trim();
+            if (password.length() < 6) {
+                return ResponseEntity.badRequest().body("La contraseña debe tener al menos 6 caracteres.");
+            }
+            user.setPasswordHash(passwordEncoder.encode(password));
+        }
+
+        usuarioRepository.save(user);
+        List<Compra> compras = compraRepository.findByUsuarioId(user.getId());
+        return ResponseEntity.ok(buildAdminUserResponse(user, compras));
+    }
+
+    private Map<String, Object> buildAdminUserResponse(Usuario user, List<Compra> compras) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("id", user.getId());
+        payload.put("nombre", user.getNombre());
+        payload.put("email", user.getEmail());
+        payload.put("guid", user.getGuid());
+        payload.put("rol", user.getRol().name());
+        payload.put("creadoEn", user.getCreadoEn());
+
+        double totalSpent = compras.stream()
+                .map(Compra::getPrecioPagado)
+                .filter(java.util.Objects::nonNull)
+                .mapToDouble(value -> value.doubleValue())
+                .sum();
+
+        LocalDateTime lastPurchaseAt = compras.stream()
+                .map(Compra::getFecha)
+                .filter(java.util.Objects::nonNull)
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+
+        payload.put("purchasesCount", compras.size());
+        payload.put("totalSpent", totalSpent);
+        payload.put("lastPurchaseAt", lastPurchaseAt);
+
+        List<Map<String, Object>> purchasesPayload = new ArrayList<>();
+        for (Compra compra : compras) {
+            Map<String, Object> row = new HashMap<>();
+            row.put("id", compra.getId());
+            row.put("fecha", compra.getFecha());
+            row.put("precioPagado", compra.getPrecioPagado());
+            row.put("metodoPago", compra.getMetodoPago());
+            row.put("guidCompra", compra.getGuidCompra());
+
+            Map<String, Object> mod = new HashMap<>();
+            mod.put("id", compra.getMod().getId());
+            mod.put("nombre", compra.getMod().getNombre());
+            mod.put("version", compra.getMod().getVersion());
+            mod.put("archivoOriginal", compra.getMod().getArchivoOriginal());
+            row.put("mod", mod);
+
+            purchasesPayload.add(row);
+        }
+
+        payload.put("purchases", purchasesPayload);
+        return payload;
     }
 
     private BigDecimal safeDecimal(BigDecimal value) {

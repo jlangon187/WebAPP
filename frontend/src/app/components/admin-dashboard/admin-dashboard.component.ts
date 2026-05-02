@@ -68,6 +68,10 @@ export class AdminDashboardComponent implements OnInit {
     this.router.navigate(['/admin/tickets']);
   }
 
+  goToUsersManager() {
+    this.router.navigate(['/admin/users']);
+  }
+
   formatBytes(value: number): string {
     if (!value || value <= 0) {
       return '0 B';

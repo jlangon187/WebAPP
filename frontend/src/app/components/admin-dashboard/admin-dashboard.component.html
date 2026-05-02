@@ -73,7 +73,7 @@
     </section>
 
     <!-- Management Quick Access -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-white">Gestor de Mods</h3>
@@ -94,6 +94,17 @@
             <button (click)="goToTicketsManager()" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 transition-colors">
                 Abrir gestor de tickets
                 <span *ngIf="stats.activeTickets > 0" class="rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] text-white">{{ stats.activeTickets }}</span>
+            </button>
+        </article>
+
+        <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">Gestor de Usuarios</h3>
+                <span class="material-symbols-outlined text-blue-300">group</span>
+            </div>
+            <p class="text-sm text-slate-400 mb-5">Consulta todos los usuarios, modifica datos y revisa sus compras desde un único panel.</p>
+            <button (click)="goToUsersManager()" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 transition-colors">
+                Abrir gestor de usuarios
             </button>
         </article>
     </section>
