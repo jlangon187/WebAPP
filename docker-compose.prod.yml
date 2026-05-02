@@ -1,20 +1,10 @@
 version: '3.8'
 
 services:
-  db:
-    image: mariadb:10.11
-    container_name: gpbikes-db
-    environment:
-      - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    volumes:
-      - mariadb_data:/var/lib/mysql
-    restart: unless-stopped
 
   backend:
     image: ${BACKEND_IMAGE}
+    pull_policy: never
     container_name: gpbikes-backend
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
@@ -45,6 +35,7 @@ services:
 
   frontend:
     image: ${FRONTEND_IMAGE}
+    pull_policy: never
     container_name: gpbikes-frontend
     ports:
       - "4200:80"
