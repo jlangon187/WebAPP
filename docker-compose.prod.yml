@@ -36,7 +36,7 @@ services:
     image: ${FRONTEND_IMAGE}
     pull_policy: never
     ports:
-      - "${FRONTEND_HOST_PORT:-4201}:80"
+      - "${FRONTEND_HOST_PORT:-4200}:80"
     volumes:
       - ${NAS_HOME_IMAGES_PATH}:/usr/share/nginx/html/home:ro
     networks:
