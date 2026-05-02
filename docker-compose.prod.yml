@@ -29,14 +29,14 @@ services:
     networks:
       - gpbikes_shared
     ports:
-      - "8080:8080"
+      - "${BACKEND_HOST_PORT:-8081}:8080"
     restart: unless-stopped
 
   frontend:
     image: ${FRONTEND_IMAGE}
     pull_policy: never
     ports:
-      - "4200:80"
+      - "${FRONTEND_HOST_PORT:-4201}:80"
     volumes:
       - ${NAS_HOME_IMAGES_PATH}:/usr/share/nginx/html/home:ro
     networks:
