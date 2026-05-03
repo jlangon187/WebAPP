@@ -198,25 +198,13 @@ public class DescargasController {
     }
 
     @GetMapping("/file/{token}")
-    @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
-    public ResponseEntity<?> downloadFile(@PathVariable String token, Authentication authentication) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(authentication.getName());
-        if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
-        }
-
+    public ResponseEntity<?> downloadFile(@PathVariable String token) {
         Optional<EncryptionJob> jobOpt = encryptionJobRepository.findByDownloadToken(token);
         if (jobOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         EncryptionJob job = jobOpt.get();
-        Usuario usuario = usuarioOpt.get();
-        boolean isOwner = job.getUsuario().getId().equals(usuario.getId());
-        boolean isAdmin = usuario.getRol() == Usuario.Rol.admin;
-        if (!isOwner && !isAdmin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes descargar este archivo.");
-        }
 
         if (job.getStatus() != EncryptionJob.Status.DONE) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El paquete aun no esta listo.");

@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/mods/catalog").permitAll()
                 .requestMatchers("/api/mods/showroom").permitAll()
                 .requestMatchers("/api/mods/detail/*").permitAll()
+                .requestMatchers("/api/descargas/file/*").permitAll()
                 .requestMatchers("/api/mods/*/comentarios").permitAll()
                 .requestMatchers("/api/mods/ratings").permitAll()
                 .requestMatchers("/api/categorias").permitAll()
