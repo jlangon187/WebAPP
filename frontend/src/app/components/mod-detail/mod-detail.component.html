@@ -56,7 +56,11 @@
                 <div class="sticky top-28 flex flex-col gap-6">
                     <!-- Product Title & Stats -->
                     <div class="flex flex-col gap-2">
-                        <span class="text-xs font-bold uppercase tracking-widest text-primary">Mod Premium HRC</span>
+                        <span *ngIf="hasPurchased"
+                            class="inline-flex w-fit items-center gap-1 rounded-full border border-emerald-300/50 bg-emerald-400/15 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.2em] text-emerald-300 shadow-[0_0_18px_rgba(16,185,129,0.35)]">
+                            <span class="material-symbols-outlined text-[14px]">verified</span>
+                            Mod Adquirido
+                        </span>
                         <h2 class="text-3xl font-black leading-none text-white">{{ mod.nombre }}</h2>
                         <div class="flex items-center gap-4 py-2">
                             <div class="flex items-center gap-1 text-yellow-500">

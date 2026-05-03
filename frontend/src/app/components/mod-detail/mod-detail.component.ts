@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class ModDetailComponent implements OnInit {
   mod: Mod | null = null;
+  hasPurchased = false;
   comentarios: Comentario[] = [];
   promedioPuntuacion = 0;
   comentarioForm = {
@@ -44,6 +45,7 @@ export class ModDetailComponent implements OnInit {
       this.modService.getModDetails(+idParam).subscribe({
         next: (data) => {
           this.mod = data;
+          this.checkIfPurchased(data.id);
           this.youtubeEmbedUrl = this.buildYoutubeEmbedUrl(this.mod.youtubeUrl);
           this.loadComentarios(this.mod.id);
           this.loading = false;
@@ -57,6 +59,22 @@ export class ModDetailComponent implements OnInit {
       this.error = 'Invalid Mod ID';
       this.loading = false;
     }
+  }
+
+  private checkIfPurchased(modId: number): void {
+    if (!this.isLoggedIn()) {
+      this.hasPurchased = false;
+      return;
+    }
+
+    this.modService.getMyPurchases().subscribe({
+      next: (purchases) => {
+        this.hasPurchased = (purchases || []).some((purchase: any) => purchase?.mod?.id === modId);
+      },
+      error: () => {
+        this.hasPurchased = false;
+      }
+    });
   }
 
   addToCart() {
