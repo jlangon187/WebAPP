@@ -99,6 +99,9 @@
                   <button (click)="startPurchaseGuidEdit(purchase)" class="px-2.5 py-1 text-[11px] font-bold rounded bg-blue-500/20 text-blue-300 hover:bg-blue-500/30">
                     Editar GUID compra
                   </button>
+                  <button (click)="resendPurchaseEmail(user, purchase)" class="ml-2 px-2.5 py-1 text-[11px] font-bold rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30">
+                    Enviar correo
+                  </button>
                 </div>
                 <div *ngIf="editingPurchaseGuidId === purchase.id" class="mt-2 flex items-center gap-2">
                   <input [(ngModel)]="purchaseGuidDraft" maxlength="18" placeholder="GUID 18 hex"

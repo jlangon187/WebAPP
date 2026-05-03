@@ -189,4 +189,8 @@ export class ModService {
   updateAdminPurchaseGuid(userId: number, purchaseId: number, guidCompra: string): Observable<AdminUser> {
     return this.http.put<AdminUser>(`${this.apiUrl}/admin/users/${userId}/purchases/${purchaseId}/guid`, { guidCompra }, { headers: this.getHeaders() });
   }
+
+  resendAdminPurchaseDownloadEmail(userId: number, purchaseId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/users/${userId}/purchases/${purchaseId}/resend-download-email`, {}, { headers: this.getHeaders(), responseType: 'text' as 'json' });
+  }
 }

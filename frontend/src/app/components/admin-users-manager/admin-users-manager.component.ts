@@ -163,6 +163,19 @@ export class AdminUsersManagerComponent implements OnInit {
     });
   }
 
+  resendPurchaseEmail(user: AdminUser, purchase: AdminPurchase): void {
+    this.success = '';
+    this.error = '';
+    this.modService.resendAdminPurchaseDownloadEmail(user.id, purchase.id).subscribe({
+      next: (message: any) => {
+        this.success = typeof message === 'string' ? message : `Correo reenviado para ${user.nombre}.`;
+      },
+      error: (err) => {
+        this.error = err?.error || 'No se pudo reenviar el correo de descarga.';
+      }
+    });
+  }
+
   goBack(): void {
     this.router.navigate(['/admin']);
   }

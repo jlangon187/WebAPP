@@ -10,12 +10,14 @@ import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.EncryptionJobRepository;
 import com.gpbmods.backend.repository.TicketRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
+import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,17 +47,20 @@ public class AdminController {
     private final TicketRepository ticketRepository;
     private final EncryptionJobRepository encryptionJobRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public AdminController(CompraRepository compraRepository,
                            UsuarioRepository usuarioRepository,
                            TicketRepository ticketRepository,
                            EncryptionJobRepository encryptionJobRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           EmailService emailService) {
         this.compraRepository = compraRepository;
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
         this.encryptionJobRepository = encryptionJobRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Value("${mods.images.directory:/data/home-images}")
@@ -69,6 +74,9 @@ public class AdminController {
 
     @Value("${spring.mail.username:}")
     private String mailUsername;
+
+    @Value("${mods.downloads.public-base-url:http://localhost:8080/api/descargas/file}")
+    private String publicDownloadBaseUrl;
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
@@ -235,6 +243,57 @@ public class AdminController {
         Usuario user = userOpt.get();
         List<Compra> compras = compraRepository.findByUsuarioId(userId);
         return ResponseEntity.ok(buildAdminUserResponse(user, compras));
+    }
+
+    @PostMapping("/users/{userId}/purchases/{purchaseId}/resend-download-email")
+    public ResponseEntity<?> resendDownloadEmailByAdmin(@PathVariable Long userId,
+                                                        @PathVariable Long purchaseId) {
+        Optional<Usuario> userOpt = usuarioRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+
+        Optional<Compra> compraOpt = compraRepository.findById(purchaseId);
+        if (compraOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Compra no encontrada.");
+        }
+
+        Compra compra = compraOpt.get();
+        if (!compra.getUsuario().getId().equals(userId)) {
+            return ResponseEntity.badRequest().body("La compra no pertenece al usuario indicado.");
+        }
+
+        Usuario user = userOpt.get();
+        String guid = (compra.getGuidCompra() == null ? "" : compra.getGuidCompra().trim().toUpperCase());
+        if (!guid.matches("^[A-F0-9]{18}$")) {
+            return ResponseEntity.badRequest().body("La compra no tiene un GUID valido de 18 hex.");
+        }
+
+        Optional<EncryptionJob> jobOpt = encryptionJobRepository
+                .findTopByUsuarioAndModAndGuidAndStatusAndExpiresAtAfterOrderByCreatedAtDesc(
+                        user,
+                        compra.getMod(),
+                        guid,
+                        EncryptionJob.Status.DONE,
+                        LocalDateTime.now()
+                );
+
+        if (jobOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("No hay un enlace de descarga vigente para esta compra. El usuario debe generar uno nuevo.");
+        }
+
+        EncryptionJob job = jobOpt.get();
+        if (job.getDownloadToken() == null || job.getDownloadToken().isBlank()) {
+            return ResponseEntity.badRequest().body("El trabajo de cifrado no tiene token de descarga.");
+        }
+
+        String downloadUrl = publicDownloadBaseUrl + "/" + job.getDownloadToken();
+        emailService.sendDownloadReadyEmail(user.getEmail(), compra.getMod().getNombre(), downloadUrl, job.getExpiresAt());
+        job.setNotifiedAt(LocalDateTime.now());
+        job.setErrorMessage(null);
+        encryptionJobRepository.save(job);
+
+        return ResponseEntity.ok("Correo de descarga reenviado correctamente.");
     }
 
     private Map<String, Object> buildAdminUserResponse(Usuario user, List<Compra> compras) {
