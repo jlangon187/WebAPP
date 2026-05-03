@@ -64,6 +64,11 @@ export interface PaymentSessionResponse {
   message: string;
 }
 
+export interface PaymentConfirmResponse {
+  created: number;
+  message: string;
+}
+
 export interface AdminUser {
   id: number;
   nombre: string;
@@ -114,6 +119,10 @@ export class ModService {
 
   createPaymentSession(provider: 'stripe' | 'paypal', modIds: number[]): Observable<PaymentSessionResponse> {
     return this.http.post<PaymentSessionResponse>(`${this.apiUrl}/payments/create-session`, { provider, modIds }, { headers: this.getHeaders() });
+  }
+
+  confirmPayment(provider: 'stripe' | 'paypal', externalId: string, modIds: number[]): Observable<PaymentConfirmResponse> {
+    return this.http.post<PaymentConfirmResponse>(`${this.apiUrl}/payments/confirm`, { provider, externalId, modIds }, { headers: this.getHeaders() });
   }
 
   getDownloadUrl(modId: number): Observable<string> {

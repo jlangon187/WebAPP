@@ -35,7 +35,7 @@ export class CheckoutComponent implements OnInit {
     const paymentStatus = this.route.snapshot.queryParamMap.get('payment');
     const provider = this.route.snapshot.queryParamMap.get('provider');
     if (paymentStatus === 'success') {
-      this.successMessage = `Pago ${provider || ''} autorizado. Finalizacion automatica pendiente (webhook).`;
+      this.confirmExternalPayment(provider);
     }
     if (paymentStatus === 'cancel') {
       this.errorMessage = `Pago ${provider || ''} cancelado por el usuario.`;
@@ -86,6 +86,45 @@ export class CheckoutComponent implements OnInit {
       error: (err) => {
         this.isProcessing = false;
         this.errorMessage = err?.error || 'No se pudo iniciar la sesion de pago.';
+      }
+    });
+  }
+
+  private confirmExternalPayment(providerRaw: string | null) {
+    const provider = (providerRaw || '').toLowerCase();
+    const isStripe = provider === 'stripe';
+    const isPaypal = provider === 'paypal';
+    if (!isStripe && !isPaypal) {
+      this.errorMessage = 'Proveedor de pago no reconocido en el retorno.';
+      return;
+    }
+
+    const externalId = isStripe
+      ? (this.route.snapshot.queryParamMap.get('session_id') || '').trim()
+      : (this.route.snapshot.queryParamMap.get('token') || '').trim();
+
+    if (!externalId) {
+      this.errorMessage = 'No se recibió identificador de pago del proveedor.';
+      return;
+    }
+
+    const modIds = this.cartItems.map(item => item.id);
+    if (!modIds.length) {
+      this.errorMessage = 'No hay items en carrito para finalizar la compra.';
+      return;
+    }
+
+    this.isProcessing = true;
+    this.modService.confirmPayment(isStripe ? 'stripe' : 'paypal', externalId, modIds).subscribe({
+      next: (res) => {
+        this.isProcessing = false;
+        this.successMessage = res?.message || `Pago ${provider} confirmado.`;
+        this.cartService.clearCart();
+        setTimeout(() => this.router.navigate(['/dashboard']), 2500);
+      },
+      error: (err) => {
+        this.isProcessing = false;
+        this.errorMessage = err?.error || 'No se pudo confirmar el pago con el proveedor.';
       }
     });
   }
