@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Categoria {
@@ -121,10 +121,11 @@ export class ModService {
     return `${this.apiUrl}/descargas/file/${downloadToken}`;
   }
 
-  downloadPreparedFile(downloadToken: string): Observable<Blob> {
+  downloadPreparedFile(downloadToken: string): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.apiUrl}/descargas/file/${downloadToken}`, {
       headers: this.getHeaders(),
-      responseType: 'blob'
+      responseType: 'blob',
+      observe: 'response'
     });
   }
 

@@ -147,8 +147,15 @@ export class UserDashboardComponent implements OnInit {
 
   private downloadPreparedFile(downloadToken: string) {
     this.modService.downloadPreparedFile(downloadToken).subscribe({
-      next: (blob) => {
-        const fileName = `mod-${downloadToken}.rar`;
+      next: (response) => {
+        const blob = response.body;
+        if (!blob) {
+          alert('No se pudo descargar el archivo generado.');
+          return;
+        }
+
+        const disposition = response.headers.get('content-disposition') || '';
+        const fileName = this.extractFileNameFromDisposition(disposition) || `MOD_${downloadToken}.rar`;
         const blobUrl = window.URL.createObjectURL(blob);
         const anchor = document.createElement('a');
         anchor.href = blobUrl;
@@ -160,6 +167,33 @@ export class UserDashboardComponent implements OnInit {
         alert('No se pudo descargar el archivo generado.');
       }
     });
+  }
+
+  private extractFileNameFromDisposition(disposition: string): string | null {
+    if (!disposition) {
+      return null;
+    }
+
+    const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+    if (utf8Match?.[1]) {
+      try {
+        return decodeURIComponent(utf8Match[1].trim());
+      } catch {
+        return utf8Match[1].trim();
+      }
+    }
+
+    const quotedMatch = disposition.match(/filename="([^"]+)"/i);
+    if (quotedMatch?.[1]) {
+      return quotedMatch[1].trim();
+    }
+
+    const plainMatch = disposition.match(/filename=([^;]+)/i);
+    if (plainMatch?.[1]) {
+      return plainMatch[1].trim();
+    }
+
+    return null;
   }
 
   goToCatalog() {
