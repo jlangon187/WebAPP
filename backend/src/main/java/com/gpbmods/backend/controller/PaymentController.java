@@ -9,6 +9,7 @@ import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.ModsRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
+import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +30,7 @@ public class PaymentController {
     private final ModsRepository modsRepository;
     private final UsuarioRepository usuarioRepository;
     private final CompraRepository compraRepository;
+    private final EmailService emailService;
 
     @Value("${stripe.secret.key:}")
     private String stripeSecretKey;
@@ -42,10 +44,14 @@ public class PaymentController {
     @Value("${frontend.url:http://localhost:4200}")
     private String frontendUrl;
 
-    public PaymentController(ModsRepository modsRepository, UsuarioRepository usuarioRepository, CompraRepository compraRepository) {
+    public PaymentController(ModsRepository modsRepository,
+                             UsuarioRepository usuarioRepository,
+                             CompraRepository compraRepository,
+                             EmailService emailService) {
         this.modsRepository = modsRepository;
         this.usuarioRepository = usuarioRepository;
         this.compraRepository = compraRepository;
+        this.emailService = emailService;
     }
 
     @PostMapping("/create-session")
@@ -213,6 +219,8 @@ public class PaymentController {
         }
 
         int created = 0;
+        List<String> createdModNames = new ArrayList<>();
+        BigDecimal totalCreated = BigDecimal.ZERO;
         for (Mods mod : mods) {
             if (compraRepository.existsByUsuarioIdAndModId(user.getId(), mod.getId())) {
                 continue;
@@ -225,6 +233,29 @@ public class PaymentController {
             compra.setGuidCompra(user.getGuid().toUpperCase());
             compraRepository.save(compra);
             created++;
+            createdModNames.add(mod.getNombre());
+            totalCreated = totalCreated.add(mod.getPrecio() == null ? BigDecimal.ZERO : mod.getPrecio());
+        }
+
+        if (created > 0) {
+            try {
+                String method = "stripe".equals(provider) ? "Stripe" : "Paypal";
+                emailService.sendPurchaseReceiptEmail(
+                        user.getEmail(),
+                        user.getNombre(),
+                        createdModNames,
+                        method,
+                        totalCreated.toString()
+                );
+                emailService.sendPurchaseAdminNotification(
+                        user.getNombre(),
+                        user.getEmail(),
+                        createdModNames,
+                        method,
+                        totalCreated.toString()
+                );
+            } catch (Exception ignored) {
+            }
         }
 
         return ResponseEntity.ok(Map.of("created", created, "message", "Compra confirmada y registrada."));

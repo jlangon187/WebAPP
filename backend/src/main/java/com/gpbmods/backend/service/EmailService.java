@@ -9,6 +9,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EmailService {
@@ -18,6 +19,12 @@ public class EmailService {
 
     @Value("${frontend.url:http://localhost:4200}")
     private String frontendUrl;
+
+    @Value("${purchase.notify.admin.email:}")
+    private String purchaseNotifyAdminEmail;
+
+    @Value("${spring.mail.username:}")
+    private String fallbackAdminEmail;
 
     public void sendPasswordResetEmail(String toEmail, String token) {
         try {
@@ -101,5 +108,68 @@ public class EmailService {
         } catch (MessagingException | java.io.UnsupportedEncodingException e) {
             throw new RuntimeException("Error al enviar correo de descarga", e);
         }
+    }
+
+    public void sendPurchaseReceiptEmail(String toEmail, String userName, List<String> modNames, String provider, String totalAmount) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("soporte@gpbikes-mods.com", "GPBikes Mods");
+            helper.setTo(toEmail);
+            helper.setSubject("GPBikes Mods - Recibo de compra");
+
+            String modsList = String.join("<br>", modNames.stream().map(name -> "- " + name).toList());
+            String htmlMessage = "<div style='font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; background-color: #0f1623; color: #ffffff; border-radius: 10px;'>" +
+                    "<h2 style='color: #e60000; text-align: center;'>Recibo de compra</h2>" +
+                    "<p style='color: #e2e8f0;'>Hola " + safe(userName) + ", gracias por tu compra.</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Metodo de pago:</strong> " + safe(provider) + "</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Importe total:</strong> " + safe(totalAmount) + " EUR</p>" +
+                    "<div style='margin: 16px 0; padding: 12px; border-radius: 6px; background-color: #1e293b; color: #e2e8f0;'>" + modsList + "</div>" +
+                    "<p style='color: #94a3b8;'>Puedes revisar tus compras en tu panel de usuario.</p>" +
+                    "</div>";
+
+            helper.setText(htmlMessage, true);
+            mailSender.send(message);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al enviar recibo de compra", e);
+        }
+    }
+
+    public void sendPurchaseAdminNotification(String buyerName, String buyerEmail, List<String> modNames, String provider, String totalAmount) {
+        String adminEmail = (purchaseNotifyAdminEmail != null && !purchaseNotifyAdminEmail.isBlank())
+                ? purchaseNotifyAdminEmail.trim()
+                : (fallbackAdminEmail == null ? "" : fallbackAdminEmail.trim());
+
+        if (adminEmail.isBlank()) {
+            return;
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("soporte@gpbikes-mods.com", "GPBikes Mods");
+            helper.setTo(adminEmail);
+            helper.setSubject("GPBikes Mods - Nueva compra registrada");
+
+            String modsList = String.join("<br>", modNames.stream().map(name -> "- " + name).toList());
+            String htmlMessage = "<div style='font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; background-color: #0f1623; color: #ffffff; border-radius: 10px;'>" +
+                    "<h2 style='color: #e60000; text-align: center;'>Nueva compra</h2>" +
+                    "<p style='color: #e2e8f0;'><strong>Comprador:</strong> " + safe(buyerName) + " (" + safe(buyerEmail) + ")</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Metodo de pago:</strong> " + safe(provider) + "</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Importe total:</strong> " + safe(totalAmount) + " EUR</p>" +
+                    "<div style='margin: 16px 0; padding: 12px; border-radius: 6px; background-color: #1e293b; color: #e2e8f0;'>" + modsList + "</div>" +
+                    "</div>";
+
+            helper.setText(htmlMessage, true);
+            mailSender.send(message);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al enviar notificacion de compra al administrador", e);
+        }
+    }
+
+    private String safe(String text) {
+        return text == null ? "" : text;
     }
 }

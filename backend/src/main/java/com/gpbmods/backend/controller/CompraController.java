@@ -7,6 +7,7 @@ import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.ModsRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
+import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/compras")
@@ -28,6 +30,9 @@ public class CompraController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/checkout")
     @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
@@ -70,6 +75,24 @@ public class CompraController {
         compra.setMetodoPago(request.getMetodoPago());
         compra.setGuidCompra(guidUsuario.toUpperCase());
         compraRepository.save(compra);
+
+        try {
+            emailService.sendPurchaseReceiptEmail(
+                    usuario.getEmail(),
+                    usuario.getNombre(),
+                    List.of(mod.getNombre()),
+                    request.getMetodoPago(),
+                    mod.getPrecio().toString()
+            );
+            emailService.sendPurchaseAdminNotification(
+                    usuario.getNombre(),
+                    usuario.getEmail(),
+                    List.of(mod.getNombre()),
+                    request.getMetodoPago(),
+                    mod.getPrecio().toString()
+            );
+        } catch (Exception ignored) {
+        }
 
         return ResponseEntity.ok("Purchase successful via " + request.getMetodoPago() + "!");
     }
