@@ -24,25 +24,24 @@ Plataforma e-commerce de mods para GP Bikes con autenticacion JWT/Discord, pagos
 
 ## Stack tecnologico
 
-![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-6DB33F?logo=springboot&logoColor=white)
-![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white)
-![Spring Data JPA](https://img.shields.io/badge/Spring%20Data-JPA-6DB33F?logo=spring&logoColor=white)
-![MariaDB](https://img.shields.io/badge/MariaDB-Compatible-003545?logo=mariadb&logoColor=white)
-![Angular](https://img.shields.io/badge/Angular-21.2.x-DD0031?logo=angular&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9.x-3178C6?logo=typescript&logoColor=white)
-![Node](https://img.shields.io/badge/Node.js-22.x-339933?logo=nodedotjs&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-alpine-009639?logo=nginx&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Compose%20v3.8-2496ED?logo=docker&logoColor=white)
-![PowerShell](https://img.shields.io/badge/PowerShell-Worker-5391FE?logo=powershell&logoColor=white)
-![Stripe](https://img.shields.io/badge/Stripe-Checkout-635BFF?logo=stripe&logoColor=white)
-![PayPal](https://img.shields.io/badge/PayPal-Sandbox-00457C?logo=paypal&logoColor=white)
+### Bloque de versiones
 
-### Versiones detectadas
-
-- Backend: `Spring Boot 4.0.6`, `Java 17`, `JJWT 0.11.5`, `springdoc-openapi 2.5.0`.
-- Frontend: `Angular 21.2.x`, `TypeScript 5.9.x`, `RxJS 7.8.x`, `npm 11.9.0`.
-- Orquestacion: `docker-compose.prod.yml` con Compose `3.8`.
+| Capa | Tecnologia | Version/uso |
+|---|---|---|
+| Runtime backend | ![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white) | `17` |
+| Framework backend | ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.6-6DB33F?logo=springboot&logoColor=white) | `4.0.6` |
+| Seguridad | ![Spring Security](https://img.shields.io/badge/Spring%20Security-JWT-6DB33F?logo=springsecurity&logoColor=white) | JWT stateless + roles |
+| Persistencia | ![Spring Data JPA](https://img.shields.io/badge/Spring%20Data-JPA-6DB33F?logo=spring&logoColor=white) | JPA/Hibernate |
+| DB | ![MariaDB](https://img.shields.io/badge/MariaDB-Compatible-003545?logo=mariadb&logoColor=white) | MariaDB |
+| Frontend framework | ![Angular](https://img.shields.io/badge/Angular-21.2.x-DD0031?logo=angular&logoColor=white) | `21.2.x` |
+| Lenguaje frontend | ![TypeScript](https://img.shields.io/badge/TypeScript-5.9.x-3178C6?logo=typescript&logoColor=white) | `5.9.x` |
+| Entorno frontend | ![Node](https://img.shields.io/badge/Node.js-22.x-339933?logo=nodedotjs&logoColor=white) | `22.x` + npm `11.9.0` |
+| Web server | ![Nginx](https://img.shields.io/badge/Nginx-alpine-009639?logo=nginx&logoColor=white) | reverse proxy + SPA fallback |
+| Orquestacion | ![Docker](https://img.shields.io/badge/Docker-Compose%20v3.8-2496ED?logo=docker&logoColor=white) | `docker-compose.prod.yml` |
+| Worker cifrado | ![PowerShell](https://img.shields.io/badge/PowerShell-Worker-5391FE?logo=powershell&logoColor=white) | lock + rar + cola interna |
+| Pagos | ![Stripe](https://img.shields.io/badge/Stripe-Checkout-635BFF?logo=stripe&logoColor=white) ![PayPal](https://img.shields.io/badge/PayPal-Sandbox-00457C?logo=paypal&logoColor=white) | Checkout/Orders + confirmacion backend |
+| API docs | ![OpenAPI](https://img.shields.io/badge/OpenAPI-springdoc-85EA2D?logo=swagger&logoColor=black) | `springdoc-openapi 2.5.0` |
+| Auth tokens | ![JWT](https://img.shields.io/badge/JWT-jjwt-000000?logo=jsonwebtokens&logoColor=white) | `jjwt 0.11.5` |
 
 ## Arquitectura
 
