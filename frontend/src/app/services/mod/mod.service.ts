@@ -121,6 +121,13 @@ export class ModService {
     return `${this.apiUrl}/descargas/file/${downloadToken}`;
   }
 
+  downloadPreparedFile(downloadToken: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/descargas/file/${downloadToken}`, {
+      headers: this.getHeaders(),
+      responseType: 'blob'
+    });
+  }
+
   getMyPurchases(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/compras/mis-compras`);
   }

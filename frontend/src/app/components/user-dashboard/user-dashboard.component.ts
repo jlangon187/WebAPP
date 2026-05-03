@@ -100,7 +100,7 @@ export class UserDashboardComponent implements OnInit {
       next: (res) => {
         if (res.status === 'DONE' && res.downloadToken) {
           this.preparingDownloads[modId] = false;
-          window.open(this.modService.getDownloadFileUrl(res.downloadToken), '_blank');
+          this.downloadPreparedFile(res.downloadToken);
           return;
         }
 
@@ -125,7 +125,7 @@ export class UserDashboardComponent implements OnInit {
         next: (res) => {
           if (res.status === 'DONE' && res.downloadToken) {
             this.preparingDownloads[modId] = false;
-            window.open(this.modService.getDownloadFileUrl(res.downloadToken), '_blank');
+            this.downloadPreparedFile(res.downloadToken);
             return;
           }
 
@@ -143,6 +143,23 @@ export class UserDashboardComponent implements OnInit {
         }
       });
     }, 3000);
+  }
+
+  private downloadPreparedFile(downloadToken: string) {
+    this.modService.downloadPreparedFile(downloadToken).subscribe({
+      next: (blob) => {
+        const fileName = `mod-${downloadToken}.rar`;
+        const blobUrl = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = blobUrl;
+        anchor.download = fileName;
+        anchor.click();
+        window.URL.revokeObjectURL(blobUrl);
+      },
+      error: () => {
+        alert('No se pudo descargar el archivo generado.');
+      }
+    });
   }
 
   goToCatalog() {
