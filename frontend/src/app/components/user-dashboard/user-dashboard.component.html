@@ -117,7 +117,7 @@
                      <div class="mt-auto pt-4 border-t border-slate-800 flex gap-3">
                         <div class="w-full">
                         <button (click)="downloadMod(p.mod.id)" [disabled]="preparingDownloads[p.mod.id] || downloadReady[p.mod.id]"
-                            class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 rounded-lg font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                            class="flex-1 bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-lg">download</span>
                             {{ preparingDownloads[p.mod.id] ? 'Preparando enlace...' : (downloadReady[p.mod.id] ? 'Enlace generado' : 'Descargar') }}
                         </button>
