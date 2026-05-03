@@ -8,6 +8,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class EmailService {
 
@@ -71,6 +73,33 @@ public class EmailService {
             mailSender.send(message);
         } catch (MessagingException | java.io.UnsupportedEncodingException e) {
             throw new RuntimeException("Error al enviar correo de respuesta de ticket", e);
+        }
+    }
+
+    public void sendDownloadReadyEmail(String toEmail, String modName, String downloadUrl, LocalDateTime expiresAt) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("soporte@gpbikes-mods.com", "Soporte GPBikes-Mods");
+            helper.setTo(toEmail);
+            helper.setSubject("GPBikes Mods - Tu descarga esta lista");
+
+            String expiresText = expiresAt == null ? "15 dias" : expiresAt.toString();
+            String htmlMessage = "<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #0f1623; color: #ffffff; border-radius: 10px;'>" +
+                    "<h2 style='color: #e60000; text-align: center;'>Tu mod esta listo</h2>" +
+                    "<p style='color: #e2e8f0;'>El paquete personalizado de <strong>" + modName + "</strong> ya se ha generado.</p>" +
+                    "<div style='text-align: center; margin: 30px 0;'>" +
+                    "<a href='" + downloadUrl + "' style='background-color: #003399; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Descargar mod</a>" +
+                    "</div>" +
+                    "<p style='color: #e2e8f0;'>Este enlace caduca el: " + expiresText + "</p>" +
+                    "<p style='color: #94a3b8; word-break: break-all; font-size: 12px;'>" + downloadUrl + "</p>" +
+                    "</div>";
+
+            helper.setText(htmlMessage, true);
+            mailSender.send(message);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al enviar correo de descarga", e);
         }
     }
 }

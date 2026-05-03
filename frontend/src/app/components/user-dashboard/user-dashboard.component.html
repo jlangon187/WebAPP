@@ -118,7 +118,7 @@
                         <button (click)="downloadMod(p.mod.id)" [disabled]="preparingDownloads[p.mod.id]"
                             class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 rounded-lg font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-lg">download</span>
-                            {{ preparingDownloads[p.mod.id] ? 'Preparando...' : 'Descargar' }}
+                            {{ preparingDownloads[p.mod.id] ? 'Preparando enlace...' : 'Descargar' }}
                         </button>
                     </div>
                 </div>

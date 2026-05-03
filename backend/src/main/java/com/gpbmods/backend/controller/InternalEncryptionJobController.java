@@ -3,6 +3,7 @@ package com.gpbmods.backend.controller;
 import com.gpbmods.backend.dto.EncryptionJobUpdateRequest;
 import com.gpbmods.backend.model.EncryptionJob;
 import com.gpbmods.backend.repository.EncryptionJobRepository;
+import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,17 @@ public class InternalEncryptionJobController {
     @Autowired
     private EncryptionJobRepository encryptionJobRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${mods.encryption.worker-api-key:}")
     private String workerApiKey;
 
     @Value("${mods.downloads.retention-days:15}")
     private int retentionDays;
+
+    @Value("${mods.downloads.public-base-url:http://localhost:8080/api/descargas/file}")
+    private String publicDownloadBaseUrl;
 
     @PostMapping("/next")
     public ResponseEntity<?> getNextJob(@RequestHeader(value = "X-Worker-Key", required = false) String key) {
@@ -97,6 +104,23 @@ public class InternalEncryptionJobController {
         job.setUpdatedAt(LocalDateTime.now());
         job.setExpiresAt(LocalDateTime.now().plusDays(retentionDays));
         encryptionJobRepository.save(job);
+
+        if (job.getNotifiedAt() == null) {
+            String downloadUrl = publicDownloadBaseUrl + "/" + job.getDownloadToken();
+            try {
+                emailService.sendDownloadReadyEmail(
+                        job.getUsuario().getEmail(),
+                        job.getMod().getNombre(),
+                        downloadUrl,
+                        job.getExpiresAt()
+                );
+                job.setNotifiedAt(LocalDateTime.now());
+                encryptionJobRepository.save(job);
+            } catch (Exception e) {
+                job.setErrorMessage("Aviso: descarga generada pero no se pudo enviar email: " + e.getMessage());
+                encryptionJobRepository.save(job);
+            }
+        }
         return ResponseEntity.ok().build();
     }
 

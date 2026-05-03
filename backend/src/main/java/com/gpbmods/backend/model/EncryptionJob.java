@@ -55,6 +55,9 @@ public class EncryptionJob {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
+    @Column(name = "notified_at")
+    private LocalDateTime notifiedAt;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -90,4 +93,7 @@ public class EncryptionJob {
 
     public LocalDateTime getExpiresAt() { return expiresAt; }
     public void setExpiresAt(LocalDateTime expiresAt) { this.expiresAt = expiresAt; }
+
+    public LocalDateTime getNotifiedAt() { return notifiedAt; }
+    public void setNotifiedAt(LocalDateTime notifiedAt) { this.notifiedAt = notifiedAt; }
 }
