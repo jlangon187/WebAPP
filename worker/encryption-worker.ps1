@@ -40,7 +40,7 @@ function Invoke-LockForPkz {
         [string]$Guid
     )
 
-    $proc = Start-Process -FilePath $LockExePath -ArgumentList @($FilePath, $FilePath, "/guid", $Guid) -NoNewWindow -PassThru -Wait
+    $proc = Start-Process -FilePath $LockExePath -ArgumentList @($FilePath, "/$Guid") -NoNewWindow -PassThru -Wait
     if ($proc.ExitCode -ne 0) {
         throw "lock.exe failed for $FilePath with exit code $($proc.ExitCode)"
     }

@@ -28,10 +28,10 @@
 
             <div>
                 <label class="block text-xs font-bold text-slate-300 uppercase tracking-widest mb-2">GUID</label>
-                <input type="text" name="guid" [(ngModel)]="userData.guid" required pattern="^[A-Fa-f0-9]{8}$" minlength="8" maxlength="8"
+                <input type="text" name="guid" [(ngModel)]="userData.guid" required pattern="^[A-Fa-f0-9]{18}$" minlength="18" maxlength="18"
                        class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-slate-600 uppercase"
-                       placeholder="Ej: 51C617A2">
-                <p class="text-[10px] text-slate-500 mt-1 italic">* 8 caracteres hexadecimales de tu perfil</p>
+                       placeholder="Ej: FF011000010006263C">
+                <p class="text-[10px] text-slate-500 mt-1 italic">* 18 caracteres hexadecimales de tu perfil</p>
             </div>
 
             <div>

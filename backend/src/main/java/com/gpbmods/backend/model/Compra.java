@@ -26,7 +26,7 @@ public class Compra {
     @Column(name = "metodo_pago", nullable = false, length = 50)
     private String metodoPago;
 
-    @Column(name = "guid_compra", nullable = false, length = 8)
+    @Column(name = "guid_compra", nullable = false, length = 18)
     private String guidCompra;
 
     @Column(updatable = false)

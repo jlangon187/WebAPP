@@ -89,8 +89,8 @@ public class DescargasController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You must purchase this mod to download it.");
         }
 
-        if (usuario.getGuid() == null || !usuario.getGuid().matches("^[A-F0-9]{8}$")) {
-            return ResponseEntity.badRequest().body("Debes tener un GUID valido (8 hex) para preparar la descarga personalizada.");
+        if (usuario.getGuid() == null || !usuario.getGuid().matches("^[A-F0-9]{18}$")) {
+            return ResponseEntity.badRequest().body("Debes tener un GUID valido (18 hex) para preparar la descarga personalizada.");
         }
 
         String folder = sanitizeFolder(mod.getCarpetaBaseMod());

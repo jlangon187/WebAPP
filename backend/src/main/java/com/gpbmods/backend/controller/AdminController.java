@@ -1,6 +1,7 @@
 package com.gpbmods.backend.controller;
 
 import com.gpbmods.backend.dto.AdminUserUpdateRequest;
+import com.gpbmods.backend.dto.AdminPurchaseGuidUpdateRequest;
 import com.gpbmods.backend.model.Compra;
 import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.model.Ticket;
@@ -123,8 +124,8 @@ public class AdminController {
 
         if (request.getGuid() != null && !request.getGuid().trim().isEmpty()) {
             String guid = request.getGuid().trim().toUpperCase();
-            if (!guid.matches("^[A-F0-9]{8}$")) {
-                return ResponseEntity.badRequest().body("El GUID debe ser de 8 caracteres hexadecimales.");
+            if (!guid.matches("^[A-F0-9]{18}$")) {
+                return ResponseEntity.badRequest().body("El GUID debe ser de 18 caracteres hexadecimales.");
             }
             if (!guid.equals(user.getGuid()) && usuarioRepository.existsByGuid(guid)) {
                 return ResponseEntity.badRequest().body("Ese GUID ya está en uso por otro usuario.");
@@ -154,6 +155,42 @@ public class AdminController {
 
         usuarioRepository.save(user);
         List<Compra> compras = compraRepository.findByUsuarioId(user.getId());
+        return ResponseEntity.ok(buildAdminUserResponse(user, compras));
+    }
+
+    @PutMapping("/users/{userId}/purchases/{purchaseId}/guid")
+    public ResponseEntity<?> updatePurchaseGuidByAdmin(@PathVariable Long userId,
+                                                        @PathVariable Long purchaseId,
+                                                        @RequestBody AdminPurchaseGuidUpdateRequest request) {
+        Optional<Usuario> userOpt = usuarioRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+
+        Optional<Compra> compraOpt = compraRepository.findById(purchaseId);
+        if (compraOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Compra no encontrada.");
+        }
+
+        Compra compra = compraOpt.get();
+        if (!compra.getUsuario().getId().equals(userId)) {
+            return ResponseEntity.badRequest().body("La compra no pertenece al usuario indicado.");
+        }
+
+        if (request.getGuidCompra() == null || request.getGuidCompra().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Debes indicar un GUID de compra.");
+        }
+
+        String guid = request.getGuidCompra().trim().toUpperCase();
+        if (!guid.matches("^[A-F0-9]{18}$")) {
+            return ResponseEntity.badRequest().body("El GUID de compra debe tener 18 caracteres hexadecimales.");
+        }
+
+        compra.setGuidCompra(guid);
+        compraRepository.save(compra);
+
+        Usuario user = userOpt.get();
+        List<Compra> compras = compraRepository.findByUsuarioId(userId);
         return ResponseEntity.ok(buildAdminUserResponse(user, compras));
     }
 

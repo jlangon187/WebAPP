@@ -72,9 +72,9 @@ public class AuthController {
         }
 
         guid = guid.trim().toUpperCase();
-        if (!guid.matches("^[A-F0-9]{8}$")) {
+        if (!guid.matches("^[A-F0-9]{18}$")) {
             return ResponseEntity.badRequest()
-                    .body("Error: El formato del GUID debe ser de 8 caracteres hexadecimales (ej. 51C617A2).");
+                    .body("Error: El formato del GUID debe ser de 18 caracteres hexadecimales (ej. FF011000010006263C).");
         }
 
         if (usuarioRepository.findByGuid(guid).isPresent()) {
@@ -129,8 +129,8 @@ public class AuthController {
                 }
                 if (request.getGuid() != null && !request.getGuid().trim().isEmpty()) {
                     String guid = request.getGuid().trim().toUpperCase();
-                    if (!guid.matches("^[A-F0-9]{8}$")) {
-                        return ResponseEntity.badRequest().body("Error: El GUID debe ser de 8 caracteres hexadecimales.");
+                    if (!guid.matches("^[A-F0-9]{18}$")) {
+                        return ResponseEntity.badRequest().body("Error: El GUID debe ser de 18 caracteres hexadecimales.");
                     }
                     if (!guid.equals(user.getGuid()) && usuarioRepository.findByGuid(guid).isPresent()) {
                         return ResponseEntity.badRequest().body("Error: Este GUID ya está registrado.");

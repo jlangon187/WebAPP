@@ -17,6 +17,8 @@ export class AdminUsersManagerComponent implements OnInit {
   success = '';
   searchTerm = '';
   expandedUserId: number | null = null;
+  editingPurchaseGuidId: number | null = null;
+  purchaseGuidDraft = '';
 
   editingUserId: number | null = null;
   editForm: {
@@ -126,6 +128,39 @@ export class AdminUsersManagerComponent implements OnInit {
 
   getPurchaseImage(purchase: AdminPurchase): string {
     return purchase.mod?.archivoOriginal?.trim() ? purchase.mod.archivoOriginal : '/logo.png';
+  }
+
+  startPurchaseGuidEdit(purchase: AdminPurchase): void {
+    this.editingPurchaseGuidId = purchase.id;
+    this.purchaseGuidDraft = (purchase.guidCompra || '').toUpperCase();
+    this.success = '';
+    this.error = '';
+  }
+
+  cancelPurchaseGuidEdit(): void {
+    this.editingPurchaseGuidId = null;
+    this.purchaseGuidDraft = '';
+  }
+
+  savePurchaseGuid(user: AdminUser, purchase: AdminPurchase): void {
+    const guid = (this.purchaseGuidDraft || '').trim().toUpperCase();
+    if (!guid.match(/^[A-F0-9]{18}$/)) {
+      this.error = 'El GUID de compra debe tener 18 caracteres hexadecimales.';
+      return;
+    }
+
+    this.modService.updateAdminPurchaseGuid(user.id, purchase.id, guid).subscribe({
+      next: (updatedUser) => {
+        this.users = this.users.map((candidate) => candidate.id === user.id ? updatedUser : candidate);
+        this.success = `GUID de compra actualizado para ${updatedUser.nombre}.`;
+        this.error = '';
+        this.cancelPurchaseGuidEdit();
+      },
+      error: (err) => {
+        this.success = '';
+        this.error = err?.error || 'No se pudo actualizar el GUID de compra.';
+      }
+    });
   }
 
   goBack(): void {

@@ -51,8 +51,8 @@ public class CompraController {
         }
 
         String guidUsuario = usuario.getGuid();
-        if (guidUsuario == null || !guidUsuario.matches("^[A-F0-9]{8}$")) {
-            return ResponseEntity.badRequest().body("Debes completar tu GUID de juego (8 hex) antes de comprar mods.");
+        if (guidUsuario == null || !guidUsuario.matches("^[A-F0-9]{18}$")) {
+            return ResponseEntity.badRequest().body("Debes completar tu GUID de juego (18 hex) antes de comprar mods.");
         }
 
         // Handle simulation

@@ -29,8 +29,8 @@ export class CompleteProfileComponent {
     this.error = '';
 
     const guid = this.form.guid.trim().toUpperCase();
-    if (!guid.match(/^[A-F0-9]{8}$/)) {
-      this.error = 'El GUID debe tener exactamente 8 caracteres hexadecimales (ej. 51C617A2).';
+    if (!guid.match(/^[A-F0-9]{18}$/)) {
+      this.error = 'El GUID debe tener exactamente 18 caracteres hexadecimales (ej. FF011000010006263C).';
       return;
     }
 

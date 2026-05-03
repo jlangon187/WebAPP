@@ -20,7 +20,7 @@ public class Usuario {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(nullable = true, unique = true, length = 8)
+    @Column(nullable = true, unique = true, length = 18)
     private String guid;
 
     @Enumerated(EnumType.STRING)

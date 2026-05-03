@@ -27,7 +27,7 @@ public class EncryptionJob {
     @JoinColumn(name = "mod_id", nullable = false)
     private Mods mod;
 
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 18)
     private String guid;
 
     @Column(name = "mod_base_folder", nullable = false, length = 120)

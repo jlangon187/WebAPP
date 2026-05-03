@@ -177,4 +177,8 @@ export class ModService {
   updateAdminUser(userId: number, payload: Partial<AdminUser> & { password?: string; activo?: boolean }): Observable<AdminUser> {
     return this.http.put<AdminUser>(`${this.apiUrl}/admin/users/${userId}`, payload, { headers: this.getHeaders() });
   }
+
+  updateAdminPurchaseGuid(userId: number, purchaseId: number, guidCompra: string): Observable<AdminUser> {
+    return this.http.put<AdminUser>(`${this.apiUrl}/admin/users/${userId}/purchases/${purchaseId}/guid`, { guidCompra }, { headers: this.getHeaders() });
+  }
 }
