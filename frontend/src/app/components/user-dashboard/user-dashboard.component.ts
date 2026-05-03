@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModService } from '../../services/mod/mod.service';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -33,6 +33,7 @@ export class UserDashboardComponent implements OnInit {
   constructor(
     private modService: ModService,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -53,6 +54,12 @@ export class UserDashboardComponent implements OnInit {
         } else {
           this.loading = false;
         }
+
+        this.route.queryParamMap.subscribe(params => {
+          if (this.isAdmin && params.get('edit') === '1') {
+            this.isEditing = true;
+          }
+        });
       }
     });
   }

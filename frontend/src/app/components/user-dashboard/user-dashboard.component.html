@@ -79,7 +79,7 @@
         <p class="text-accent-red font-bold">{{ error }}</p>
     </div>
 
-    <div *ngIf="!loading && !error && !isAdmin">
+    <div *ngIf="!loading && !error">
         <section class="mb-8 rounded-xl border border-primary/20 bg-slate-900/60 p-5">
             <div class="flex items-center justify-between gap-3 mb-4">
                 <h3 class="text-lg font-bold text-white">Datos de tu cuenta</h3>
@@ -106,7 +106,7 @@
                     <p class="mt-1 font-bold text-white">{{ getUserRoleLabel() }}</p>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-sm">
+            <div *ngIf="!isAdmin" class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 text-sm">
                 <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
                     <p class="text-[11px] uppercase tracking-wider text-slate-500">Compras</p>
                     <p class="mt-1 font-bold text-white">{{ purchases.length }}</p>
@@ -121,6 +121,8 @@
                 </div>
             </div>
         </section>
+
+        <ng-container *ngIf="!isAdmin">
 
         <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <span class="material-symbols-outlined text-primary">inventory_2</span>
@@ -218,5 +220,6 @@
                 </article>
             </div>
         </section>
+        </ng-container>
     </div>
 </main>
