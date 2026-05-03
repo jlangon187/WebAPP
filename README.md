@@ -404,9 +404,4 @@ WebAPP/
   frontend/                 # Angular app
   worker/                   # PowerShell encryption worker
   docker-compose.prod.yml   # Stack de produccion
-  FINAL_DOCUMENTATION.md    # Cierre funcional del proyecto
 ```
-
-## Estado
-
-Proyecto cerrado para la fase actual, con flujo completo desde compra hasta entrega cifrada personalizada y herramientas admin de operacion.
