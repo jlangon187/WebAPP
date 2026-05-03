@@ -291,4 +291,38 @@ export class UserDashboardComponent implements OnInit {
     }
     return text.length > 140 ? `${text.substring(0, 140)}...` : text;
   }
+
+  getUserRoleLabel(): string {
+    return this.isAdmin ? 'Administrador' : 'Piloto registrado';
+  }
+
+  getTotalSpent(): number {
+    return (this.purchases || []).reduce((acc, purchase) => acc + (Number(purchase?.precioPagado) || 0), 0);
+  }
+
+  getCurrentGuid(): string {
+    const guid = (this.editData.guid || '').trim().toUpperCase();
+    return guid || 'No configurado';
+  }
+
+  isGuidValid(): boolean {
+    const guid = (this.editData.guid || '').trim().toUpperCase();
+    return /^[A-F0-9]{18}$/.test(guid);
+  }
+
+  getLastPurchaseDate(): string {
+    if (!this.purchases.length) {
+      return 'Sin compras';
+    }
+
+    const sorted = [...this.purchases]
+      .filter(p => p?.fecha)
+      .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+
+    if (!sorted.length) {
+      return 'Sin compras';
+    }
+
+    return new Date(sorted[0].fecha).toLocaleDateString();
+  }
 }
