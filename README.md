@@ -402,6 +402,5 @@ erDiagram
 WebAPP/
   backend/                  # Spring Boot API
   frontend/                 # Angular app
-  worker/                   # PowerShell encryption worker
   docker-compose.prod.yml   # Stack de produccion
 ```
