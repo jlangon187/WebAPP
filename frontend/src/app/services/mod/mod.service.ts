@@ -74,10 +74,13 @@ export interface AdminUser {
   nombre: string;
   email: string;
   guid: string;
+  guidValid?: boolean;
+  profileCompleted?: boolean;
   rol: 'invitado' | 'registrado' | 'admin' | string;
   activo: boolean;
   creadoEn: string;
   purchasesCount: number;
+  ticketsCount?: number;
   totalSpent: number;
   lastPurchaseAt?: string | null;
   purchases: AdminPurchase[];

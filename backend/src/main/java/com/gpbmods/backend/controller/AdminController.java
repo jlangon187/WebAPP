@@ -305,15 +305,19 @@ public class AdminController {
         payload.put("nombre", user.getNombre());
         payload.put("email", user.getEmail());
         payload.put("guid", user.getGuid());
+        payload.put("guidValid", user.getGuid() != null && user.getGuid().matches("^[A-F0-9]{18}$"));
         payload.put("rol", user.getRol().name());
         payload.put("activo", user.isActivo());
         payload.put("creadoEn", user.getCreadoEn());
+        payload.put("profileCompleted", user.getGuid() != null && user.getGuid().matches("^[A-F0-9]{18}$"));
 
         double totalSpent = compras.stream()
                 .map(Compra::getPrecioPagado)
                 .filter(java.util.Objects::nonNull)
                 .mapToDouble(value -> value.doubleValue())
                 .sum();
+
+        int ticketsCount = ticketRepository.findByUsuarioId(user.getId()).size();
 
         LocalDateTime lastPurchaseAt = compras.stream()
                 .map(Compra::getFecha)
@@ -322,6 +326,7 @@ public class AdminController {
                 .orElse(null);
 
         payload.put("purchasesCount", compras.size());
+        payload.put("ticketsCount", ticketsCount);
         payload.put("totalSpent", totalSpent);
         payload.put("lastPurchaseAt", lastPurchaseAt);
 

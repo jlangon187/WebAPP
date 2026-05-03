@@ -127,6 +127,10 @@ public class ComentarioController {
                     .body("Solo puedes valorar y comentar mods que hayas comprado.");
         }
 
+        if (comentarioRepository.existsByUsuarioIdAndModId(usuario.getId(), modId)) {
+            return ResponseEntity.badRequest().body("Ya has enviado una valoracion para este mod.");
+        }
+
         Comentario comentario = new Comentario();
         comentario.setUsuario(usuario);
         comentario.setMod(modOpt.get());
