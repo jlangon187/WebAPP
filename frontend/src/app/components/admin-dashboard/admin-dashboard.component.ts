@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
+  currentUser: any = null;
   stats: any = {
     totalSales: 0,
     newUsers: 0,
@@ -49,6 +50,8 @@ export class AdminDashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getCurrentUser();
+
     const token = this.authService.getToken();
     if(!token) {
         this.router.navigate(['/login']);
@@ -74,6 +77,20 @@ export class AdminDashboardComponent implements OnInit {
             this.loading = false;
         }
     });
+  }
+
+  goToProfileEdit(): void {
+    this.router.navigate(['/dashboard']);
+  }
+
+  getCurrentGuid(): string {
+    const guid = (this.currentUser?.guid || '').trim().toUpperCase();
+    return guid || 'No configurado';
+  }
+
+  isGuidValid(): boolean {
+    const guid = (this.currentUser?.guid || '').trim().toUpperCase();
+    return /^[A-F0-9]{18}$/.test(guid);
   }
 
   goToModsManager() {

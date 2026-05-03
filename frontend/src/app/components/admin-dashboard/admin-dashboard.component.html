@@ -6,6 +6,10 @@
             </h2>
             <p class="text-slate-400 mt-1">Gestión de plataforma y estadísticas</p>
         </div>
+        <button (click)="goToProfileEdit()" class="inline-flex items-center gap-2 rounded-lg bg-primary/20 hover:bg-primary/30 px-4 py-2 text-sm font-bold text-primary transition-colors">
+            <span class="material-symbols-outlined text-sm">edit</span>
+            Editar perfil
+        </button>
     </div>
 
     <!-- Error/Loading -->
@@ -17,6 +21,33 @@
     </div>
 
     <div *ngIf="!loading && !error">
+
+    <section class="mb-8 rounded-xl border border-primary/20 bg-slate-900/60 p-5">
+        <div class="flex items-center justify-between gap-3 mb-4">
+            <h3 class="text-lg font-bold text-white">Datos de tu cuenta (Admin)</h3>
+            <span class="text-xs px-2 py-1 rounded" [ngClass]="isGuidValid() ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'">
+                GUID {{ isGuidValid() ? 'Valido' : 'Pendiente' }}
+            </span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 text-sm">
+            <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Nombre</p>
+                <p class="mt-1 font-bold text-white">{{ currentUser?.nombre || '-' }}</p>
+            </div>
+            <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Email</p>
+                <p class="mt-1 font-bold text-white break-all">{{ currentUser?.email || currentUser?.sub || '-' }}</p>
+            </div>
+            <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">GUID de juego</p>
+                <p class="mt-1 font-mono font-bold text-white">{{ getCurrentGuid() }}</p>
+            </div>
+            <div class="rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+                <p class="text-[11px] uppercase tracking-wider text-slate-500">Perfil</p>
+                <p class="mt-1 font-bold text-white">Administrador</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Stats Grid -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
