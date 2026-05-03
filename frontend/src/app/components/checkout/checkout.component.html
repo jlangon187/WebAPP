@@ -3,12 +3,12 @@
         <h2 class="text-3xl font-black italic uppercase tracking-tighter text-slate-100">
             Pago <span class="text-primary">Seguro</span>
         </h2>
-        <p class="text-slate-400 mt-2">Completa tu compra para acceder al instante a tus mods.</p>
+        <p class="text-slate-400 mt-2">Simulación completa la compra al instante. Stripe y PayPal redirigen al proveedor y quedan pendientes de confirmación final.</p>
     </div>
 
     <div *ngIf="successMessage" class="bg-green-500/10 border border-green-500/20 text-green-400 p-6 rounded-xl mb-8 flex flex-col items-center justify-center text-center">
         <span class="material-symbols-outlined text-4xl mb-4">check_circle</span>
-        <h3 class="text-xl font-bold mb-2">¡Pago Completado!</h3>
+        <h3 class="text-xl font-bold mb-2">Pago procesado</h3>
         <p>{{ successMessage }}</p>
         <p class="text-sm mt-4 text-green-400/80">Redirigiendo a tu panel...</p>
     </div>

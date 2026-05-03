@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart/cart.service';
 import { ModService, Mod } from '../../services/mod/mod.service';
@@ -24,12 +24,22 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private cartService: CartService,
     private modService: ModService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.cartItems = this.cartService.getItems();
     this.total = this.cartService.getTotal();
+
+    const paymentStatus = this.route.snapshot.queryParamMap.get('payment');
+    const provider = this.route.snapshot.queryParamMap.get('provider');
+    if (paymentStatus === 'success') {
+      this.successMessage = `Pago ${provider || ''} autorizado. Finalizacion automatica pendiente (webhook).`;
+    }
+    if (paymentStatus === 'cancel') {
+      this.errorMessage = `Pago ${provider || ''} cancelado por el usuario.`;
+    }
 
     if (this.cartItems.length === 0) {
       this.router.navigate(['/catalog']);
@@ -45,18 +55,37 @@ export class CheckoutComponent implements OnInit {
     this.isProcessing = true;
     this.errorMessage = '';
 
-    const requests = this.cartItems.map((item) => this.modService.purchaseMod(item.id, this.metodoPago));
+    if (this.metodoPago === 'Simulacion') {
+      const requests = this.cartItems.map((item) => this.modService.purchaseMod(item.id, this.metodoPago));
+      forkJoin(requests).subscribe({
+        next: () => {
+          this.successMessage = `Compra completada. Se han procesado ${this.cartItems.length} mods correctamente.`;
+          this.cartService.clearCart();
+          this.isProcessing = false;
+          setTimeout(() => this.router.navigate(['/dashboard']), 3000);
+        },
+        error: (err) => {
+          this.errorMessage = err.error || 'Payment failed';
+          this.isProcessing = false;
+        }
+      });
+      return;
+    }
 
-    forkJoin(requests).subscribe({
-      next: () => {
-        this.successMessage = `Compra completada. Se han procesado ${this.cartItems.length} mods correctamente.`;
-        this.cartService.clearCart();
+    const provider = this.metodoPago === 'Stripe' ? 'stripe' : 'paypal';
+    const modIds = this.cartItems.map(item => item.id);
+    this.modService.createPaymentSession(provider as 'stripe' | 'paypal', modIds).subscribe({
+      next: (session) => {
         this.isProcessing = false;
-        setTimeout(() => this.router.navigate(['/dashboard']), 3000);
+        if (!session?.redirectUrl) {
+          this.errorMessage = 'No se recibió URL de pago del proveedor.';
+          return;
+        }
+        window.location.href = session.redirectUrl;
       },
       error: (err) => {
-        this.errorMessage = err.error || 'Payment failed';
         this.isProcessing = false;
+        this.errorMessage = err?.error || 'No se pudo iniciar la sesion de pago.';
       }
     });
   }

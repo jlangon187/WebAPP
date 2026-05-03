@@ -57,6 +57,13 @@ export interface PrepareDownloadResponse {
   downloadToken?: string | null;
 }
 
+export interface PaymentSessionResponse {
+  provider: string;
+  redirectUrl: string;
+  externalId: string;
+  message: string;
+}
+
 export interface AdminUser {
   id: number;
   nombre: string;
@@ -103,6 +110,10 @@ export class ModService {
   purchaseMod(modId: number, metodoPago: string): Observable<any> {
     const payload = { modId, metodoPago };
     return this.http.post(`${this.apiUrl}/compras/checkout`, payload, { responseType: 'text' });
+  }
+
+  createPaymentSession(provider: 'stripe' | 'paypal', modIds: number[]): Observable<PaymentSessionResponse> {
+    return this.http.post<PaymentSessionResponse>(`${this.apiUrl}/payments/create-session`, { provider, modIds }, { headers: this.getHeaders() });
   }
 
   getDownloadUrl(modId: number): Observable<string> {
