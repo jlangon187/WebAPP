@@ -75,8 +75,11 @@ public class AdminController {
     @Value("${spring.mail.username:}")
     private String mailUsername;
 
-    @Value("${mods.downloads.public-base-url:http://localhost:8080/api/descargas/file}")
+    @Value("${mods.downloads.public-base-url:}")
     private String publicDownloadBaseUrl;
+
+    @Value("${frontend.url:http://localhost:4200}")
+    private String frontendUrl;
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
@@ -287,7 +290,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body("El trabajo de cifrado no tiene token de descarga.");
         }
 
-        String downloadUrl = publicDownloadBaseUrl + "/" + job.getDownloadToken();
+        String downloadUrl = resolvePublicDownloadBaseUrl() + "/" + job.getDownloadToken();
         emailService.sendDownloadReadyEmail(user.getEmail(), compra.getMod().getNombre(), downloadUrl, job.getExpiresAt());
         job.setNotifiedAt(LocalDateTime.now());
         job.setErrorMessage(null);
@@ -423,5 +426,18 @@ public class AdminController {
         } catch (IOException e) {
             return 0;
         }
+    }
+
+    private String resolvePublicDownloadBaseUrl() {
+        String configured = publicDownloadBaseUrl == null ? "" : publicDownloadBaseUrl.trim();
+        if (!configured.isBlank() && !configured.contains("localhost") && !configured.contains("127.0.0.1")) {
+            return configured;
+        }
+
+        String frontend = frontendUrl == null ? "http://localhost:4200" : frontendUrl.trim();
+        if (frontend.endsWith("/")) {
+            frontend = frontend.substring(0, frontend.length() - 1);
+        }
+        return frontend + "/api/descargas/file";
     }
 }

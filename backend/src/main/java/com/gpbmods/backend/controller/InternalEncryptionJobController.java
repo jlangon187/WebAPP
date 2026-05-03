@@ -34,8 +34,11 @@ public class InternalEncryptionJobController {
     @Value("${mods.downloads.retention-days:15}")
     private int retentionDays;
 
-    @Value("${mods.downloads.public-base-url:http://localhost:8080/api/descargas/file}")
+    @Value("${mods.downloads.public-base-url:}")
     private String publicDownloadBaseUrl;
+
+    @Value("${frontend.url:http://localhost:4200}")
+    private String frontendUrl;
 
     @PostMapping("/next")
     @Transactional
@@ -122,7 +125,7 @@ public class InternalEncryptionJobController {
         encryptionJobRepository.save(job);
 
         if (job.getNotifiedAt() == null) {
-            String downloadUrl = publicDownloadBaseUrl + "/" + job.getDownloadToken();
+            String downloadUrl = resolvePublicDownloadBaseUrl() + "/" + job.getDownloadToken();
             try {
                 emailService.sendDownloadReadyEmail(
                         job.getUsuario().getEmail(),
@@ -171,5 +174,18 @@ public class InternalEncryptionJobController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Worker key invalida.");
         }
         return null;
+    }
+
+    private String resolvePublicDownloadBaseUrl() {
+        String configured = publicDownloadBaseUrl == null ? "" : publicDownloadBaseUrl.trim();
+        if (!configured.isBlank() && !configured.contains("localhost") && !configured.contains("127.0.0.1")) {
+            return configured;
+        }
+
+        String frontend = frontendUrl == null ? "http://localhost:4200" : frontendUrl.trim();
+        if (frontend.endsWith("/")) {
+            frontend = frontend.substring(0, frontend.length() - 1);
+        }
+        return frontend + "/api/descargas/file";
     }
 }
