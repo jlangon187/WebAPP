@@ -20,7 +20,8 @@ export class AdminModEditorComponent implements OnChanges {
     categoria: null,
     destacadoHome: false,
     ordenShowroom: null,
-    youtubeUrl: ''
+    youtubeUrl: '',
+    carpetaBaseMod: ''
   };
   @Input() isEdit: boolean = false;
   
@@ -40,6 +41,9 @@ export class AdminModEditorComponent implements OnChanges {
       }
       if (!this.mod.youtubeUrl) {
         this.mod.youtubeUrl = '';
+      }
+      if (!this.mod.carpetaBaseMod) {
+        this.mod.carpetaBaseMod = '';
       }
       if (this.mod.categoria && !this.mod.categoria.nombre) {
         this.mod.categoria = null;

@@ -18,6 +18,7 @@ export interface Mod {
   destacadoHome?: boolean;
   ordenShowroom?: number | null;
   youtubeUrl?: string | null;
+  carpetaBaseMod?: string | null;
 }
 
 export interface Comentario {
@@ -47,6 +48,13 @@ export interface AdminPurchase {
     version: string;
     archivoOriginal?: string;
   };
+}
+
+export interface PrepareDownloadResponse {
+  jobId: number;
+  status: 'PENDING' | 'RUNNING' | 'DONE' | 'FAILED' | string;
+  message?: string;
+  downloadToken?: string | null;
 }
 
 export interface AdminUser {
@@ -99,6 +107,18 @@ export class ModService {
 
   getDownloadUrl(modId: number): Observable<string> {
     return this.http.get(`${this.apiUrl}/descargas/${modId}`, { responseType: 'text' });
+  }
+
+  prepareDownload(modId: number): Observable<PrepareDownloadResponse> {
+    return this.http.post<PrepareDownloadResponse>(`${this.apiUrl}/descargas/${modId}/prepare`, {}, { headers: this.getHeaders() });
+  }
+
+  getDownloadJobStatus(jobId: number): Observable<PrepareDownloadResponse> {
+    return this.http.get<PrepareDownloadResponse>(`${this.apiUrl}/descargas/jobs/${jobId}`, { headers: this.getHeaders() });
+  }
+
+  getDownloadFileUrl(downloadToken: string): string {
+    return `${this.apiUrl}/descargas/file/${downloadToken}`;
   }
 
   getMyPurchases(): Observable<any[]> {

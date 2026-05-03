@@ -41,6 +41,9 @@ public class Mods {
     @Column(name = "youtube_url", length = 255)
     private String youtubeUrl;
 
+    @Column(name = "carpeta_base_mod", length = 120)
+    private String carpetaBaseMod;
+
     @Column(name = "creado_en", updatable = false)
     @com.fasterxml.jackson.annotation.JsonProperty(access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)
     private LocalDateTime creadoEn = LocalDateTime.now();
@@ -75,6 +78,9 @@ public class Mods {
 
     public String getYoutubeUrl() { return youtubeUrl; }
     public void setYoutubeUrl(String youtubeUrl) { this.youtubeUrl = youtubeUrl; }
+
+    public String getCarpetaBaseMod() { return carpetaBaseMod; }
+    public void setCarpetaBaseMod(String carpetaBaseMod) { this.carpetaBaseMod = carpetaBaseMod; }
 
     public LocalDateTime getCreadoEn() { return creadoEn; }
     public void setCreadoEn(LocalDateTime creadoEn) { this.creadoEn = creadoEn; }

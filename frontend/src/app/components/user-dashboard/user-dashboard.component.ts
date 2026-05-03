@@ -26,6 +26,7 @@ export class UserDashboardComponent implements OnInit {
   updateMessage = '';
   updateError = '';
   originalGuid = '';
+  preparingDownloads: { [modId: number]: boolean } = {};
 
   constructor(
     private modService: ModService,
@@ -90,14 +91,58 @@ export class UserDashboardComponent implements OnInit {
   }
 
   downloadMod(modId: number) {
-    this.modService.getDownloadUrl(modId).subscribe({
-      next: (url) => {
-        window.open(url, '_blank');
+    if (this.preparingDownloads[modId]) {
+      return;
+    }
+
+    this.preparingDownloads[modId] = true;
+    this.modService.prepareDownload(modId).subscribe({
+      next: (res) => {
+        if (res.status === 'DONE' && res.downloadToken) {
+          this.preparingDownloads[modId] = false;
+          window.open(this.modService.getDownloadFileUrl(res.downloadToken), '_blank');
+          return;
+        }
+
+        this.pollDownloadJob(modId, res.jobId, 0);
       },
       error: (err) => {
-        alert('Failed to get download link. You might need to purchase it first.');
+        this.preparingDownloads[modId] = false;
+        alert(err?.error || 'No se pudo preparar la descarga personalizada.');
       }
     });
+  }
+
+  private pollDownloadJob(modId: number, jobId: number, attempt: number) {
+    if (attempt > 120) {
+      this.preparingDownloads[modId] = false;
+      alert('La preparacion esta tardando demasiado. Vuelve a intentarlo en unos minutos.');
+      return;
+    }
+
+    setTimeout(() => {
+      this.modService.getDownloadJobStatus(jobId).subscribe({
+        next: (res) => {
+          if (res.status === 'DONE' && res.downloadToken) {
+            this.preparingDownloads[modId] = false;
+            window.open(this.modService.getDownloadFileUrl(res.downloadToken), '_blank');
+            return;
+          }
+
+          if (res.status === 'FAILED') {
+            this.preparingDownloads[modId] = false;
+            alert(res.message || 'La preparacion ha fallado. Contacta con soporte.');
+            return;
+          }
+
+          this.pollDownloadJob(modId, jobId, attempt + 1);
+        },
+        error: () => {
+          this.preparingDownloads[modId] = false;
+          alert('No se pudo consultar el estado de la descarga.');
+        }
+      });
+    }, 3000);
   }
 
   goToCatalog() {

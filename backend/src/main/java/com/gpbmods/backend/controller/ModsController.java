@@ -110,6 +110,7 @@ public class ModsController {
         existingMod.setVersion(modDetails.getVersion());
         existingMod.setArchivoOriginal(modDetails.getArchivoOriginal());
         existingMod.setYoutubeUrl(modDetails.getYoutubeUrl());
+        existingMod.setCarpetaBaseMod(modDetails.getCarpetaBaseMod());
         existingMod.setDestacadoHome(modDetails.isDestacadoHome());
         existingMod.setOrdenShowroom(modDetails.getOrdenShowroom());
 

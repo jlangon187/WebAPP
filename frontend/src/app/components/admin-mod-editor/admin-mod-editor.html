@@ -101,6 +101,15 @@
                             placeholder="https://www.youtube.com/watch?v=...">
                     </div>
 
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Carpeta base del mod (cifrado)</label>
+                        <input type="text" name="carpetaBaseMod" [(ngModel)]="mod.carpetaBaseMod"
+                            class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all placeholder:text-slate-600"
+                            placeholder="Ej. SBK24"
+                            pattern="[A-Za-z0-9._-]+">
+                        <p class="text-xs text-slate-500 mt-2">Nombre de carpeta dentro de /mods-files. Se usa para copiar a temporal y cifrar PKZ por GUID.</p>
+                    </div>
+
                     <div class="col-span-1 md:col-span-2" *ngIf="mod.archivoOriginal">
                         <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Previsualización de imagen</p>
                         <div class="aspect-video rounded-lg overflow-hidden border border-slate-700 bg-slate-950">

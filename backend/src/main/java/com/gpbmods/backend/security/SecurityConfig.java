@@ -46,6 +46,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/internal/encryption-jobs/**").permitAll()
                 .requestMatchers("/api/mods/catalog").permitAll()
                 .requestMatchers("/api/mods/showroom").permitAll()
                 .requestMatchers("/api/mods/detail/*").permitAll()
