@@ -27,6 +27,8 @@ export class UserDashboardComponent implements OnInit {
   updateError = '';
   originalGuid = '';
   preparingDownloads: { [modId: number]: boolean } = {};
+  downloadReady: { [modId: number]: boolean } = {};
+  downloadStatusMessage: { [modId: number]: string } = {};
 
   constructor(
     private modService: ModService,
@@ -96,18 +98,29 @@ export class UserDashboardComponent implements OnInit {
     }
 
     this.preparingDownloads[modId] = true;
+    this.downloadStatusMessage[modId] = 'En cola. Te enviaremos el enlace por correo cuando este listo.';
     this.modService.prepareDownload(modId).subscribe({
       next: (res) => {
         if (res.status === 'DONE' && res.downloadToken) {
           this.preparingDownloads[modId] = false;
+          this.downloadReady[modId] = true;
+          this.downloadStatusMessage[modId] = 'Enlace generado. Revisa tambien tu correo.';
           this.downloadPreparedFile(res.downloadToken);
           return;
+        }
+
+        if (res.status === 'RUNNING') {
+          this.downloadStatusMessage[modId] = 'Preparando enlace... Te lo enviaremos por correo cuando termine.';
+        } else {
+          this.downloadStatusMessage[modId] = 'En cola. Te enviaremos el enlace por correo cuando este listo.';
         }
 
         this.pollDownloadJob(modId, res.jobId, 0);
       },
       error: (err) => {
         this.preparingDownloads[modId] = false;
+        this.downloadReady[modId] = false;
+        this.downloadStatusMessage[modId] = '';
         alert(err?.error || 'No se pudo preparar la descarga personalizada.');
       }
     });
@@ -116,6 +129,7 @@ export class UserDashboardComponent implements OnInit {
   private pollDownloadJob(modId: number, jobId: number, attempt: number) {
     if (attempt > 120) {
       this.preparingDownloads[modId] = false;
+      this.downloadStatusMessage[modId] = '';
       alert('La preparacion esta tardando demasiado. Vuelve a intentarlo en unos minutos.');
       return;
     }
@@ -125,12 +139,24 @@ export class UserDashboardComponent implements OnInit {
         next: (res) => {
           if (res.status === 'DONE' && res.downloadToken) {
             this.preparingDownloads[modId] = false;
+            this.downloadReady[modId] = true;
+            this.downloadStatusMessage[modId] = 'Enlace generado. Revisa tambien tu correo.';
             this.downloadPreparedFile(res.downloadToken);
             return;
           }
 
+          if (res.status === 'PENDING') {
+            this.downloadStatusMessage[modId] = 'En cola. Te enviaremos el enlace por correo cuando este listo.';
+          }
+
+          if (res.status === 'RUNNING') {
+            this.downloadStatusMessage[modId] = 'Preparando enlace... Te lo enviaremos por correo cuando termine.';
+          }
+
           if (res.status === 'FAILED') {
             this.preparingDownloads[modId] = false;
+            this.downloadReady[modId] = false;
+            this.downloadStatusMessage[modId] = '';
             alert(res.message || 'La preparacion ha fallado. Contacta con soporte.');
             return;
           }
@@ -139,6 +165,8 @@ export class UserDashboardComponent implements OnInit {
         },
         error: () => {
           this.preparingDownloads[modId] = false;
+          this.downloadReady[modId] = false;
+          this.downloadStatusMessage[modId] = '';
           alert('No se pudo consultar el estado de la descarga.');
         }
       });
@@ -164,6 +192,7 @@ export class UserDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(blobUrl);
       },
       error: () => {
+        this.downloadStatusMessage = {};
         alert('No se pudo descargar el archivo generado.');
       }
     });

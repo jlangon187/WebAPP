@@ -114,12 +114,17 @@
                         GUID de compra: <span class="font-mono text-slate-300">{{ p.guidCompra || 'N/D' }}</span>
                     </p>
                     
-                    <div class="mt-auto pt-4 border-t border-slate-800 flex gap-3">
-                        <button (click)="downloadMod(p.mod.id)" [disabled]="preparingDownloads[p.mod.id]"
+                     <div class="mt-auto pt-4 border-t border-slate-800 flex gap-3">
+                        <div class="w-full">
+                        <button (click)="downloadMod(p.mod.id)" [disabled]="preparingDownloads[p.mod.id] || downloadReady[p.mod.id]"
                             class="flex-1 bg-primary hover:bg-primary/90 text-white py-2 rounded-lg font-bold text-sm tracking-wide transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-lg">download</span>
-                            {{ preparingDownloads[p.mod.id] ? 'Preparando enlace...' : 'Descargar' }}
+                            {{ preparingDownloads[p.mod.id] ? 'Preparando enlace...' : (downloadReady[p.mod.id] ? 'Enlace generado' : 'Descargar') }}
                         </button>
+                        <p *ngIf="downloadStatusMessage[p.mod.id]" class="mt-2 text-[11px] text-slate-400">
+                            {{ downloadStatusMessage[p.mod.id] }}
+                        </p>
+                        </div>
                     </div>
                 </div>
             </div>

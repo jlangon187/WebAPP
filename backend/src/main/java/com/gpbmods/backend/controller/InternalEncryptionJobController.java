@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @RestController
 @RequestMapping("/api/internal/encryption-jobs")
 public class InternalEncryptionJobController {
@@ -36,6 +38,7 @@ public class InternalEncryptionJobController {
     private String publicDownloadBaseUrl;
 
     @PostMapping("/next")
+    @Transactional
     public ResponseEntity<?> getNextJob(@RequestHeader(value = "X-Worker-Key", required = false) String key) {
         ResponseEntity<?> unauthorized = requireWorkerKey(key);
         if (unauthorized != null) {
@@ -48,6 +51,17 @@ public class InternalEncryptionJobController {
         }
 
         EncryptionJob job = nextJobOpt.get();
+        int claimed = encryptionJobRepository.claimPendingJob(
+                job.getId(),
+                EncryptionJob.Status.PENDING,
+                EncryptionJob.Status.RUNNING,
+                LocalDateTime.now()
+        );
+        if (claimed == 0) {
+            return ResponseEntity.noContent().build();
+        }
+
+        job = encryptionJobRepository.findById(job.getId()).orElse(job);
         Map<String, Object> payload = new HashMap<>();
         payload.put("id", job.getId());
         payload.put("modId", job.getMod().getId());
@@ -71,10 +85,12 @@ public class InternalEncryptionJobController {
         }
 
         EncryptionJob job = jobOpt.get();
-        job.setStatus(EncryptionJob.Status.RUNNING);
-        job.setErrorMessage(null);
-        job.setUpdatedAt(LocalDateTime.now());
-        encryptionJobRepository.save(job);
+        if (job.getStatus() == EncryptionJob.Status.PENDING) {
+            job.setStatus(EncryptionJob.Status.RUNNING);
+            job.setErrorMessage(null);
+            job.setUpdatedAt(LocalDateTime.now());
+            encryptionJobRepository.save(job);
+        }
         return ResponseEntity.ok().build();
     }
 

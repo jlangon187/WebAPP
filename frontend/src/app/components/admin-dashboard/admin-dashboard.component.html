@@ -72,6 +72,24 @@
         </div>
     </section>
 
+    <section class="mb-8 rounded-xl border border-primary/10 bg-slate-900/40 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Cola de cifrado</h3>
+            <span class="text-xs px-2 py-1 rounded"
+                  [ngClass]="encryptionOverview.mailConfigured ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'">
+                {{ encryptionOverview.mailConfigured ? 'SMTP configurado' : 'SMTP no configurado' }}
+            </span>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-sm">
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">Pendientes: <strong>{{ encryptionOverview.pending }}</strong></div>
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">En curso: <strong>{{ encryptionOverview.running }}</strong></div>
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">Completados: <strong>{{ encryptionOverview.done }}</strong></div>
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">Fallidos: <strong>{{ encryptionOverview.failed }}</strong></div>
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">Sin aviso email: <strong>{{ encryptionOverview.doneWithoutNotification }}</strong></div>
+            <div class="rounded-lg bg-slate-950/60 border border-slate-800 p-3 text-slate-200">Host SMTP: <strong>{{ encryptionOverview.mailHost || '-' }}</strong></div>
+        </div>
+    </section>
+
     <!-- Management Quick Access -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">

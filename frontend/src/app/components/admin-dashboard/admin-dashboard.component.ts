@@ -31,6 +31,14 @@ export class AdminDashboardComponent implements OnInit {
       modsFilesPath: '-'
     }
   };
+  encryptionOverview: any = {
+    pending: 0,
+    running: 0,
+    done: 0,
+    failed: 0,
+    doneWithoutNotification: 0,
+    mailConfigured: false
+  };
   loading = true;
   error = '';
 
@@ -51,7 +59,15 @@ export class AdminDashboardComponent implements OnInit {
     this.http.get('/api/admin/stats', { headers }).subscribe({
         next: (res: any) => {
             this.stats = res;
-            this.loading = false;
+            this.http.get('/api/admin/encryption-jobs/overview', { headers }).subscribe({
+              next: (overview: any) => {
+                this.encryptionOverview = overview || this.encryptionOverview;
+                this.loading = false;
+              },
+              error: () => {
+                this.loading = false;
+              }
+            });
         },
         error: (err) => {
             this.error = 'No tienes permiso para acceder al panel de administración o la sesión expiró.';

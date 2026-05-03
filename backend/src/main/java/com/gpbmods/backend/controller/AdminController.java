@@ -3,9 +3,11 @@ package com.gpbmods.backend.controller;
 import com.gpbmods.backend.dto.AdminUserUpdateRequest;
 import com.gpbmods.backend.dto.AdminPurchaseGuidUpdateRequest;
 import com.gpbmods.backend.model.Compra;
+import com.gpbmods.backend.model.EncryptionJob;
 import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.model.Ticket;
 import com.gpbmods.backend.repository.CompraRepository;
+import com.gpbmods.backend.repository.EncryptionJobRepository;
 import com.gpbmods.backend.repository.TicketRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,15 +43,18 @@ public class AdminController {
     private final CompraRepository compraRepository;
     private final UsuarioRepository usuarioRepository;
     private final TicketRepository ticketRepository;
+    private final EncryptionJobRepository encryptionJobRepository;
     private final PasswordEncoder passwordEncoder;
 
     public AdminController(CompraRepository compraRepository,
                            UsuarioRepository usuarioRepository,
                            TicketRepository ticketRepository,
+                           EncryptionJobRepository encryptionJobRepository,
                            PasswordEncoder passwordEncoder) {
         this.compraRepository = compraRepository;
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
+        this.encryptionJobRepository = encryptionJobRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -58,6 +63,12 @@ public class AdminController {
 
     @Value("${mods.files.directory:/data/mods-files}")
     private String modsFilesDirectory;
+
+    @Value("${spring.mail.host:}")
+    private String mailHost;
+
+    @Value("${spring.mail.username:}")
+    private String mailUsername;
 
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
@@ -98,6 +109,38 @@ public class AdminController {
             payload.add(buildAdminUserResponse(user, compras));
         }
 
+        return ResponseEntity.ok(payload);
+    }
+
+    @GetMapping("/encryption-jobs/overview")
+    public ResponseEntity<?> getEncryptionJobsOverview() {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("pending", encryptionJobRepository.countByStatus(EncryptionJob.Status.PENDING));
+        payload.put("running", encryptionJobRepository.countByStatus(EncryptionJob.Status.RUNNING));
+        payload.put("done", encryptionJobRepository.countByStatus(EncryptionJob.Status.DONE));
+        payload.put("failed", encryptionJobRepository.countByStatus(EncryptionJob.Status.FAILED));
+        payload.put("doneWithoutNotification", encryptionJobRepository.countByStatusAndNotifiedAtIsNull(EncryptionJob.Status.DONE));
+        payload.put("failedWithError", encryptionJobRepository.countByStatusAndErrorMessageIsNotNull(EncryptionJob.Status.FAILED));
+        payload.put("mailConfigured", mailHost != null && !mailHost.isBlank() && mailUsername != null && !mailUsername.isBlank());
+        payload.put("mailHost", mailHost == null || mailHost.isBlank() ? "-" : mailHost);
+        payload.put("mailUsername", mailUsername == null || mailUsername.isBlank() ? "-" : mailUsername);
+
+        List<Map<String, Object>> recent = new ArrayList<>();
+        encryptionJobRepository.findTop20ByOrderByCreatedAtDesc().forEach(job -> {
+            Map<String, Object> row = new HashMap<>();
+            row.put("id", job.getId());
+            row.put("status", job.getStatus().name());
+            row.put("mod", job.getMod().getNombre());
+            row.put("userEmail", job.getUsuario().getEmail());
+            row.put("guid", job.getGuid());
+            row.put("createdAt", job.getCreatedAt());
+            row.put("updatedAt", job.getUpdatedAt());
+            row.put("expiresAt", job.getExpiresAt());
+            row.put("notifiedAt", job.getNotifiedAt());
+            row.put("errorMessage", job.getErrorMessage());
+            recent.add(row);
+        });
+        payload.put("recent", recent);
         return ResponseEntity.ok(payload);
     }
 

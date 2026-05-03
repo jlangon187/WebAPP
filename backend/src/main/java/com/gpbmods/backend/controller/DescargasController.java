@@ -11,6 +11,7 @@ import com.gpbmods.backend.repository.DescargaRepository;
 import com.gpbmods.backend.repository.EncryptionJobRepository;
 import com.gpbmods.backend.repository.ModsRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
+import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -48,6 +49,9 @@ public class DescargasController {
 
     @Autowired
     private EncryptionJobRepository encryptionJobRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Value("${mods.downloads.retention-days:15}")
     private int retentionDays;
@@ -118,6 +122,7 @@ public class DescargasController {
 
         if (reusableDone.isPresent()) {
             EncryptionJob doneJob = reusableDone.get();
+            notifyByEmailIfNeeded(doneJob);
             return ResponseEntity.ok(new PrepareDownloadResponse(
                     doneJob.getId(),
                     doneJob.getStatus().name(),
@@ -268,5 +273,25 @@ public class DescargasController {
 
     public String buildPublicDownloadUrl(String token) {
         return URI.create(publicDownloadBaseUrl + "/" + token).toString();
+    }
+
+    private void notifyByEmailIfNeeded(EncryptionJob job) {
+        if (job.getNotifiedAt() != null || job.getDownloadToken() == null || job.getDownloadToken().isBlank()) {
+            return;
+        }
+
+        try {
+            emailService.sendDownloadReadyEmail(
+                    job.getUsuario().getEmail(),
+                    job.getMod().getNombre(),
+                    buildPublicDownloadUrl(job.getDownloadToken()),
+                    job.getExpiresAt()
+            );
+            job.setNotifiedAt(LocalDateTime.now());
+            encryptionJobRepository.save(job);
+        } catch (Exception e) {
+            job.setErrorMessage("Aviso: descarga generada pero no se pudo enviar email: " + e.getMessage());
+            encryptionJobRepository.save(job);
+        }
     }
 }
