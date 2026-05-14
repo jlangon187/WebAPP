@@ -13,6 +13,28 @@
   <div *ngIf="loading" class="text-center py-10 text-slate-400">Cargando mods...</div>
   <div *ngIf="error" class="text-center py-10 text-accent-red font-bold">{{ error }}</div>
 
+  <div *ngIf="!loading && !error" class="mb-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+    <input
+      [(ngModel)]="searchTerm"
+      type="text"
+      placeholder="Buscar por nombre, version o categoria"
+      class="xl:col-span-2 bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"
+    />
+    <select [(ngModel)]="categoryFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Todas las categorias</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+    <select [(ngModel)]="featuredFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Showroom: todos</option>
+      <option value="featured">Solo destacados</option>
+      <option value="not-featured">No destacados</option>
+    </select>
+    <div class="grid grid-cols-2 gap-2">
+      <input [(ngModel)]="minPrice" type="number" min="0" step="0.01" placeholder="Precio min" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" />
+      <input [(ngModel)]="maxPrice" type="number" min="0" step="0.01" placeholder="Precio max" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white" />
+    </div>
+  </div>
+
   <div *ngIf="!loading && !error" class="bg-slate-900/40 rounded-xl border border-primary/10 overflow-x-auto">
     <table class="w-full text-left">
       <thead class="bg-slate-800/50 border-b border-primary/10">
@@ -26,10 +48,10 @@
         </tr>
       </thead>
       <tbody class="divide-y divide-primary/5">
-        <tr *ngIf="mods.length === 0">
+        <tr *ngIf="filteredMods.length === 0">
           <td colspan="6" class="px-6 py-8 text-center text-slate-500">No hay mods en catálogo.</td>
         </tr>
-        <tr *ngFor="let mod of mods" class="hover:bg-slate-800/30 transition-colors">
+        <tr *ngFor="let mod of filteredMods" class="hover:bg-slate-800/30 transition-colors">
           <td class="px-6 py-4 text-sm text-slate-400">#{{ mod.id }}</td>
           <td class="px-6 py-4 text-sm font-bold text-white">{{ mod.nombre }}</td>
           <td class="px-6 py-4 text-sm text-emerald-400">{{ mod.precio | currency:'EUR' }}</td>

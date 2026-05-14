@@ -13,10 +13,31 @@
   <div *ngIf="loading" class="text-center py-10 text-slate-400">Cargando tickets...</div>
   <div *ngIf="error" class="text-center py-10 text-accent-red font-bold">{{ error }}</div>
 
-  <div *ngIf="!loading && !error" class="space-y-4">
-    <div *ngIf="tickets.length === 0" class="text-slate-500 text-sm">No hay tickets registrados.</div>
+  <div *ngIf="!loading && !error" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+    <input
+      [(ngModel)]="searchTerm"
+      type="text"
+      placeholder="Buscar por id, email o mensaje"
+      class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white"
+    />
+    <select [(ngModel)]="statusFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Todos los estados</option>
+      <option value="abierto">Abiertos</option>
+      <option value="respondido">Respondidos</option>
+      <option value="cerrado">Cerrados</option>
+    </select>
+    <select [(ngModel)]="periodFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Todo el tiempo</option>
+      <option value="7">Ultimos 7 dias</option>
+      <option value="30">Ultimos 30 dias</option>
+      <option value="90">Ultimos 90 dias</option>
+    </select>
+  </div>
 
-    <div *ngFor="let ticket of tickets" class="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
+  <div *ngIf="!loading && !error" class="space-y-4">
+    <div *ngIf="filteredTickets.length === 0" class="text-slate-500 text-sm">No hay tickets registrados.</div>
+
+    <div *ngFor="let ticket of filteredTickets" class="rounded-xl border border-slate-700 bg-slate-900/60 p-4">
       <div class="flex items-center justify-between gap-3 mb-2">
         <p class="text-sm font-bold text-white">Ticket #{{ ticket.id }} - {{ ticket.usuario?.email }}</p>
         <span class="text-[11px] font-bold uppercase px-2.5 py-1 rounded-full"

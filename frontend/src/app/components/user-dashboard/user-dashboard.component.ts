@@ -20,6 +20,7 @@ export class UserDashboardComponent implements OnInit {
   error = '';
   userName = '';
   isAdmin = false;
+  purchaseSearchTerm = '';
   
   isEditing = false;
   editData = { nombre: '', password: '', email: '', guid: '' };
@@ -305,6 +306,19 @@ export class UserDashboardComponent implements OnInit {
 
   getTotalSpent(): number {
     return (this.purchases || []).reduce((acc, purchase) => acc + (Number(purchase?.precioPagado) || 0), 0);
+  }
+
+  get filteredPurchases(): any[] {
+    const term = this.purchaseSearchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.purchases;
+    }
+    return this.purchases.filter((purchase) => {
+      const name = (purchase?.mod?.nombre || '').toLowerCase();
+      const version = (purchase?.mod?.version || '').toLowerCase();
+      const guid = (purchase?.guidCompra || '').toLowerCase();
+      return name.includes(term) || version.includes(term) || guid.includes(term);
+    });
   }
 
   getCurrentGuid(): string {

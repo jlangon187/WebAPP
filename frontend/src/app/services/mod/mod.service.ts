@@ -36,6 +36,12 @@ export interface ModRatingSummary {
   totalComentarios: number;
 }
 
+export interface ModPurchaseStats {
+  modId: number;
+  totalPurchases: number;
+  purchasesLast30Days: number;
+}
+
 export interface AdminPurchase {
   id: number;
   fecha: string;
@@ -183,6 +189,10 @@ export class ModService {
 
   getRatingsSummary(): Observable<ModRatingSummary[]> {
     return this.http.get<ModRatingSummary[]>(`${this.apiUrl}/mods/ratings`);
+  }
+
+  getPurchaseStats(): Observable<ModPurchaseStats[]> {
+    return this.http.get<ModPurchaseStats[]>(`${this.apiUrl}/mods/purchase-stats`);
   }
 
   createComentario(modId: number, puntuacion: number, mensaje: string): Observable<Comentario> {

@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/internal/encryption-jobs/**").permitAll()
                 .requestMatchers("/api/mods/catalog").permitAll()
                 .requestMatchers("/api/mods/showroom").permitAll()
+                .requestMatchers("/api/mods/purchase-stats").permitAll()
                 .requestMatchers("/api/mods/detail/*").permitAll()
                 .requestMatchers("/api/descargas/file/*").permitAll()
                 .requestMatchers("/api/mods/*/comentarios").permitAll()

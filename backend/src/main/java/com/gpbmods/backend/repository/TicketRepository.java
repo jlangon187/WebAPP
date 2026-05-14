@@ -14,4 +14,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findAllByOrderByCreadoEnDesc();
     long countByEstadoNot(Ticket.Estado estado);
     long countByEstadoNotAndCreadoEnBetween(Ticket.Estado estado, LocalDateTime fromDate, LocalDateTime toDate);
+    long countByEstado(Ticket.Estado estado);
+    long countByCreadoEnBetween(LocalDateTime fromDate, LocalDateTime toDate);
 }

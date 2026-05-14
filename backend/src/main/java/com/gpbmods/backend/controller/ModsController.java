@@ -3,6 +3,7 @@ package com.gpbmods.backend.controller;
 import com.gpbmods.backend.model.Categoria;
 import com.gpbmods.backend.model.Mods;
 import com.gpbmods.backend.repository.CategoriaRepository;
+import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.ModsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,8 +15,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -29,6 +34,9 @@ public class ModsController {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
+    @Autowired
+    private CompraRepository compraRepository;
+
     @Value("${mods.images.directory:../frontend/public/home}")
     private String homeImagesDirectory;
 
@@ -40,6 +48,27 @@ public class ModsController {
     @GetMapping("/showroom")
     public List<Mods> getShowroomMods() {
         return modsRepository.findByDestacadoHomeTrueOrderByOrdenShowroomAsc().stream().limit(3).toList();
+    }
+
+    @GetMapping("/purchase-stats")
+    public ResponseEntity<List<Map<String, Object>>> getPurchaseStats() {
+        LocalDateTime fromDate = LocalDateTime.now().minusDays(30);
+        List<Object[]> rows = compraRepository.countPurchasesByMod(fromDate);
+        List<Map<String, Object>> payload = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            Number modId = (Number) row[0];
+            Number total = (Number) row[1];
+            Number last30 = (Number) row[2];
+
+            Map<String, Object> item = new HashMap<>();
+            item.put("modId", modId == null ? 0L : modId.longValue());
+            item.put("totalPurchases", total == null ? 0L : total.longValue());
+            item.put("purchasesLast30Days", last30 == null ? 0L : last30.longValue());
+            payload.add(item);
+        }
+
+        return ResponseEntity.ok(payload);
     }
 
     @GetMapping("/home-images")

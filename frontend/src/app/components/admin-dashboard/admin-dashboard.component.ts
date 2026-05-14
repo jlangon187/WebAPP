@@ -15,8 +15,17 @@ import { Router } from '@angular/router';
 export class AdminDashboardComponent implements OnInit {
   stats: any = {
     totalSales: 0,
+    totalSalesCount: 0,
+    salesCountLast30: 0,
+    totalUsers: 0,
     newUsers: 0,
+    totalTickets: 0,
     activeTickets: 0,
+    closedTickets: 0,
+    respondedTickets: 0,
+    openTickets: 0,
+    totalMods: 0,
+    featuredMods: 0,
     salesTrendPercent: 0,
     usersTrendPercent: 0,
     ticketsTrendPercent: 0,
@@ -139,6 +148,39 @@ export class AdminDashboardComponent implements OnInit {
   trendLabel(value: number): string {
     const abs = Math.abs(value || 0);
     return `${abs}%`;
+  }
+
+  kpiCards(): Array<{ title: string; value: string | number; sub: string; icon: string; trend?: number; inverseTrend?: boolean }> {
+    return [
+      {
+        title: 'Ventas (EUR)',
+        value: `${Number(this.stats.totalSales || 0).toLocaleString()} EUR`,
+        sub: `${this.stats.totalSalesCount || 0} compras totales`,
+        icon: 'payments',
+        trend: this.stats.salesTrendPercent
+      },
+      {
+        title: 'Usuarios',
+        value: this.stats.totalUsers || 0,
+        sub: `${this.stats.newUsers || 0} nuevos en 30 dias`,
+        icon: 'group',
+        trend: this.stats.usersTrendPercent
+      },
+      {
+        title: 'Tickets',
+        value: this.stats.totalTickets || 0,
+        sub: `${this.stats.activeTickets || 0} activos | ${this.stats.closedTickets || 0} cerrados`,
+        icon: 'confirmation_number',
+        trend: this.stats.ticketsTrendPercent,
+        inverseTrend: true
+      },
+      {
+        title: 'Mods',
+        value: this.stats.totalMods || 0,
+        sub: `${this.stats.featuredMods || 0} en showroom`,
+        icon: 'inventory_2'
+      }
+    ];
   }
 
 }

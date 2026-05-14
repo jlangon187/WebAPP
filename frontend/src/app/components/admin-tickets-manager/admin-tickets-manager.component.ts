@@ -15,6 +15,9 @@ export class AdminTicketsManagerComponent implements OnInit {
   tickets: any[] = [];
   loading = true;
   error = '';
+  searchTerm = '';
+  statusFilter = 'all';
+  periodFilter = 'all';
   replyDrafts: { [ticketId: number]: string } = {};
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
@@ -35,6 +38,30 @@ export class AdminTicketsManagerComponent implements OnInit {
         this.error = 'No se pudieron cargar los tickets.';
         this.loading = false;
       }
+    });
+  }
+
+  get filteredTickets(): any[] {
+    const term = this.searchTerm.trim().toLowerCase();
+    const now = new Date().getTime();
+
+    return this.tickets.filter((ticket) => {
+      const email = (ticket?.usuario?.email || '').toLowerCase();
+      const message = (ticket?.mensaje || '').toLowerCase();
+      const id = String(ticket?.id || '');
+      const status = (ticket?.estado || '').toLowerCase();
+
+      const matchSearch = !term || email.includes(term) || message.includes(term) || id.includes(term);
+      const matchStatus = this.statusFilter === 'all' || status === this.statusFilter;
+
+      let matchPeriod = true;
+      if (this.periodFilter !== 'all' && ticket?.creadoEn) {
+        const created = new Date(ticket.creadoEn).getTime();
+        const days = this.periodFilter === '7' ? 7 : this.periodFilter === '30' ? 30 : 90;
+        matchPeriod = !Number.isNaN(created) && (now - created) <= days * 24 * 60 * 60 * 1000;
+      }
+
+      return matchSearch && matchStatus && matchPeriod;
     });
   }
 

@@ -11,13 +11,42 @@
     </button>
   </div>
 
-  <div class="mb-6">
+  <div class="mb-4">
     <input
       [(ngModel)]="searchTerm"
       type="text"
       placeholder="Buscar por nombre, email, GUID o rol"
       class="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-primary transition-all"
     />
+  </div>
+
+  <div class="mb-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-3">
+    <select [(ngModel)]="roleFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Todos los roles</option>
+      <option value="admin">Admin</option>
+      <option value="registrado">Registrado</option>
+      <option value="invitado">Invitado</option>
+    </select>
+    <select [(ngModel)]="statusFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Estado: todos</option>
+      <option value="active">Solo activos</option>
+      <option value="inactive">Solo inactivos</option>
+    </select>
+    <select [(ngModel)]="profileFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Perfil: todos</option>
+      <option value="complete">Perfil completo</option>
+      <option value="incomplete">Perfil incompleto</option>
+    </select>
+    <select [(ngModel)]="purchasesFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Compras: todas</option>
+      <option value="with">Con compras</option>
+      <option value="without">Sin compras</option>
+    </select>
+    <select [(ngModel)]="ticketsFilter" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white">
+      <option value="all">Tickets: todos</option>
+      <option value="with">Con tickets</option>
+      <option value="without">Sin tickets</option>
+    </select>
   </div>
 
   <div *ngIf="loading" class="text-center py-10 text-slate-400">Cargando usuarios...</div>

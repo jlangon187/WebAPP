@@ -16,6 +16,11 @@ export class AdminUsersManagerComponent implements OnInit {
   error = '';
   success = '';
   searchTerm = '';
+  roleFilter = 'all';
+  statusFilter = 'all';
+  profileFilter = 'all';
+  purchasesFilter = 'all';
+  ticketsFilter = 'all';
   expandedUserId: number | null = null;
   editingPurchaseGuidId: number | null = null;
   purchaseGuidDraft = '';
@@ -60,16 +65,29 @@ export class AdminUsersManagerComponent implements OnInit {
 
   get filteredUsers(): AdminUser[] {
     const term = this.searchTerm.trim().toLowerCase();
-    if (!term) {
-      return this.users;
-    }
+    return this.users.filter((user) => {
+      const matchSearch = !term ||
+        user.nombre?.toLowerCase().includes(term) ||
+        user.email?.toLowerCase().includes(term) ||
+        (user.guid || '').toLowerCase().includes(term) ||
+        (user.rol || '').toLowerCase().includes(term);
 
-    return this.users.filter((user) =>
-      user.nombre?.toLowerCase().includes(term) ||
-      user.email?.toLowerCase().includes(term) ||
-      (user.guid || '').toLowerCase().includes(term) ||
-      (user.rol || '').toLowerCase().includes(term)
-    );
+      const matchRole = this.roleFilter === 'all' || (user.rol || '').toLowerCase() === this.roleFilter;
+      const matchStatus = this.statusFilter === 'all' ||
+        (this.statusFilter === 'active' && user.activo) ||
+        (this.statusFilter === 'inactive' && !user.activo);
+      const matchProfile = this.profileFilter === 'all' ||
+        (this.profileFilter === 'complete' && !!user.profileCompleted) ||
+        (this.profileFilter === 'incomplete' && !user.profileCompleted);
+      const matchPurchases = this.purchasesFilter === 'all' ||
+        (this.purchasesFilter === 'with' && (user.purchasesCount || 0) > 0) ||
+        (this.purchasesFilter === 'without' && (user.purchasesCount || 0) === 0);
+      const matchTickets = this.ticketsFilter === 'all' ||
+        (this.ticketsFilter === 'with' && (user.ticketsCount || 0) > 0) ||
+        (this.ticketsFilter === 'without' && (user.ticketsCount || 0) === 0);
+
+      return matchSearch && matchRole && matchStatus && matchProfile && matchPurchases && matchTickets;
+    });
   }
 
   togglePurchases(userId: number): void {

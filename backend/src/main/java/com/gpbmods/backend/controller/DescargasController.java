@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -129,6 +130,34 @@ public class DescargasController {
                     "Paquete ya generado.",
                     doneJob.getDownloadToken()
             ));
+        }
+
+        Optional<EncryptionJob> latestDone = encryptionJobRepository
+                .findTopByUsuarioAndModAndGuidAndStatusOrderByCreatedAtDesc(
+                        usuario,
+                        mod,
+                        guid,
+                        EncryptionJob.Status.DONE
+                );
+
+        if (latestDone.isPresent()) {
+            EncryptionJob doneJob = latestDone.get();
+            if (outputFileExists(doneJob)) {
+                doneJob.setDownloadToken(UUID.randomUUID().toString().replace("-", ""));
+                doneJob.setUpdatedAt(now);
+                doneJob.setExpiresAt(now.plusDays(retentionDays));
+                doneJob.setNotifiedAt(null);
+                doneJob.setErrorMessage(null);
+                encryptionJobRepository.save(doneJob);
+
+                notifyByEmailIfNeeded(doneJob);
+                return ResponseEntity.ok(new PrepareDownloadResponse(
+                        doneJob.getId(),
+                        doneJob.getStatus().name(),
+                        "Enlace regenerado sin recifrar.",
+                        doneJob.getDownloadToken()
+                ));
+            }
         }
 
         Optional<EncryptionJob> runningJob = encryptionJobRepository
@@ -280,6 +309,19 @@ public class DescargasController {
         } catch (Exception e) {
             job.setErrorMessage("Aviso: descarga generada pero no se pudo enviar email: " + e.getMessage());
             encryptionJobRepository.save(job);
+        }
+    }
+
+    private boolean outputFileExists(EncryptionJob job) {
+        if (job.getOutputRelativePath() == null || job.getOutputRelativePath().isBlank()) {
+            return false;
+        }
+        try {
+            Path base = Paths.get(modsFilesDirectory).normalize();
+            Path filePath = base.resolve(job.getOutputRelativePath()).normalize();
+            return filePath.startsWith(base) && Files.exists(filePath) && Files.isRegularFile(filePath);
+        } catch (Exception e) {
+            return false;
         }
     }
 }

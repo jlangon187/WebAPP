@@ -21,4 +21,10 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 
     @Query("SELECT COALESCE(SUM(c.precioPagado), 0) FROM Compra c WHERE c.fecha >= :fromDate AND c.fecha < :toDate")
     BigDecimal sumSalesBetween(@Param("fromDate") LocalDateTime fromDate, @Param("toDate") LocalDateTime toDate);
+
+    long countByFechaBetween(LocalDateTime fromDate, LocalDateTime toDate);
+
+    @Query("SELECT c.mod.id, COUNT(c.id), SUM(CASE WHEN c.fecha >= :fromDate THEN 1 ELSE 0 END) " +
+            "FROM Compra c GROUP BY c.mod.id")
+    List<Object[]> countPurchasesByMod(@Param("fromDate") LocalDateTime fromDate);
 }

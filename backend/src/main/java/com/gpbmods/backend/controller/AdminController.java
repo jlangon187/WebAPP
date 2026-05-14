@@ -6,6 +6,7 @@ import com.gpbmods.backend.model.Compra;
 import com.gpbmods.backend.model.EncryptionJob;
 import com.gpbmods.backend.model.Usuario;
 import com.gpbmods.backend.model.Ticket;
+import com.gpbmods.backend.repository.ModsRepository;
 import com.gpbmods.backend.repository.CompraRepository;
 import com.gpbmods.backend.repository.EncryptionJobRepository;
 import com.gpbmods.backend.repository.TicketRepository;
@@ -48,19 +49,22 @@ public class AdminController {
     private final EncryptionJobRepository encryptionJobRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
+    private final ModsRepository modsRepository;
 
     public AdminController(CompraRepository compraRepository,
                            UsuarioRepository usuarioRepository,
                            TicketRepository ticketRepository,
                            EncryptionJobRepository encryptionJobRepository,
                            PasswordEncoder passwordEncoder,
-                           EmailService emailService) {
+                           EmailService emailService,
+                           ModsRepository modsRepository) {
         this.compraRepository = compraRepository;
         this.usuarioRepository = usuarioRepository;
         this.ticketRepository = ticketRepository;
         this.encryptionJobRepository = encryptionJobRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.modsRepository = modsRepository;
     }
 
     @Value("${mods.images.directory:/data/home-images}")
@@ -97,12 +101,31 @@ public class AdminController {
         long usersPrev30 = usuarioRepository.countByCreadoEnBetween(prev30From, last30From);
 
         long activeTickets = ticketRepository.countByEstadoNot(Ticket.Estado.cerrado);
+        long totalUsers = usuarioRepository.count();
+        long totalSalesCount = compraRepository.count();
+        long salesCountLast30 = compraRepository.countByFechaBetween(last30From, now);
+        long totalTickets = ticketRepository.count();
+        long closedTickets = ticketRepository.countByEstado(Ticket.Estado.cerrado);
+        long respondedTickets = ticketRepository.countByEstado(Ticket.Estado.respondido);
+        long openTickets = ticketRepository.countByEstado(Ticket.Estado.abierto);
+        long totalMods = modsRepository.count();
+        long featuredMods = modsRepository.countByDestacadoHomeTrue();
+
         long ticketsLast30 = ticketRepository.countByEstadoNotAndCreadoEnBetween(Ticket.Estado.cerrado, last30From, now);
         long ticketsPrev30 = ticketRepository.countByEstadoNotAndCreadoEnBetween(Ticket.Estado.cerrado, prev30From, last30From);
 
         stats.put("totalSales", totalSales == null ? BigDecimal.ZERO : totalSales);
+        stats.put("totalUsers", totalUsers);
         stats.put("newUsers", newUsers);
+        stats.put("totalSalesCount", totalSalesCount);
+        stats.put("salesCountLast30", salesCountLast30);
+        stats.put("totalTickets", totalTickets);
         stats.put("activeTickets", activeTickets);
+        stats.put("closedTickets", closedTickets);
+        stats.put("respondedTickets", respondedTickets);
+        stats.put("openTickets", openTickets);
+        stats.put("totalMods", totalMods);
+        stats.put("featuredMods", featuredMods);
         stats.put("salesTrendPercent", calculateTrendPercent(salesLast30.doubleValue(), salesPrev30.doubleValue()));
         stats.put("usersTrendPercent", calculateTrendPercent((double) usersLast30, (double) usersPrev30));
         stats.put("ticketsTrendPercent", calculateTrendPercent((double) ticketsLast30, (double) ticketsPrev30));

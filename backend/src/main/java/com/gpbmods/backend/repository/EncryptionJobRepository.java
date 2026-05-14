@@ -23,6 +23,13 @@ public interface EncryptionJobRepository extends JpaRepository<EncryptionJob, Lo
             LocalDateTime expiresAt
     );
 
+    Optional<EncryptionJob> findTopByUsuarioAndModAndGuidAndStatusOrderByCreatedAtDesc(
+            Usuario usuario,
+            Mods mod,
+            String guid,
+            EncryptionJob.Status status
+    );
+
     Optional<EncryptionJob> findTopByUsuarioAndModAndGuidAndStatusInOrderByCreatedAtDesc(
             Usuario usuario,
             Mods mod,
