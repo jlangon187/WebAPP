@@ -143,4 +143,52 @@
             </div>
         </div>
     </div>
+
+    <section class="mb-10" *ngIf="recentReviews.length > 0">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-black italic uppercase tracking-tighter flex items-center gap-3 text-white">
+                <span class="material-symbols-outlined text-primary text-3xl">reviews</span>
+                Ultimas Valoraciones
+            </h3>
+
+            <div class="flex items-center gap-2" *ngIf="reviewPageCount() > 1">
+                <button (click)="prevReviewSlide()" class="h-9 w-9 rounded-lg border border-primary/20 bg-slate-900/70 text-slate-200 hover:bg-primary/20 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">chevron_left</span>
+                </button>
+                <button (click)="nextReviewSlide()" class="h-9 w-9 rounded-lg border border-primary/20 bg-slate-900/70 text-slate-200 hover:bg-primary/20 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-base">chevron_right</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <article *ngFor="let review of visibleReviews()" class="review-card rounded-xl border border-primary/10 bg-slate-900/50 p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-1 text-yellow-400">
+                        <span *ngFor="let s of reviewStars(review.puntuacion)" class="material-symbols-outlined text-sm">star</span>
+                    </div>
+                    <span class="text-[11px] text-slate-500">{{ review.creadoEn | date:'shortDate' }}</span>
+                </div>
+
+                <p class="text-sm text-slate-200 leading-relaxed line-clamp-3 min-h-[64px]">"{{ review.mensaje }}"</p>
+
+                <div class="mt-4 pt-3 border-t border-primary/10 flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-bold text-white">{{ review.usuarioNombre }}</p>
+                        <p class="text-[11px] text-slate-400">{{ review.modNombre }}</p>
+                    </div>
+                    <button (click)="viewDetails(review.modId)" class="text-[11px] font-bold bg-primary/20 text-primary hover:bg-primary hover:text-white px-2.5 py-1.5 rounded-md transition-colors">
+                        Ver mod
+                    </button>
+                </div>
+            </article>
+        </div>
+
+        <div class="mt-4 flex justify-center gap-2" *ngIf="reviewPageCount() > 1">
+            <button *ngFor="let page of reviewPages()" (click)="setReviewSlide(page)"
+                class="h-2 rounded-full transition-all duration-300"
+                [ngClass]="{'w-7 bg-primary': currentReviewSlide === page, 'w-2 bg-white/30 hover:bg-white/60': currentReviewSlide !== page}">
+            </button>
+        </div>
+    </section>
 </div>

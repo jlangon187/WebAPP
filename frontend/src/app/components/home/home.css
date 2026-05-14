@@ -1,0 +1,9 @@
+.review-card {
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(230, 0, 0, 0.35);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+}

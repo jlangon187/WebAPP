@@ -36,6 +36,16 @@ export interface ModRatingSummary {
   totalComentarios: number;
 }
 
+export interface RecentReview {
+  id: number;
+  modId: number;
+  modNombre: string;
+  puntuacion: number;
+  mensaje: string;
+  creadoEn: string;
+  usuarioNombre: string;
+}
+
 export interface ModPurchaseStats {
   modId: number;
   totalPurchases: number;
@@ -189,6 +199,10 @@ export class ModService {
 
   getRatingsSummary(): Observable<ModRatingSummary[]> {
     return this.http.get<ModRatingSummary[]>(`${this.apiUrl}/mods/ratings`);
+  }
+
+  getRecentReviews(): Observable<RecentReview[]> {
+    return this.http.get<RecentReview[]>(`${this.apiUrl}/mods/reviews/recent`);
   }
 
   getPurchaseStats(): Observable<ModPurchaseStats[]> {

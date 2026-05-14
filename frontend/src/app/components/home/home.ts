@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { ModService, Mod, ModRatingSummary } from '../../services/mod/mod.service';
+import { ModService, Mod, ModRatingSummary, RecentReview } from '../../services/mod/mod.service';
 import { CartService } from '../../services/cart/cart.service';
 
 @Component({
@@ -19,6 +19,9 @@ export class Home implements OnInit, OnDestroy {
   loading = false;
   error = '';
   ratingsByMod: Record<number, ModRatingSummary> = {};
+  recentReviews: RecentReview[] = [];
+  currentReviewSlide = 0;
+  reviewInterval: any;
 
   constructor(
     private modService: ModService,
@@ -64,11 +67,26 @@ export class Home implements OnInit, OnDestroy {
         }, {} as Record<number, ModRatingSummary>);
       }
     });
+
+    this.modService.getRecentReviews().subscribe({
+      next: (reviews) => {
+        this.recentReviews = reviews || [];
+        if (this.recentReviews.length > this.reviewVisibleCount()) {
+          this.startReviewCarousel();
+        }
+      },
+      error: () => {
+        this.recentReviews = [];
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if (this.slideInterval) {
       clearInterval(this.slideInterval);
+    }
+    if (this.reviewInterval) {
+      clearInterval(this.reviewInterval);
     }
   }
 
@@ -102,6 +120,67 @@ export class Home implements OnInit, OnDestroy {
       clearInterval(this.slideInterval);
     }
     this.startCarousel(); // Restart interval on manual click
+  }
+
+  startReviewCarousel() {
+    if (this.reviewInterval) {
+      clearInterval(this.reviewInterval);
+    }
+    this.reviewInterval = setInterval(() => this.nextReviewSlide(), 6000);
+  }
+
+  nextReviewSlide() {
+    const totalPages = this.reviewPageCount();
+    if (totalPages <= 1) {
+      return;
+    }
+    this.currentReviewSlide = (this.currentReviewSlide + 1) % totalPages;
+  }
+
+  prevReviewSlide() {
+    const totalPages = this.reviewPageCount();
+    if (totalPages <= 1) {
+      return;
+    }
+    this.currentReviewSlide = (this.currentReviewSlide - 1 + totalPages) % totalPages;
+  }
+
+  setReviewSlide(index: number) {
+    this.currentReviewSlide = index;
+    this.startReviewCarousel();
+  }
+
+  visibleReviews(): RecentReview[] {
+    const perPage = this.reviewVisibleCount();
+    const start = this.currentReviewSlide * perPage;
+    return this.recentReviews.slice(start, start + perPage);
+  }
+
+  reviewPageCount(): number {
+    const perPage = this.reviewVisibleCount();
+    if (perPage <= 0) {
+      return 1;
+    }
+    return Math.max(1, Math.ceil(this.recentReviews.length / perPage));
+  }
+
+  reviewPages(): number[] {
+    return Array.from({ length: this.reviewPageCount() }, (_, i) => i);
+  }
+
+  reviewVisibleCount(): number {
+    if (typeof window === 'undefined') {
+      return 3;
+    }
+    const width = window.innerWidth;
+    if (width < 768) return 1;
+    if (width < 1280) return 2;
+    return 3;
+  }
+
+  reviewStars(value: number): number[] {
+    const safe = Math.max(1, Math.min(5, value || 0));
+    return Array.from({ length: safe }, (_, i) => i);
   }
 
   getModImage(mod: Mod): string {

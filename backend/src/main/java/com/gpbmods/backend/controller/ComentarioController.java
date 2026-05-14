@@ -71,6 +71,22 @@ public class ComentarioController {
         return ResponseEntity.ok(payload);
     }
 
+    @GetMapping("/mods/reviews/recent")
+    public ResponseEntity<?> getRecentReviews() {
+        List<Map<String, Object>> payload = comentarioRepository.findTop12ByOrderByCreadoEnDesc().stream().map(c -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", c.getId());
+            item.put("modId", c.getMod() == null ? null : c.getMod().getId());
+            item.put("modNombre", c.getMod() == null ? "-" : c.getMod().getNombre());
+            item.put("puntuacion", c.getPuntuacion());
+            item.put("mensaje", c.getMensaje());
+            item.put("creadoEn", c.getCreadoEn());
+            item.put("usuarioNombre", c.getUsuario() == null ? "Usuario" : c.getUsuario().getNombre());
+            return item;
+        }).toList();
+        return ResponseEntity.ok(payload);
+    }
+
     @GetMapping("/comentarios/mis")
     @PreAuthorize("hasAnyAuthority('registrado', 'admin')")
     public ResponseEntity<?> getMisComentarios(Authentication authentication) {

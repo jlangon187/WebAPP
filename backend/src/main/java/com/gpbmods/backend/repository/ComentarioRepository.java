@@ -11,6 +11,8 @@ import java.util.List;
 public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
     List<Comentario> findByModId(Long modId);
 
+    List<Comentario> findTop12ByOrderByCreadoEnDesc();
+
     boolean existsByUsuarioIdAndModId(Long usuarioId, Long modId);
 
     @Query("SELECT c.mod.id, AVG(c.puntuacion), COUNT(c.id) FROM Comentario c GROUP BY c.mod.id")
