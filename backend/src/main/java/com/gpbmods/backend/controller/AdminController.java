@@ -497,7 +497,8 @@ public class AdminController {
         Map<String, Object> nas = new HashMap<>();
 
         Path homePath = Paths.get(homeImagesDirectory).normalize();
-        Path modsPath = Paths.get(modsFilesDirectory).normalize();
+        Path modsRootPath = Paths.get(modsFilesDirectory).normalize();
+        Path modsPath = resolveModsMetricsPath(modsRootPath);
 
         boolean homeAvailable = Files.exists(homePath) && Files.isDirectory(homePath);
         boolean modsAvailable = Files.exists(modsPath) && Files.isDirectory(modsPath);
@@ -550,11 +551,19 @@ public class AdminController {
             return 0;
         }
 
-        try (Stream<Path> stream = Files.list(path)) {
+        try (Stream<Path> stream = Files.walk(path)) {
             return stream.filter(Files::isRegularFile).count();
         } catch (IOException e) {
             return 0;
         }
+    }
+
+    private Path resolveModsMetricsPath(Path modsRootPath) {
+        Path nestedModsPath = modsRootPath.resolve("mods").normalize();
+        if (Files.exists(nestedModsPath) && Files.isDirectory(nestedModsPath)) {
+            return nestedModsPath;
+        }
+        return modsRootPath;
     }
 
     private String resolvePublicDownloadBaseUrl() {
