@@ -22,6 +22,10 @@ export class Home implements OnInit, OnDestroy {
   recentReviews: RecentReview[] = [];
   currentReviewSlide = 0;
   reviewInterval: any;
+  private touchStartX = 0;
+  private touchCurrentX = 0;
+  private readonly swipeThreshold = 50;
+  private resizeHandler = () => this.onViewportChange();
 
   constructor(
     private modService: ModService,
@@ -71,14 +75,17 @@ export class Home implements OnInit, OnDestroy {
     this.modService.getRecentReviews().subscribe({
       next: (reviews) => {
         this.recentReviews = reviews || [];
-        if (this.recentReviews.length > this.reviewVisibleCount()) {
-          this.startReviewCarousel();
-        }
+        this.onViewportChange();
       },
       error: () => {
         this.recentReviews = [];
       }
     });
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.resizeHandler);
+      window.addEventListener('orientationchange', this.resizeHandler);
+    }
   }
 
   ngOnDestroy(): void {
@@ -87,6 +94,10 @@ export class Home implements OnInit, OnDestroy {
     }
     if (this.reviewInterval) {
       clearInterval(this.reviewInterval);
+    }
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.resizeHandler);
+      window.removeEventListener('orientationchange', this.resizeHandler);
     }
   }
 
@@ -150,6 +161,33 @@ export class Home implements OnInit, OnDestroy {
     this.startReviewCarousel();
   }
 
+  onReviewTouchStart(event: TouchEvent) {
+    if (!event.touches.length) return;
+    this.touchStartX = event.touches[0].clientX;
+    this.touchCurrentX = this.touchStartX;
+    if (this.reviewInterval) {
+      clearInterval(this.reviewInterval);
+      this.reviewInterval = null;
+    }
+  }
+
+  onReviewTouchMove(event: TouchEvent) {
+    if (!event.touches.length) return;
+    this.touchCurrentX = event.touches[0].clientX;
+  }
+
+  onReviewTouchEnd() {
+    const delta = this.touchCurrentX - this.touchStartX;
+    if (Math.abs(delta) >= this.swipeThreshold) {
+      if (delta < 0) {
+        this.nextReviewSlide();
+      } else {
+        this.prevReviewSlide();
+      }
+    }
+    this.startReviewCarousel();
+  }
+
   visibleReviews(): RecentReview[] {
     const perPage = this.reviewVisibleCount();
     const start = this.currentReviewSlide * perPage;
@@ -176,6 +214,19 @@ export class Home implements OnInit, OnDestroy {
     if (width < 768) return 1;
     if (width < 1280) return 2;
     return 3;
+  }
+
+  private onViewportChange() {
+    const totalPages = this.reviewPageCount();
+    if (this.currentReviewSlide >= totalPages) {
+      this.currentReviewSlide = Math.max(0, totalPages - 1);
+    }
+    if (this.recentReviews.length > this.reviewVisibleCount()) {
+      this.startReviewCarousel();
+    } else if (this.reviewInterval) {
+      clearInterval(this.reviewInterval);
+      this.reviewInterval = null;
+    }
   }
 
   reviewStars(value: number): number[] {

@@ -161,7 +161,11 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+            (touchstart)="onReviewTouchStart($event)"
+            (touchmove)="onReviewTouchMove($event)"
+            (touchend)="onReviewTouchEnd()">
             <article *ngFor="let review of visibleReviews()" class="review-card rounded-xl border border-primary/10 bg-slate-900/50 p-5">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-1 text-yellow-400">
