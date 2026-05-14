@@ -10,6 +10,7 @@ import { AdminDashboardComponent } from './components/admin-dashboard/admin-dash
 import { AdminModsManagerComponent } from './components/admin-mods-manager/admin-mods-manager.component';
 import { AdminTicketsManagerComponent } from './components/admin-tickets-manager/admin-tickets-manager.component';
 import { AdminUsersManagerComponent } from './components/admin-users-manager/admin-users-manager.component';
+import { AdminEncryptionJobsManagerComponent } from './components/admin-encryption-jobs-manager/admin-encryption-jobs-manager.component';
 import { DiscordCommunityComponent } from './components/discord-community/discord-community.component';
 import { AuthCallbackComponent } from './components/auth-callback/auth-callback.component';
 import { Faq } from './components/faq/faq';
@@ -37,6 +38,7 @@ export const routes: Routes = [
   { path: 'admin/mods', component: AdminModsManagerComponent, canActivate: [authGuard] },
   { path: 'admin/tickets', component: AdminTicketsManagerComponent, canActivate: [authGuard] },
   { path: 'admin/users', component: AdminUsersManagerComponent, canActivate: [authGuard] },
+  { path: 'admin/encryption-jobs', component: AdminEncryptionJobsManagerComponent, canActivate: [authGuard] },
   { path: 'discord', component: DiscordCommunityComponent },
   { path: 'faq', component: Faq },
   { path: 'politica-devoluciones', component: PoliticaDevoluciones },

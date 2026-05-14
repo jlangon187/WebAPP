@@ -101,6 +101,10 @@ export class AdminDashboardComponent implements OnInit {
     this.router.navigate(['/admin/users']);
   }
 
+  goToEncryptionJobsManager() {
+    this.router.navigate(['/admin/encryption-jobs']);
+  }
+
   formatBytes(value: number): string {
     if (!value || value <= 0) {
       return '0 B';
