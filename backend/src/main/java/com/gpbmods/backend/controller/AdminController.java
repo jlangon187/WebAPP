@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @RestController
@@ -81,6 +82,9 @@ public class AdminController {
 
     @Value("${mods.downloads.public-base-url:}")
     private String publicDownloadBaseUrl;
+
+    @Value("${mods.downloads.retention-days:15}")
+    private int retentionDays;
 
     @Value("${frontend.url:http://localhost:4200}")
     private String frontendUrl;
@@ -273,7 +277,7 @@ public class AdminController {
 
     @PostMapping("/users/{userId}/purchases/{purchaseId}/resend-download-email")
     public ResponseEntity<?> resendDownloadEmailByAdmin(@PathVariable Long userId,
-                                                        @PathVariable Long purchaseId) {
+                                                         @PathVariable Long purchaseId) {
         Optional<Usuario> userOpt = usuarioRepository.findById(userId);
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Usuario no encontrado.");
@@ -320,6 +324,103 @@ public class AdminController {
         encryptionJobRepository.save(job);
 
         return ResponseEntity.ok("Correo de descarga reenviado correctamente.");
+    }
+
+    @PostMapping("/users/{userId}/purchases/{purchaseId}/prepare-download")
+    public ResponseEntity<?> prepareDownloadByAdmin(@PathVariable Long userId,
+                                                    @PathVariable Long purchaseId) {
+        Optional<Usuario> userOpt = usuarioRepository.findById(userId);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Usuario no encontrado.");
+        }
+
+        Optional<Compra> compraOpt = compraRepository.findById(purchaseId);
+        if (compraOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Compra no encontrada.");
+        }
+
+        Compra compra = compraOpt.get();
+        if (!compra.getUsuario().getId().equals(userId)) {
+            return ResponseEntity.badRequest().body("La compra no pertenece al usuario indicado.");
+        }
+
+        Usuario user = userOpt.get();
+        String guid = (compra.getGuidCompra() == null ? "" : compra.getGuidCompra().trim().toUpperCase());
+        if (!guid.matches("^[A-F0-9]{18}$")) {
+            return ResponseEntity.badRequest().body("La compra no tiene un GUID valido de 18 hex.");
+        }
+
+        String folder = sanitizeFolder(compra.getMod().getCarpetaBaseMod());
+        if (folder == null || folder.isBlank()) {
+            return ResponseEntity.badRequest().body("Este mod no tiene carpeta base configurada para cifrado.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        Optional<EncryptionJob> reusableDone = encryptionJobRepository
+                .findTopByUsuarioAndModAndGuidAndStatusAndExpiresAtAfterOrderByCreatedAtDesc(
+                        user,
+                        compra.getMod(),
+                        guid,
+                        EncryptionJob.Status.DONE,
+                        now
+                );
+
+        if (reusableDone.isPresent()) {
+            EncryptionJob doneJob = reusableDone.get();
+            if (!outputFileExists(doneJob)) {
+                doneJob.setStatus(EncryptionJob.Status.FAILED);
+                doneJob.setErrorMessage("Archivo generado no encontrado en disco. Se requiere nueva generacion.");
+                doneJob.setUpdatedAt(now);
+                encryptionJobRepository.save(doneJob);
+            } else {
+                notifyJobEmail(user.getEmail(), compra.getMod().getNombre(), doneJob);
+                return ResponseEntity.ok("Enlace vigente reenviado al correo del usuario.");
+            }
+        }
+
+        Optional<EncryptionJob> latestDone = encryptionJobRepository
+                .findTopByUsuarioAndModAndGuidAndStatusOrderByCreatedAtDesc(
+                        user,
+                        compra.getMod(),
+                        guid,
+                        EncryptionJob.Status.DONE
+                );
+
+        if (latestDone.isPresent() && outputFileExists(latestDone.get())) {
+            EncryptionJob doneJob = latestDone.get();
+            doneJob.setDownloadToken(UUID.randomUUID().toString().replace("-", ""));
+            doneJob.setUpdatedAt(now);
+            doneJob.setExpiresAt(now.plusDays(retentionDays));
+            doneJob.setNotifiedAt(null);
+            doneJob.setErrorMessage(null);
+            encryptionJobRepository.save(doneJob);
+            notifyJobEmail(user.getEmail(), compra.getMod().getNombre(), doneJob);
+            return ResponseEntity.ok("Enlace regenerado sin recifrar y enviado por correo.");
+        }
+
+        Optional<EncryptionJob> runningJob = encryptionJobRepository
+                .findTopByUsuarioAndModAndGuidAndStatusInOrderByCreatedAtDesc(
+                        user,
+                        compra.getMod(),
+                        guid,
+                        List.of(EncryptionJob.Status.PENDING, EncryptionJob.Status.RUNNING)
+                );
+        if (runningJob.isPresent()) {
+            return ResponseEntity.ok("Ya existe una generacion en curso para esta compra.");
+        }
+
+        EncryptionJob newJob = new EncryptionJob();
+        newJob.setUsuario(user);
+        newJob.setMod(compra.getMod());
+        newJob.setGuid(guid);
+        newJob.setModBaseFolder(folder);
+        newJob.setStatus(EncryptionJob.Status.PENDING);
+        newJob.setUpdatedAt(now);
+        newJob.setExpiresAt(now.plusDays(retentionDays));
+        encryptionJobRepository.save(newJob);
+
+        return ResponseEntity.ok("No se encontro archivo disponible. Se ha encolado una nueva generacion y se enviara email cuando este listo.");
     }
 
     private Map<String, Object> buildAdminUserResponse(Usuario user, List<Compra> compras) {
@@ -467,5 +568,46 @@ public class AdminController {
             frontend = frontend.substring(0, frontend.length() - 1);
         }
         return frontend + "/api/descargas/file";
+    }
+
+    private boolean outputFileExists(EncryptionJob job) {
+        if (job.getOutputRelativePath() == null || job.getOutputRelativePath().isBlank()) {
+            return false;
+        }
+        try {
+            Path base = Paths.get(modsFilesDirectory).normalize();
+            Path filePath = base.resolve(job.getOutputRelativePath()).normalize();
+            return filePath.startsWith(base) && Files.exists(filePath) && Files.isRegularFile(filePath);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void notifyJobEmail(String userEmail, String modName, EncryptionJob job) {
+        if (job.getDownloadToken() == null || job.getDownloadToken().isBlank()) {
+            return;
+        }
+        String downloadUrl = resolvePublicDownloadBaseUrl() + "/" + job.getDownloadToken();
+        emailService.sendDownloadReadyEmail(userEmail, modName, downloadUrl, job.getExpiresAt());
+        job.setNotifiedAt(LocalDateTime.now());
+        job.setErrorMessage(null);
+        encryptionJobRepository.save(job);
+    }
+
+    private String sanitizeFolder(String folder) {
+        if (folder == null) {
+            return null;
+        }
+        String clean = folder.trim();
+        if (clean.isEmpty()) {
+            return null;
+        }
+        if (clean.contains("..") || clean.contains("/") || clean.contains("\\")) {
+            return null;
+        }
+        if (!clean.matches("^[A-Za-z0-9._-]+$")) {
+            return null;
+        }
+        return clean;
     }
 }

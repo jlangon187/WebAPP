@@ -194,6 +194,19 @@ export class AdminUsersManagerComponent implements OnInit {
     });
   }
 
+  preparePurchaseDownload(user: AdminUser, purchase: AdminPurchase): void {
+    this.success = '';
+    this.error = '';
+    this.modService.prepareAdminPurchaseDownload(user.id, purchase.id).subscribe({
+      next: (message: any) => {
+        this.success = typeof message === 'string' ? message : `Solicitud de generacion enviada para ${user.nombre}.`;
+      },
+      error: (err) => {
+        this.error = err?.error || 'No se pudo solicitar la generacion de descarga.';
+      }
+    });
+  }
+
   goBack(): void {
     this.router.navigate(['/admin']);
   }

@@ -123,6 +123,12 @@ public class DescargasController {
 
         if (reusableDone.isPresent()) {
             EncryptionJob doneJob = reusableDone.get();
+            if (!outputFileExists(doneJob)) {
+                doneJob.setStatus(EncryptionJob.Status.FAILED);
+                doneJob.setErrorMessage("Archivo generado no encontrado en disco. Se requiere nueva generacion.");
+                doneJob.setUpdatedAt(now);
+                encryptionJobRepository.save(doneJob);
+            } else {
             notifyByEmailIfNeeded(doneJob);
             return ResponseEntity.ok(new PrepareDownloadResponse(
                     doneJob.getId(),
@@ -130,6 +136,7 @@ public class DescargasController {
                     "Paquete ya generado.",
                     doneJob.getDownloadToken()
             ));
+            }
         }
 
         Optional<EncryptionJob> latestDone = encryptionJobRepository

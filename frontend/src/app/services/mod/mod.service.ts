@@ -226,4 +226,8 @@ export class ModService {
   resendAdminPurchaseDownloadEmail(userId: number, purchaseId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/admin/users/${userId}/purchases/${purchaseId}/resend-download-email`, {}, { headers: this.getHeaders(), responseType: 'text' as 'json' });
   }
+
+  prepareAdminPurchaseDownload(userId: number, purchaseId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/admin/users/${userId}/purchases/${purchaseId}/prepare-download`, {}, { headers: this.getHeaders(), responseType: 'text' as 'json' });
+  }
 }

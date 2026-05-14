@@ -138,6 +138,9 @@
                   <button (click)="resendPurchaseEmail(user, purchase)" class="ml-2 px-2.5 py-1 text-[11px] font-bold rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30">
                     Enviar correo
                   </button>
+                  <button (click)="preparePurchaseDownload(user, purchase)" class="ml-2 px-2.5 py-1 text-[11px] font-bold rounded bg-primary/20 text-primary hover:bg-primary/30">
+                    Generar enlace
+                  </button>
                 </div>
                 <div *ngIf="editingPurchaseGuidId === purchase.id" class="mt-2 flex items-center gap-2">
                   <input [(ngModel)]="purchaseGuidDraft" maxlength="18" placeholder="GUID 18 hex"
