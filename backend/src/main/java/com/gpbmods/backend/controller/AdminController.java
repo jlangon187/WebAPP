@@ -13,6 +13,10 @@ import com.gpbmods.backend.repository.TicketRepository;
 import com.gpbmods.backend.repository.UsuarioRepository;
 import com.gpbmods.backend.service.EmailService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -180,6 +184,30 @@ public class AdminController {
         });
         payload.put("recent", recent);
         return ResponseEntity.ok(payload);
+    }
+
+    @GetMapping("/apk-download")
+    public ResponseEntity<?> downloadAdminApk() {
+        try {
+            Path base = Paths.get(modsFilesDirectory).normalize();
+            Path apkPath = base.resolve("apk").resolve("gpb-admin.apk").normalize();
+
+            if (!apkPath.startsWith(base)) {
+                return ResponseEntity.status(403).body("Ruta de APK invalida.");
+            }
+
+            if (!Files.exists(apkPath) || !Files.isRegularFile(apkPath) || !Files.isReadable(apkPath)) {
+                return ResponseEntity.status(404).body("No se encontro el instalador APK en NAS.");
+            }
+
+            Resource resource = new UrlResource(apkPath.toUri());
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("application/vnd.android.package-archive"))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"gpb-admin.apk\"")
+                    .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("No se pudo preparar la descarga del APK.");
+        }
     }
 
     @PutMapping("/users/{id}")

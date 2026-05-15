@@ -82,6 +82,19 @@
 
         <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
             <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-white">App Android Admin</h3>
+                <span class="material-symbols-outlined text-emerald-300">android</span>
+            </div>
+            <p class="text-sm text-slate-400 mb-5">Descarga directa del autoinstalador para la app de gestión en Android.</p>
+            <button (click)="downloadAdminApk()" [disabled]="downloadingApk"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                <span class="material-symbols-outlined text-sm">download</span>
+                {{ downloadingApk ? 'Preparando...' : 'Descargar APK' }}
+            </button>
+        </article>
+
+        <article class="bg-slate-900/40 p-6 rounded-xl border border-primary/10 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-bold text-white">Cola de Cifrado</h3>
                 <span class="material-symbols-outlined text-emerald-300">encrypted</span>
             </div>

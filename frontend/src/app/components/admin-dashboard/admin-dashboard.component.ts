@@ -50,6 +50,7 @@ export class AdminDashboardComponent implements OnInit {
   };
   loading = true;
   error = '';
+  downloadingApk = false;
 
   constructor(
       private http: HttpClient, 
@@ -99,6 +100,42 @@ export class AdminDashboardComponent implements OnInit {
 
   goToUsersManager() {
     this.router.navigate(['/admin/users']);
+  }
+
+  downloadAdminApk(): void {
+    const token = this.authService.getToken();
+    if (!token || this.downloadingApk) {
+      return;
+    }
+
+    this.downloadingApk = true;
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get('/api/admin/apk-download', { headers, responseType: 'blob', observe: 'response' }).subscribe({
+      next: (response) => {
+        const blob = response.body;
+        if (!blob) {
+          this.error = 'No se pudo descargar el APK.';
+          this.downloadingApk = false;
+          return;
+        }
+
+        const disposition = response.headers.get('content-disposition') || '';
+        const match = disposition.match(/filename="?([^";]+)"?/i);
+        const fileName = match?.[1] || 'gpb-admin.apk';
+
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = fileName;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+        this.downloadingApk = false;
+      },
+      error: (err) => {
+        this.error = typeof err?.error === 'string' ? err.error : 'No se pudo descargar el APK del panel admin.';
+        this.downloadingApk = false;
+      }
+    });
   }
 
   goToEncryptionJobsManager() {
