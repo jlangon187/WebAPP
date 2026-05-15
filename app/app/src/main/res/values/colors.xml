@@ -1,0 +1,11 @@
+<resources>
+    <color name="brand_primary">#E10600</color>
+    <color name="brand_primary_dark">#9A0400</color>
+    <color name="brand_background">#0F1623</color>
+    <color name="brand_surface">#151E2E</color>
+    <color name="brand_on_primary">#FFFFFF</color>
+    <color name="brand_on_background">#E8EDF5</color>
+    <color name="brand_success">#2E7D32</color>
+    <color name="brand_warning">#F9A825</color>
+    <color name="brand_error">#B3261E</color>
+</resources>
