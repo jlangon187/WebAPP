@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.gpbmods.app.ui.auth.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_loginFragment_to_adminDashboardFragment"
+            app:destination="@id/adminDashboardFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminDashboardFragment"
+        android:name="com.gpbmods.app.ui.dashboard.AdminDashboardFragment"
+        android:label="Dashboard">
+        <action
+            android:id="@+id/action_adminDashboardFragment_to_usersFragment"
+            app:destination="@id/usersFragment" />
+        <action
+            android:id="@+id/action_adminDashboardFragment_to_ticketsFragment"
+            app:destination="@id/ticketsFragment" />
+        <action
+            android:id="@+id/action_adminDashboardFragment_to_modsFragment"
+            app:destination="@id/modsFragment" />
+        <action
+            android:id="@+id/action_adminDashboardFragment_to_queueFragment"
+            app:destination="@id/queueFragment" />
+        <action
+            android:id="@+id/action_adminDashboardFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/adminDashboardFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.gpbmods.app.ui.users.UsersFragment"
+        android:label="Usuarios">
+        <action
+            android:id="@+id/action_usersFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_usersFragment_to_userPurchasesFragment"
+            app:destination="@id/userPurchasesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/ticketsFragment"
+        android:name="com.gpbmods.app.ui.tickets.TicketsFragment"
+        android:label="Tickets" />
+
+    <fragment
+        android:id="@+id/modsFragment"
+        android:name="com.gpbmods.app.ui.mods.ModsFragment"
+        android:label="Mods">
+        <action
+            android:id="@+id/action_modsFragment_to_editModFragment"
+            app:destination="@id/editModFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/queueFragment"
+        android:name="com.gpbmods.app.ui.queue.QueueFragment"
+        android:label="Cola" />
+
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.gpbmods.app.ui.users.EditUserFragment"
+        android:label="Editar Usuario" />
+
+    <fragment
+        android:id="@+id/userPurchasesFragment"
+        android:name="com.gpbmods.app.ui.users.UserPurchasesFragment"
+        android:label="Compras Usuario" />
+
+    <fragment
+        android:id="@+id/editModFragment"
+        android:name="com.gpbmods.app.ui.mods.EditModFragment"
+        android:label="Editar Mod" />
+
+</navigation>

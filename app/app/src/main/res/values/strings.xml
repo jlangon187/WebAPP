@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GPBikes Admin</string>
+    <string-array name="roles_array">
+        <item>invitado</item>
+        <item>registrado</item>
+        <item>admin</item>
+    </string-array>
+</resources>
