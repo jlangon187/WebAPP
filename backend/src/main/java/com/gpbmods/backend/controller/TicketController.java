@@ -54,6 +54,16 @@ public class TicketController {
         ticket.setMensaje(mensaje);
 
         Ticket saved = ticketRepository.save(ticket);
+        try {
+            emailService.sendNewTicketAdminNotification(
+                    saved.getId(),
+                    saved.getUsuario().getNombre(),
+                    saved.getUsuario().getEmail(),
+                    saved.getMensaje()
+            );
+        } catch (Exception ignored) {
+        }
+
         return ResponseEntity.ok(saved);
     }
 

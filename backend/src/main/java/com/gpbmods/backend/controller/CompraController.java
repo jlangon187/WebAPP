@@ -52,7 +52,7 @@ public class CompraController {
         Mods mod = modOpt.get();
 
         if (compraRepository.existsByUsuarioIdAndModId(usuario.getId(), mod.getId())) {
-            return ResponseEntity.badRequest().body("You already own this Mod.");
+            return ResponseEntity.badRequest().body("Ya posees este mod. Si necesitas comprarlo de nuevo, ponte en contacto con el administrador.");
         }
 
         String guidUsuario = usuario.getGuid();
@@ -64,7 +64,7 @@ public class CompraController {
         if (!"Simulacion".equalsIgnoreCase(request.getMetodoPago()) &&
             !"Stripe".equalsIgnoreCase(request.getMetodoPago()) &&
             !"Paypal".equalsIgnoreCase(request.getMetodoPago())) {
-            return ResponseEntity.badRequest().body("Invalid Payment Method.");
+            return ResponseEntity.badRequest().body("Metodo de pago no valido.");
         }
 
         // Simulated Success
@@ -94,7 +94,7 @@ public class CompraController {
         } catch (Exception ignored) {
         }
 
-        return ResponseEntity.ok("Purchase successful via " + request.getMetodoPago() + "!");
+        return ResponseEntity.ok("Compra realizada correctamente mediante " + request.getMetodoPago() + ".");
     }
 
     @GetMapping("/mis-compras")
@@ -104,7 +104,7 @@ public class CompraController {
         Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
 
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado.");
         }
         return ResponseEntity.ok(compraRepository.findByUsuarioId(usuarioOpt.get().getId()));
     }

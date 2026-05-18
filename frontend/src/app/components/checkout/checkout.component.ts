@@ -65,7 +65,7 @@ export class CheckoutComponent implements OnInit {
           setTimeout(() => this.router.navigate(['/dashboard']), 3000);
         },
         error: (err) => {
-          this.errorMessage = err.error || 'Payment failed';
+          this.errorMessage = this.extractErrorMessage(err, 'No se pudo procesar el pago.');
           this.isProcessing = false;
         }
       });
@@ -85,7 +85,7 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err) => {
         this.isProcessing = false;
-        this.errorMessage = err?.error || 'No se pudo iniciar la sesion de pago.';
+        this.errorMessage = this.extractErrorMessage(err, 'No se pudo iniciar la sesion de pago.');
       }
     });
   }
@@ -124,8 +124,29 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err) => {
         this.isProcessing = false;
-        this.errorMessage = err?.error || 'No se pudo confirmar el pago con el proveedor.';
+        this.errorMessage = this.extractErrorMessage(err, 'No se pudo confirmar el pago con el proveedor.');
       }
     });
+  }
+
+  private extractErrorMessage(err: any, fallback: string): string {
+    if (!err) {
+      return fallback;
+    }
+
+    const payload = err.error;
+    if (typeof payload === 'string' && payload.trim()) {
+      return payload;
+    }
+
+    if (payload && typeof payload.message === 'string' && payload.message.trim()) {
+      return payload.message;
+    }
+
+    if (typeof err.message === 'string' && err.message.trim()) {
+      return err.message;
+    }
+
+    return fallback;
   }
 }

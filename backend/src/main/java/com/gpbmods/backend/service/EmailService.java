@@ -137,9 +137,7 @@ public class EmailService {
     }
 
     public void sendPurchaseAdminNotification(String buyerName, String buyerEmail, List<String> modNames, String provider, String totalAmount) {
-        String adminEmail = (purchaseNotifyAdminEmail != null && !purchaseNotifyAdminEmail.isBlank())
-                ? purchaseNotifyAdminEmail.trim()
-                : (fallbackAdminEmail == null ? "" : fallbackAdminEmail.trim());
+        String adminEmail = resolveAdminEmail();
 
         if (adminEmail.isBlank()) {
             return;
@@ -167,6 +165,40 @@ public class EmailService {
         } catch (MessagingException | java.io.UnsupportedEncodingException e) {
             throw new RuntimeException("Error al enviar notificacion de compra al administrador", e);
         }
+    }
+
+    public void sendNewTicketAdminNotification(Long ticketId, String userName, String userEmail, String ticketMessage) {
+        String adminEmail = resolveAdminEmail();
+        if (adminEmail.isBlank()) {
+            return;
+        }
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("soporte@gpbikes-mods.com", "GPBikes Mods");
+            helper.setTo(adminEmail);
+            helper.setSubject("GPBikes Mods - Nuevo ticket recibido #" + ticketId);
+
+            String htmlMessage = "<div style='font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; padding: 20px; background-color: #0f1623; color: #ffffff; border-radius: 10px;'>" +
+                    "<h2 style='color: #e60000; text-align: center;'>Nuevo ticket de soporte</h2>" +
+                    "<p style='color: #e2e8f0;'><strong>Ticket:</strong> #" + ticketId + "</p>" +
+                    "<p style='color: #e2e8f0;'><strong>Usuario:</strong> " + safe(userName) + " (" + safe(userEmail) + ")</p>" +
+                    "<div style='margin: 16px 0; padding: 12px; border-radius: 6px; background-color: #1e293b; color: #e2e8f0; white-space: pre-wrap;'>" + safe(ticketMessage) + "</div>" +
+                    "</div>";
+
+            helper.setText(htmlMessage, true);
+            mailSender.send(message);
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException("Error al enviar notificacion de nuevo ticket al administrador", e);
+        }
+    }
+
+    private String resolveAdminEmail() {
+        return (purchaseNotifyAdminEmail != null && !purchaseNotifyAdminEmail.isBlank())
+                ? purchaseNotifyAdminEmail.trim()
+                : (fallbackAdminEmail == null ? "" : fallbackAdminEmail.trim());
     }
 
     private String safe(String text) {

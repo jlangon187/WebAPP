@@ -65,7 +65,7 @@ public class PaymentController {
 
         Optional<Usuario> userOpt = usuarioRepository.findByEmail(authentication.getName());
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado.");
         }
 
         List<Mods> mods = modsRepository.findAllById(modIds);
@@ -192,7 +192,7 @@ public class PaymentController {
 
         Optional<Usuario> userOpt = usuarioRepository.findByEmail(authentication.getName());
         if (userOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario no encontrado.");
         }
         Usuario user = userOpt.get();
 
@@ -256,6 +256,13 @@ public class PaymentController {
                 );
             } catch (Exception ignored) {
             }
+        }
+
+        if (created == 0) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "created", 0,
+                    "message", "Ya posees los mods seleccionados. Si necesitas comprarlos de nuevo, contacta con el administrador."
+            ));
         }
 
         return ResponseEntity.ok(Map.of("created", created, "message", "Compra confirmada y registrada."));

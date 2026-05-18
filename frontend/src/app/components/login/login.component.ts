@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
@@ -16,7 +16,27 @@ export class LoginComponent {
   error = '';
   loading = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {
+    const oauthError = this.route.snapshot.queryParamMap.get('error') || '';
+    if (oauthError) {
+      this.error = this.mapOauthError(oauthError);
+    }
+  }
+
+  private mapOauthError(errorCode: string): string {
+    switch (errorCode) {
+      case 'discord-cancelled':
+        return 'Has cancelado el inicio de sesion con Discord.';
+      case 'discord-missing-code':
+        return 'No se pudo completar el inicio de sesion con Discord. Intentalo de nuevo.';
+      case 'account-disabled':
+        return 'Tu cuenta esta desactivada. Contacta con el administrador.';
+      case 'discord':
+        return 'Error al iniciar sesion con Discord. Intentalo de nuevo en unos minutos.';
+      default:
+        return 'No se pudo completar el inicio de sesion. Intentalo de nuevo.';
+    }
+  }
 
   onSubmit() {
     this.loading = true;
@@ -28,9 +48,9 @@ export class LoginComponent {
       },
       error: (err) => {
         if(err.status === 401) {
-            this.error = 'Invalid email or password.';
+            this.error = 'Correo o contrasena incorrectos.';
         } else {
-            this.error = 'An error occurred. Please try again later.';
+            this.error = 'Ha ocurrido un error. Intentalo de nuevo mas tarde.';
         }
         this.loading = false;
       }

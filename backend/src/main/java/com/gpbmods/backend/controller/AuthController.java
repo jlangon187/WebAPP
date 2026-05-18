@@ -226,7 +226,19 @@ public class AuthController {
     }
 
     @GetMapping("/discord/callback")
-    public void discordCallback(@RequestParam("code") String code, HttpServletResponse response) throws IOException {
+    public void discordCallback(@RequestParam(value = "code", required = false) String code,
+                                @RequestParam(value = "error", required = false) String oauthError,
+                                HttpServletResponse response) throws IOException {
+        if (oauthError != null && !oauthError.isBlank()) {
+            response.sendRedirect(frontendUrl + "/login?error=discord-cancelled");
+            return;
+        }
+
+        if (code == null || code.isBlank()) {
+            response.sendRedirect(frontendUrl + "/login?error=discord-missing-code");
+            return;
+        }
+
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
